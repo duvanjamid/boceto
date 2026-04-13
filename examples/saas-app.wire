@@ -1,0 +1,52 @@
+// WireScript Example — SaaS App
+// Syntax: @ = page, # = title, > = navigate, · = separator
+
+theme paper
+
+@Login
+nav Kova
+img "Hero illustration"
+# Bienvenido de vuelta
+p Inicia sesión para continuar
+---
+field Email
+field Contraseña *
+check Mantener sesión iniciada
+btn Entrar > Dashboard
+link ¿Olvidaste tu contraseña? > Reset
+
+@Dashboard
+nav Kova · Inicio · Proyectos · Ajustes
+# Buenos días, Ana
+p Resumen de hoy
+row
+  kpi 1.284 Usuarios
+  kpi 94% Satisfacción
+  kpi 38 Tareas
+card Proyectos recientes
+  grid Nombre · Estado · Fecha · Dueño
+row
+  btn Nuevo proyecto > Crear
+  ghost Ver todos
+
+@Crear
+nav Kova · Inicio · Proyectos
+# Nuevo proyecto
+p Completa los campos para crear el proyecto
+field Nombre del proyecto
+area Descripción ?
+pick Tipo > Web Mobile Backend Diseño
+pick Prioridad > Alta Media Baja
+check Notificar al equipo
+---
+row
+  btn Crear proyecto > Dashboard
+  ghost Cancelar > Dashboard
+
+@Reset
+nav Kova
+# Recuperar acceso
+p Ingresa tu correo y te enviaremos un enlace
+field Correo electrónico
+btn Enviar instrucciones > Login
+link Volver al inicio > Login

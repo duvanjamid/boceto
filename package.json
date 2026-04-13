@@ -1,0 +1,26 @@
+{
+  "name": "wirescript",
+  "version": "0.2.0",
+  "description": "A text-based DSL for designing interactive UI wireframes",
+  "type": "module",
+  "main": "src/parser.js",
+  "exports": {
+    ".": "./src/parser.js",
+    "./themes": "./src/themes.js",
+    "./plugins/prism": "./plugins/wirescript-prism.js",
+    "./plugins/docsify": "./plugins/wirescript-docsify.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["wireframe", "dsl", "prototype", "design", "ui", "figma-alternative"],
+  "license": "MIT",
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.0.0"
+  }
+}
