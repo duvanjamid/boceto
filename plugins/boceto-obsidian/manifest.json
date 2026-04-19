@@ -1,0 +1,10 @@
+{
+  "id": "boceto-previewer",
+  "name": "Boceto Previewer",
+  "version": "0.1.0",
+  "minAppVersion": "1.0.0",
+  "description": "Renders ```boceto``` fenced blocks as interactive wireframe previews inside Obsidian.",
+  "author": "Duvan Jamid",
+  "authorUrl": "https://boceto.online",
+  "isDesktopOnly": false
+}

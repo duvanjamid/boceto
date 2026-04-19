@@ -1,0 +1,25 @@
+# Angular app source — not needed in npm package
+src/app/
+src/boceto-lang.ts
+src/index.html
+src/styles.css
+src/favicon.svg
+src/assets/
+
+# Config / build
+.angular/
+dist/boceto/
+tsconfig*.json
+angular.json
+node_modules/
+
+# Dev files
+*.md.bak
+PLAN_*.md
+CLAUDE.md
+.reuse/
+
+# IDE
+.vscode/
+.idea/
+*.log

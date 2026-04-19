@@ -100,11 +100,22 @@ field Contraseña *
 btn Entrar > @Dashboard
 \`\`\``;
 
-  readonly embedCodeExample = `<iframe 
-  src="https://boceto.app/#/embed?mode=preview&w=..." 
-  width="100%" height="500px" 
+  readonly embedCodeExample = `<iframe
+  src="https://boceto.app/#/embed?mode=preview&w=..."
+  width="100%" height="500px"
   style="border:0; border-radius:12px;">
 </iframe>`;
+
+  readonly webComponentExample = `<!-- CDN (no build step) -->
+<script src="https://unpkg.com/@duvanjamid/boceto/plugins/boceto-web-component.js"></script>
+
+<boceto-preview theme="blueprint" dsl="
+@App
+nav MiApp | Inicio | Ajustes
+# Bienvenido
+field Buscar
+btn Explorar > @Lista
+"></boceto-preview>`;
 
   ngOnInit(): void {
     // Apply paper theme CSS vars for wireframe previews on landing

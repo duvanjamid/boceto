@@ -1,0 +1,39 @@
+{
+  "name": "boceto",
+  "displayName": "Boceto DSL",
+  "description": "Syntax highlighting, snippets and language support for the Boceto wireframe DSL",
+  "version": "0.1.0",
+  "publisher": "duvanjamid",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duvanjamid/boceto"
+  },
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Programming Languages", "Snippets"],
+  "keywords": ["boceto", "wireframe", "dsl", "prototype", "ui"],
+  "icon": "icon.png",
+  "contributes": {
+    "languages": [
+      {
+        "id": "boceto",
+        "aliases": ["Boceto", "boceto"],
+        "extensions": [".boceto"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "boceto",
+        "scopeName": "source.boceto",
+        "path": "./syntaxes/boceto.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "boceto",
+        "path": "./snippets/boceto.json"
+      }
+    ]
+  }
+}

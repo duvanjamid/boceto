@@ -1,26 +1,57 @@
 {
-  "name": "boceto",
+  "name": "@duvanjamid/boceto",
   "version": "0.2.0",
   "description": "A text-based DSL for designing interactive UI wireframes",
+  "type": "module",
+  "main": "dist/lib/parser.js",
+  "types": "dist/lib/parser.d.ts",
   "exports": {
-    ".": "./src/parser.ts",
+    ".": {
+      "import": "./dist/lib/parser.js",
+      "types": "./dist/lib/parser.d.ts"
+    },
     "./themes": "./src/themes.js",
-    "./plugins/prism": "./plugins/boceto-prism.js",
-    "./plugins/docsify": "./plugins/boceto-docsify.js"
+    "./plugins/web-component": "./plugins/boceto-web-component.js",
+    "./plugins/react":         "./plugins/boceto-react.jsx",
+    "./plugins/vue":           "./plugins/boceto-vue.js",
+    "./plugins/remark":        "./plugins/boceto-remark.js",
+    "./plugins/prism":         "./plugins/boceto-prism.js",
+    "./plugins/docsify":       "./plugins/boceto-docsify.js"
   },
+  "files": [
+    "dist/lib",
+    "plugins",
+    "src/themes.js",
+    "src/types.ts",
+    "README.md",
+    "LICENSE",
+    "LICENSE-COMMERCIAL"
+  ],
   "keywords": [
     "wireframe",
     "dsl",
     "prototype",
     "design",
-    "ui"
+    "ui",
+    "mockup",
+    "web-component",
+    "angular",
+    "react",
+    "vue"
   ],
   "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duvanjamid/boceto"
+  },
+  "homepage": "https://boceto.online",
   "scripts": {
     "dev": "ng serve --open",
     "start": "ng serve",
     "build": "ng build",
-    "preview": "ng serve --configuration production"
+    "preview": "ng serve --configuration production",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "prepublishOnly": "npm run build:lib"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",

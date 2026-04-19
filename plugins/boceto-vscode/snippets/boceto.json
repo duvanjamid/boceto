@@ -1,0 +1,210 @@
+{
+  "New Page": {
+    "prefix": "page",
+    "body": ["@${1:PageName}", "nav ${2:App}", "# ${3:Título}", "$0"],
+    "description": "New Boceto screen"
+  },
+  "Theme": {
+    "prefix": "theme",
+    "body": ["theme ${1|paper,blueprint,sketch,noir,handwriting,arch,cyberpunk,dots|}"],
+    "description": "Set wireframe theme"
+  },
+  "Nav bar": {
+    "prefix": "nav",
+    "body": ["nav ${1:App} | ${2:Inicio} | ${3:Ajustes}"],
+    "description": "Navigation bar"
+  },
+  "Heading 1": {
+    "prefix": "#",
+    "body": ["# ${1:Título}"],
+    "description": "H1 heading"
+  },
+  "Heading 2": {
+    "prefix": "##",
+    "body": ["## ${1:Subtítulo}"],
+    "description": "H2 heading"
+  },
+  "Paragraph": {
+    "prefix": "p",
+    "body": ["p ${1:Texto}"],
+    "description": "Paragraph"
+  },
+  "Note / annotation": {
+    "prefix": "note",
+    "body": ["note ${1:Anotación}"],
+    "description": "Annotation text"
+  },
+  "Card": {
+    "prefix": "card",
+    "body": ["card ${1:Título}", "  $0"],
+    "description": "Card container"
+  },
+  "Card closable": {
+    "prefix": "card+",
+    "body": ["card+ ${1:Título}", "  $0"],
+    "description": "Card with close button"
+  },
+  "Row": {
+    "prefix": "row",
+    "body": ["row", "  $0"],
+    "description": "Horizontal flex row"
+  },
+  "Row right": {
+    "prefix": "rowr",
+    "body": ["row right", "  $0"],
+    "description": "Right-aligned row"
+  },
+  "Col": {
+    "prefix": "col",
+    "body": ["col", "  $0"],
+    "description": "Vertical flex column"
+  },
+  "Aside": {
+    "prefix": "aside",
+    "body": ["aside", "  $0"],
+    "description": "Sidebar panel"
+  },
+  "Modal": {
+    "prefix": "modal",
+    "body": ["modal ${1:Título}", "  $0"],
+    "description": "Modal overlay"
+  },
+  "Tabs": {
+    "prefix": "tabs",
+    "body": ["tabs ${1:Tab 1} | ${2:Tab 2}", "  $3", "  ---", "  $0"],
+    "description": "Tab switcher"
+  },
+  "Field": {
+    "prefix": "field",
+    "body": ["field ${1:Label}"],
+    "description": "Input field"
+  },
+  "Password field": {
+    "prefix": "fieldp",
+    "body": ["field ${1:Contraseña} *"],
+    "description": "Password input field"
+  },
+  "Optional field": {
+    "prefix": "fieldo",
+    "body": ["field ${1:Label} ?"],
+    "description": "Optional input field"
+  },
+  "Textarea": {
+    "prefix": "area",
+    "body": ["area ${1:Label}"],
+    "description": "Textarea"
+  },
+  "Dropdown / pick": {
+    "prefix": "pick",
+    "body": ["pick ${1:Label} | ${2:Opción 1} | ${3:Opción 2}"],
+    "description": "Dropdown select"
+  },
+  "Checkbox": {
+    "prefix": "check",
+    "body": ["check ${1:Label}"],
+    "description": "Checkbox"
+  },
+  "Checkbox checked": {
+    "prefix": "checkc",
+    "body": ["check ${1:Label} *"],
+    "description": "Checked checkbox"
+  },
+  "Toggle": {
+    "prefix": "toggle",
+    "body": ["toggle ${1:Label}"],
+    "description": "Toggle switch"
+  },
+  "Toggle on": {
+    "prefix": "toggleon",
+    "body": ["toggle ${1:Label} *"],
+    "description": "Toggle switch (on)"
+  },
+  "Button": {
+    "prefix": "btn",
+    "body": ["btn ${1:Label}"],
+    "description": "Primary button"
+  },
+  "Button with navigation": {
+    "prefix": "btnn",
+    "body": ["btn ${1:Label} > @${2:Page}"],
+    "description": "Primary button with page navigation"
+  },
+  "Ghost button": {
+    "prefix": "ghost",
+    "body": ["ghost ${1:Label}"],
+    "description": "Outline button"
+  },
+  "Link": {
+    "prefix": "link",
+    "body": ["link ${1:Label}"],
+    "description": "Inline link"
+  },
+  "Image": {
+    "prefix": "img",
+    "body": ["img \"${1:Alt text}\""],
+    "description": "Image placeholder"
+  },
+  "Avatar": {
+    "prefix": "avatar",
+    "body": ["avatar ${1:Nombre}"],
+    "description": "Avatar with initials"
+  },
+  "Badge": {
+    "prefix": "badge",
+    "body": ["badge ${1:Activo}"],
+    "description": "Status badge"
+  },
+  "KPI metric": {
+    "prefix": "kpi",
+    "body": ["kpi ${1:1.284} ${2:Usuarios}"],
+    "description": "KPI / large metric"
+  },
+  "Grid / table": {
+    "prefix": "grid",
+    "body": ["grid ${1:Col 1} | ${2:Col 2} | ${3:Col 3}"],
+    "description": "Data table with mock rows"
+  },
+  "List": {
+    "prefix": "list",
+    "body": ["list | ${1:Item 1} | ${2:Item 2} | ${3:Item 3}"],
+    "description": "Bulleted list"
+  },
+  "Divider": {
+    "prefix": "---",
+    "body": ["---"],
+    "description": "Horizontal divider / tab separator"
+  },
+  "Inline style": {
+    "prefix": "$",
+    "body": ["\\$\"${1:color:#dc2626}\""],
+    "description": "Inline CSS modifier"
+  },
+  "Full page scaffold": {
+    "prefix": "scaffold",
+    "body": [
+      "theme ${1|paper,blueprint,sketch,noir|}",
+      "",
+      "@${2:Login}",
+      "nav ${3:App}",
+      "# ${4:Bienvenido}",
+      "p ${5:Ingresa tus datos}",
+      "---",
+      "field Email",
+      "field Contraseña *",
+      "btn Entrar > @${6:Dashboard}",
+      "",
+      "@${6:Dashboard}",
+      "nav ${3:App} | Inicio | Ajustes",
+      "# Panel",
+      "row",
+      "  kpi ${7:1.284} Usuarios",
+      "  kpi ${8:94%} Activo",
+      "card Actividad reciente",
+      "  grid Nombre | Fecha | Estado",
+      "row right",
+      "  btn Nuevo",
+      "  ghost Ver todos"
+    ],
+    "description": "Full Boceto scaffold with two pages"
+  }
+}

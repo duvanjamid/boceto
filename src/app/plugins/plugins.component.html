@@ -1,0 +1,133 @@
+<div class="plugins">
+
+  <!-- ── HEADER ── -->
+  <header class="plugins__header">
+    <a class="plugins__logo" routerLink="/">
+      <div class="plugins__logo-mark">B</div>
+      <span class="plugins__logo-text">Boceto</span>
+    </a>
+    <span class="plugins__header-title">Plugins &amp; Integraciones</span>
+    <div class="plugins__header-actions">
+      <a class="plugins__header-link" routerLink="/docs">Componentes</a>
+      <a class="plugins__header-link" routerLink="/editor">Editor</a>
+      <button class="plugins__theme-btn" (click)="theme.toggle()" [title]="theme.dark() ? 'Modo claro' : 'Modo oscuro'">
+        <i [class]="theme.dark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="plugins__body">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="plugins__sidebar">
+      <div class="plugins__sidebar-label">Plugins</div>
+      @for (p of plugins; track p.id) {
+        <button class="plugins__sidebar-item"
+          [class.plugins__sidebar-item--active]="activePlugin() === p.id"
+          (click)="scrollTo(p.id)">
+          <i [class]="p.icon + ' plugins__sidebar-icon'"></i>
+          {{ p.name }}
+        </button>
+      }
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="plugins__main">
+
+      <!-- Intro -->
+      <div class="plugins__intro">
+        <h1 class="plugins__intro-title">Plugins &amp; Integraciones</h1>
+        <p class="plugins__intro-sub">
+          Boceto funciona como librería independiente. Úsalo en cualquier stack con un tag HTML,
+          un import de npm, o un plugin nativo para tu editor favorito.
+        </p>
+        <div class="plugins__intro-chips">
+          @for (p of plugins; track p.id) {
+            <button class="plugins__chip" (click)="scrollTo(p.id)">
+              <i [class]="p.icon"></i> {{ p.name }}
+            </button>
+          }
+        </div>
+        <!-- npm install banner -->
+        <div class="plugins__npm-banner">
+          <div class="plugins__npm-banner-left">
+            <span class="plugins__npm-badge">npm</span>
+            <code class="plugins__npm-cmd">npm install boceto</code>
+          </div>
+          <button class="plugins__npm-copy"
+            (click)="copyCode('npm-install', 'npm install boceto')"
+            [class.plugins__npm-copy--ok]="copiedId() === 'npm-install'">
+            @if (copiedId() === 'npm-install') {
+              <i class="fa-solid fa-check"></i> Copiado
+            } @else {
+              <i class="fa-regular fa-copy"></i> Copiar
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- Plugin cards -->
+      @for (p of plugins; track p.id) {
+        <section class="plugins__section" [id]="'plugin-' + p.id">
+
+          <div class="plugins__card">
+            <!-- Card header -->
+            <div class="plugins__card-header">
+              <div class="plugins__card-header-left">
+                <div class="plugins__card-icon-wrap">
+                  <i [class]="p.icon + ' plugins__card-icon'"></i>
+                </div>
+                <div>
+                  <div class="plugins__card-name">{{ p.name }}</div>
+                  @if (p.badge) {
+                    <div class="plugins__card-badge">{{ p.badge }}</div>
+                  }
+                </div>
+              </div>
+              <button class="plugins__copy-btn"
+                [class.plugins__copy-btn--ok]="copiedId() === p.id"
+                (click)="copyCode(p.id, p.tabs[getTab(p.id)].code)">
+                @if (copiedId() === p.id) {
+                  <i class="fa-solid fa-check"></i> Copiado
+                } @else {
+                  <i class="fa-regular fa-copy"></i> Copiar
+                }
+              </button>
+            </div>
+
+            <p class="plugins__card-desc">{{ p.desc }}</p>
+
+            <!-- Tabs -->
+            @if (p.tabs.length > 1) {
+              <div class="plugins__tabs">
+                @for (tab of p.tabs; track tab.label; let i = $index) {
+                  <button class="plugins__tab"
+                    [class.plugins__tab--active]="getTab(p.id) === i"
+                    (click)="setTab(p.id, i)">
+                    {{ tab.label }}
+                  </button>
+                }
+              </div>
+            }
+
+            <!-- Code block -->
+            <div class="plugins__code-wrap" [attr.data-lang]="p.tabs[getTab(p.id)].lang">
+              <pre class="plugins__code"><code>{{ p.tabs[getTab(p.id)].code }}</code></pre>
+            </div>
+
+            <!-- Notes -->
+            @if (p.notes && p.notes.length) {
+              <ul class="plugins__notes">
+                @for (note of p.notes; track note) {
+                  <li class="plugins__note"><i class="fa-solid fa-circle-info"></i> {{ note }}</li>
+                }
+              </ul>
+            }
+          </div>
+
+        </section>
+      }
+
+    </main>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+{
+  "comments": {
+    "lineComment": "//"
+  },
+  "brackets": [],
+  "autoClosingPairs": [
+    { "open": "\"", "close": "\"", "notIn": ["string"] }
+  ],
+  "surroundingPairs": [
+    { "open": "\"", "close": "\"" }
+  ],
+  "indentationRules": {
+    "increaseIndentPattern": "^(row|col|card[+]?|aside|modal|tabs)(\\s.*)?$",
+    "decreaseIndentPattern": "^(@|theme|#|p |note |field|area|pick|check|toggle|btn|ghost|link|img|avatar|badge|kpi|grid|list|---)"
+  },
+  "wordPattern": "[\\w@#$\\-]+"
+}

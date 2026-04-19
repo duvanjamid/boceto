@@ -125,6 +125,16 @@
     <div class="l-section__label">Integraciones</div>
     <h2 class="l-section__title">Se integra donde ya trabajas</h2>
     <div class="integrations-grid">
+      <div class="integration-card integration-card--featured">
+        <div class="integration-card__icon"><i class="fa-solid fa-cube"></i></div>
+        <h3 class="integration-card__title">Web Component</h3>
+        <p class="integration-card__desc">Custom element <code class="l-code">&lt;boceto-preview&gt;</code> listo para cualquier HTML o framework. Cero dependencias.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon"><i class="fa-brands fa-java"></i></div>
+        <h3 class="integration-card__title">IntelliJ IDEA</h3>
+        <p class="integration-card__desc">Bundle TextMate + snippets (Live Templates) para IntelliJ, WebStorm y PyCharm.</p>
+      </div>
       <div class="integration-card">
         <div class="integration-card__icon"><i class="fa-solid fa-puzzle-piece"></i></div>
         <h3 class="integration-card__title">VSCode</h3>
@@ -140,10 +150,47 @@
         <h3 class="integration-card__title">Prism.js</h3>
         <p class="integration-card__desc">Resaltado de sintaxis en cualquier sitio estático con el plugin oficial.</p>
       </div>
-      <div class="integration-card integration-card--featured">
-        <div class="integration-card__icon"><i class="fa-solid fa-plug"></i></div>
-        <h3 class="integration-card__title">Embed (iFrame)</h3>
-        <p class="integration-card__desc">Incrusta un editor funcional o solo la preview en Notion, Medium o tus propios docs.</p>
+      <div class="integration-card">
+        <div class="integration-card__icon"><i class="fa-brands fa-react"></i></div>
+        <h3 class="integration-card__title">React</h3>
+        <p class="integration-card__desc">Componente <code class="l-code">&lt;BocetoPreviewer&gt;</code> listo para React 18+. Interactivo, con soporte de navegación.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon"><i class="fa-brands fa-vuejs"></i></div>
+        <h3 class="integration-card__title">Vue 3</h3>
+        <p class="integration-card__desc">Componente Vue 3 Composition API. Reactivo a cambios de <code class="l-code">dsl</code> y <code class="l-code">theme</code>.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon"><i class="fa-solid fa-file-code"></i></div>
+        <h3 class="integration-card__title">remark / MDX</h3>
+        <p class="integration-card__desc">Plugin remark para Astro, Next.js y Docusaurus. Convierte bloques <code class="l-code">```boceto</code> en previews.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon"><i class="fa-solid fa-vault"></i></div>
+        <h3 class="integration-card__title">Obsidian</h3>
+        <p class="integration-card__desc">Plugin nativo para Obsidian. Renderiza wireframes directamente en tus notas en Reading view.</p>
+      </div>
+    </div>
+
+    <!-- Web Component snippet -->
+    <div class="embed-info">
+      <div class="embed-info__copy">
+        <h3 class="embed-info__title">Web Component — drop-in en cualquier HTML</h3>
+        <p class="embed-info__text">
+          Un script, un tag. Sin React, sin Angular, sin build step. Funciona en Notion embeds, Medium, GitHub Pages o cualquier HTML estático.
+        </p>
+        <ul class="embed-info__list">
+          <li><strong>theme:</strong> <code>paper</code>, <code>blueprint</code>, <code>sketch</code>, <code>noir</code>, <code>handwriting</code>, <code>arch</code></li>
+          <li><strong>dsl:</strong> tu código DSL como atributo o hijo de texto</li>
+          <li><strong>height:</strong> valor CSS o <code>auto</code> (default)</li>
+        </ul>
+        <a class="embed-info__link" href="https://www.npmjs.com/package/boceto" target="_blank" rel="noopener">Ver en npm ↗</a>
+      </div>
+      <div class="embed-info__code">
+        <div class="demo-code-header">
+          <span class="demo-code-filename">html</span>
+        </div>
+        <pre class="embed-code-pre"><code>{{ webComponentExample }}</code></pre>
       </div>
     </div>
     <!-- Embed details -->
@@ -357,9 +404,11 @@ row
     </div>
     <div class="l-footer__links">
       <a class="l-footer__link" routerLink="/editor">Editor</a>
-      <a class="l-footer__link" href="docs/README.md">Docs</a>
+      <a class="l-footer__link" routerLink="/docs">Componentes</a>
+      <a class="l-footer__link" routerLink="/plugins">Plugins</a>
+      <a class="l-footer__link" routerLink="/license">Licencia</a>
       <a class="l-footer__link" href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener">GitHub</a>
-      <a class="l-footer__link" href="https://npmjs.com" target="_blank" rel="noopener">npm</a>
+      <a class="l-footer__link" href="https://www.npmjs.com/package/@duvanjamid/boceto" target="_blank" rel="noopener">npm</a>
     </div>
   </div>
 </footer>

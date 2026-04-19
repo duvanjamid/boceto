@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IntelliJ IDEA Live Templates — Boceto DSL
+  Path: <IDE config dir>/templates/Boceto.xml
+  (Settings → Editor → Live Templates → Import)
+-->
+<templateSet group="Boceto">
+
+  <template name="page" value="@$NAME$&#10;nav $NAV$&#10;# $TITLE$&#10;$END$" description="New Boceto screen" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;PageName&quot;" alwaysStopAt="true"/>
+    <variable name="NAV" expression="" defaultValue="&quot;App&quot;" alwaysStopAt="true"/>
+    <variable name="TITLE" expression="" defaultValue="&quot;Título&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="theme" value="theme $THEME$" description="Set wireframe theme" toReformat="false" toShortenFQNames="false">
+    <variable name="THEME" expression="enum(&quot;paper&quot;,&quot;blueprint&quot;,&quot;sketch&quot;,&quot;noir&quot;,&quot;handwriting&quot;,&quot;arch&quot;,&quot;cyberpunk&quot;,&quot;dots&quot;)" defaultValue="&quot;paper&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="nav" value="nav $BRAND$ | $LINK1$ | $LINK2$" description="Navigation bar" toReformat="false" toShortenFQNames="false">
+    <variable name="BRAND" expression="" defaultValue="&quot;App&quot;" alwaysStopAt="true"/>
+    <variable name="LINK1" expression="" defaultValue="&quot;Inicio&quot;" alwaysStopAt="true"/>
+    <variable name="LINK2" expression="" defaultValue="&quot;Ajustes&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="card" value="card $TITLE$&#10;  $END$" description="Card container" toReformat="false" toShortenFQNames="false">
+    <variable name="TITLE" expression="" defaultValue="&quot;Título&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="row" value="row&#10;  $END$" description="Horizontal flex row" toReformat="false" toShortenFQNames="false">
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="col" value="col&#10;  $END$" description="Vertical flex column" toReformat="false" toShortenFQNames="false">
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="modal" value="modal $TITLE$&#10;  $END$" description="Modal overlay" toReformat="false" toShortenFQNames="false">
+    <variable name="TITLE" expression="" defaultValue="&quot;Título&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="tabs" value="tabs $T1$ | $T2$&#10;  $CONTENT1$&#10;  ---&#10;  $CONTENT2$" description="Tab switcher" toReformat="false" toShortenFQNames="false">
+    <variable name="T1" expression="" defaultValue="&quot;Tab 1&quot;" alwaysStopAt="true"/>
+    <variable name="T2" expression="" defaultValue="&quot;Tab 2&quot;" alwaysStopAt="true"/>
+    <variable name="CONTENT1" expression="" defaultValue="&quot;&quot;" alwaysStopAt="true"/>
+    <variable name="CONTENT2" expression="" defaultValue="&quot;&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="field" value="field $LABEL$" description="Input field" toReformat="false" toShortenFQNames="false">
+    <variable name="LABEL" expression="" defaultValue="&quot;Label&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="fieldp" value="field $LABEL$ *" description="Password field" toReformat="false" toShortenFQNames="false">
+    <variable name="LABEL" expression="" defaultValue="&quot;Contraseña&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="pick" value="pick $LABEL$ | $OPT1$ | $OPT2$" description="Dropdown / select" toReformat="false" toShortenFQNames="false">
+    <variable name="LABEL" expression="" defaultValue="&quot;Label&quot;" alwaysStopAt="true"/>
+    <variable name="OPT1" expression="" defaultValue="&quot;Opción 1&quot;" alwaysStopAt="true"/>
+    <variable name="OPT2" expression="" defaultValue="&quot;Opción 2&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="btn" value="btn $LABEL$ > @$PAGE$" description="Primary button with navigation" toReformat="false" toShortenFQNames="false">
+    <variable name="LABEL" expression="" defaultValue="&quot;Acción&quot;" alwaysStopAt="true"/>
+    <variable name="PAGE" expression="" defaultValue="&quot;Page&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="ghost" value="ghost $LABEL$" description="Outline button" toReformat="false" toShortenFQNames="false">
+    <variable name="LABEL" expression="" defaultValue="&quot;Acción&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="grid" value="grid $C1$ | $C2$ | $C3$" description="Data table" toReformat="false" toShortenFQNames="false">
+    <variable name="C1" expression="" defaultValue="&quot;Col 1&quot;" alwaysStopAt="true"/>
+    <variable name="C2" expression="" defaultValue="&quot;Col 2&quot;" alwaysStopAt="true"/>
+    <variable name="C3" expression="" defaultValue="&quot;Col 3&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="kpi" value="kpi $VALUE$ $LABEL$" description="KPI metric" toReformat="false" toShortenFQNames="false">
+    <variable name="VALUE" expression="" defaultValue="&quot;1.284&quot;" alwaysStopAt="true"/>
+    <variable name="LABEL" expression="" defaultValue="&quot;Usuarios&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="badge" value="badge $TEXT$" description="Status badge" toReformat="false" toShortenFQNames="false">
+    <variable name="TEXT" expression="" defaultValue="&quot;Activo&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+  <template name="avatar" value="avatar $NAME$" description="Avatar with initials" toReformat="false" toShortenFQNames="false">
+    <variable name="NAME" expression="" defaultValue="&quot;Nombre&quot;" alwaysStopAt="true"/>
+    <context><option name="OTHER" value="true"/></context>
+  </template>
+
+</templateSet>

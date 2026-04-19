@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>content</key>
+  <string>nav ${1:App} | ${2:Inicio} | ${3:Ajustes}</string>
+  <key>name</key>
+  <string>nav</string>
+  <key>scope</key>
+  <string>source.boceto</string>
+  <key>tabTrigger</key>
+  <string>nav</string>
+  <key>uuid</key>
+  <string>B0CE7001-0001-0001-0001-000000000003</string>
+</dict>
+</plist>

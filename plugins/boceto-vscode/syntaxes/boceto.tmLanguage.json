@@ -1,0 +1,95 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Boceto",
+  "scopeName": "source.boceto",
+  "fileTypes": ["wire", "ws"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#theme" },
+    { "include": "#page" },
+    { "include": "#heading" },
+    { "include": "#layout" },
+    { "include": "#form" },
+    { "include": "#action" },
+    { "include": "#content" },
+    { "include": "#data" },
+    { "include": "#string" },
+    { "include": "#nav-arrow" },
+    { "include": "#dot-separator" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.double-slash.wire",
+      "match": "//.*$"
+    },
+    "theme": {
+      "name": "keyword.control.theme.wire",
+      "match": "^\\s*(theme)\\s+(paper|blueprint|sketch|noir)\\b",
+      "captures": {
+        "1": { "name": "keyword.control.wire" },
+        "2": { "name": "support.constant.theme.wire" }
+      }
+    },
+    "page": {
+      "name": "entity.name.section.page.wire",
+      "match": "^@(\\w+)",
+      "captures": {
+        "0": { "name": "punctuation.definition.page.wire" },
+        "1": { "name": "entity.name.section.wire" }
+      }
+    },
+    "heading": {
+      "patterns": [
+        { "match": "^\\s*(###)\\s+(.+)$", "captures": { "1": { "name": "punctuation.definition.heading.wire" }, "2": { "name": "markup.heading.3.wire" } } },
+        { "match": "^\\s*(##)\\s+(.+)$",  "captures": { "1": { "name": "punctuation.definition.heading.wire" }, "2": { "name": "markup.heading.2.wire" } } },
+        { "match": "^\\s*(#)\\s+(.+)$",   "captures": { "1": { "name": "punctuation.definition.heading.wire" }, "2": { "name": "markup.heading.1.wire" } } }
+      ]
+    },
+    "layout": {
+      "name": "keyword.other.layout.wire",
+      "match": "^\\s*(row|card|aside)\\b"
+    },
+    "form": {
+      "match": "^\\s*(field|area|pick|check|toggle)\\b\\s*(.+)?$",
+      "captures": {
+        "1": { "name": "support.function.form.wire" },
+        "2": { "name": "variable.parameter.wire" }
+      }
+    },
+    "action": {
+      "match": "^\\s*(btn|ghost|link)\\b\\s*(.+?)(?:\\s*(>)\\s*(\\w+))?$",
+      "captures": {
+        "1": { "name": "entity.name.function.action.wire" },
+        "2": { "name": "string.unquoted.wire" },
+        "3": { "name": "keyword.operator.arrow.wire" },
+        "4": { "name": "entity.name.section.target.wire" }
+      }
+    },
+    "content": {
+      "match": "^\\s*(nav|tabs|img|avatar|badge|note|p)\\b\\s*(.+)?$",
+      "captures": {
+        "1": { "name": "keyword.other.content.wire" },
+        "2": { "name": "string.unquoted.wire" }
+      }
+    },
+    "data": {
+      "match": "^\\s*(kpi|grid|list)\\b\\s*(.+)?$",
+      "captures": {
+        "1": { "name": "support.type.data.wire" },
+        "2": { "name": "variable.other.wire" }
+      }
+    },
+    "string": {
+      "name": "string.quoted.double.wire",
+      "match": "\"[^\"]*\""
+    },
+    "nav-arrow": {
+      "name": "keyword.operator.arrow.wire",
+      "match": ">"
+    },
+    "dot-separator": {
+      "name": "punctuation.separator.dot.wire",
+      "match": "·"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IntelliJ IDEA File Type — Boceto DSL
+  Path: <IDE config dir>/filetypes/boceto.xml
+  (Settings → Editor → File Types → Import)
+-->
+<filetype name="Boceto DSL" description="Boceto wireframe DSL" default-extension="boceto" binary="false" ignore-case="false">
+  <highlighting>
+    <options>
+      <option name="LINE_COMMENT" value="//" />
+      <option name="HEX_PREFIX" value="" />
+      <option name="NUM_POSTFIXES" value="" />
+      <option name="HAS_BRACES" value="true" />
+      <option name="HAS_BRACKETS" value="false" />
+      <option name="HAS_PARENS" value="false" />
+      <option name="HAS_STRING_ESCAPES" value="false" />
+    </options>
+    <keywords keywords="area;aside;avatar;badge;btn;card;check;col;field;ghost;grid;img;kpi;link;list;modal;nav;note;p;pick;row;tabs;toggle" ignore_case="false"/>
+    <keywords2 keywords="theme"/>
+    <keywords3 keywords="---"/>
+    <keywords4 keywords=""/>
+  </highlighting>
+  <extensionMap>
+    <mapping ext="boceto"/>
+  </extensionMap>
+</filetype>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>content</key>
+  <string>pick ${1:Label} | ${2:Opción 1} | ${3:Opción 2}</string>
+  <key>name</key>
+  <string>pick (dropdown)</string>
+  <key>scope</key>
+  <string>source.boceto</string>
+  <key>tabTrigger</key>
+  <string>pick</string>
+  <key>uuid</key>
+  <string>B0CE7001-0001-0001-0001-000000000008</string>
+</dict>
+</plist>

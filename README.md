@@ -4,13 +4,13 @@
 
 # Boceto
 
-**Text-based DSL for interactive UI wireframes**
-
 Write screens in plain text → navigate between them → export to SVG → switch themes
+
+**Live Demo: [boceto.online](https://boceto.online/)**
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](./LICENSE)
 [![Commercial License](https://img.shields.io/badge/License-Commercial-green.svg)](./LICENSE-COMMERCIAL)
-[![npm](https://img.shields.io/badge/npm-boceto-red.svg)](https://www.npmjs.com/package/boceto)
+[![npm](https://img.shields.io/badge/npm-%40duvanjamid%2Fboceto-red.svg)](https://www.npmjs.com/package/@duvanjamid/boceto)
 
 </div>
 
@@ -45,14 +45,12 @@ row right
 
 ---
 
-## Quick start
-
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:4200](http://localhost:4200)
+Open [localhost:4200](http://localhost:4200) or use the live version at **[boceto.online](https://boceto.online/)**
 
 ---
 
@@ -76,11 +74,41 @@ Full reference → **[DSL.md](./DSL.md)**
 | `grid Col1 \| Col2` · `list Item1 \| Item2` | Table / list |
 | `$"css"` | Inline CSS on any element |
 
-Separator: `|` and `·` are interchangeable everywhere.
+Separator: `|` is the standard separator for all multi-item elements.
 
 ---
 
 ## Plugins
+
+### Web Component
+Drop-in custom element — zero dependencies, works in any HTML page or framework.
+
+```html
+<!-- CDN -->
+<script src="https://unpkg.com/@duvanjamid/boceto/plugins/boceto-web-component.js"></script>
+
+<!-- npm -->
+<!-- npm install @duvanjamid/boceto  →  import 'boceto/plugins/boceto-web-component.js' -->
+
+<boceto-preview theme="paper" dsl="
+@Login
+nav Boceto
+field Email
+field Contraseña *
+btn Entrar > Dashboard
+"></boceto-preview>
+```
+
+Attributes: `dsl` (required) · `theme` (paper|blueprint|sketch|noir|handwriting|arch, default `paper`) · `height` (CSS value or `auto`, default `auto`)
+
+### IntelliJ IDEA / WebStorm / PyCharm
+Syntax highlighting + live templates via TextMate bundle:
+
+1. **Settings → Editor → TextMate Bundles → +** → select `plugins/boceto-intellij/boceto.tmbundle/`
+2. **File type** (optional — for `.boceto` files): **Settings → Editor → File Types → Import** → select `plugins/boceto-intellij/boceto.xml`
+3. **Live Templates** (snippets): **Settings → Editor → Live Templates → Import** → select `plugins/boceto-intellij/snippets.xml`
+
+Snippets: `page`, `theme`, `nav`, `card`, `row`, `col`, `modal`, `tabs`, `field`, `fieldp`, `pick`, `btn`, `ghost`, `grid`, `kpi`, `badge`, `avatar`
 
 ### VSCode / Sublime / Zed / TextMate
 Copy `plugins/boceto.tmLanguage.json` into your editor's grammar folder.
@@ -100,6 +128,43 @@ btn Entrar > Dashboard
 <script src="plugins/boceto-docsify.js"></script>
 ```
 Then in any Markdown file, use fenced ` ```boceto ``` ` blocks — they render as interactive wireframes.
+
+### React
+```jsx
+import BocetoPreviewer from '@duvanjamid/boceto/plugins/boceto-react';
+
+<BocetoPreviewer theme="blueprint" dsl={`
+@Login
+nav MiApp
+field Email
+btn Entrar > Dashboard
+`} />
+```
+
+### Vue 3
+```js
+import BocetoPreviewer from '@duvanjamid/boceto/plugins/boceto-vue';
+app.component('BocetoPreviewer', BocetoPreviewer);
+```
+```html
+<BocetoPreviewer theme="paper" :dsl="myDsl" />
+```
+
+### remark / MDX / Astro / Next.js
+```js
+// astro.config.mjs or next.config.mjs
+import remarkBoceto from '@duvanjamid/boceto/plugins/boceto-remark';
+// { remarkPlugins: [remarkBoceto] }
+// or: [remarkBoceto, { scriptSrc: 'https://unpkg.com/@duvanjamid/boceto/plugins/boceto-web-component.js' }]
+```
+Then use ` ```boceto ``` ` blocks in any `.md` / `.mdx` file.
+
+### VSCode Extension
+Full extension with language support, syntax highlighting and snippets in `plugins/boceto-vscode/`.
+To install manually: copy the folder and load via "Install from VSIX" or use the extension development host.
+
+### Obsidian
+Copy `plugins/boceto-obsidian/` into `<vault>/.obsidian/plugins/boceto-previewer/`, then enable under **Settings → Community plugins**. ` ```boceto ``` ` blocks render as interactive wireframes in Reading view.
 
 ---
 
