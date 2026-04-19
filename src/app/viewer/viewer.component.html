@@ -1,0 +1,92 @@
+<div class="viewer">
+
+  <!-- HEADER -->
+  <header class="viewer__header">
+    <a class="viewer__logo" routerLink="/">
+      <boceto-logo [size]="26"></boceto-logo>
+      <span class="viewer__logo-text">Boceto</span>
+    </a>
+
+    @if (!notFound()) {
+      <div class="viewer__nav">
+        <!-- Back -->
+        <button class="viewer__back-btn" [disabled]="!history().length" (click)="goBack()" title="Atrás">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+          </svg>
+        </button>
+        <!-- Page tabs -->
+        @for (name of pageNames(); track name) {
+          <button class="viewer__page-btn"
+            [class.viewer__page-btn--active]="currentPage() === name"
+            (click)="goTo(name)">
+            {{ name }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="viewer__actions">
+      <a class="viewer__edit-btn" [href]="editorUrl()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+        </svg>
+        Editar
+      </a>
+      <!-- Shell theme toggle -->
+      <button class="viewer__theme-btn"
+        (click)="theme.toggle()"
+        [title]="theme.dark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+        @if (theme.dark()) {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        } @else {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="viewer__content">
+
+    @if (notFound()) {
+      <div class="viewer__empty">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color:#3d3a50">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M9 9h6M9 13h4"/>
+        </svg>
+        <p class="viewer__empty-title">Wireframe no encontrado</p>
+        <p class="viewer__empty-sub">El enlace puede estar incompleto o expirado.</p>
+        <a class="viewer__empty-btn" routerLink="/editor">Crear uno nuevo →</a>
+      </div>
+    } @else {
+      <div class="viewer__frame-wrap">
+        <div class="viewer__frame-label">&#64;{{ currentPage() }}</div>
+        <div class="viewer__frame">
+          @if (currentPageData()) {
+            <page-view [page]="currentPageData()!" (navigate)="navTo($event)"></page-view>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="viewer__footer">
+    <span>Creado con</span>
+    <a routerLink="/" class="viewer__footer-link">
+      <boceto-logo [size]="16" label=""></boceto-logo>
+      Boceto
+    </a>
+  </footer>
+
+</div>

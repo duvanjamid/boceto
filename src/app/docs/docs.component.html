@@ -1,0 +1,145 @@
+<div class="docs">
+
+  <!-- HEADER -->
+  <header class="docs__header">
+    <a class="docs__logo" routerLink="/">
+      <boceto-logo [size]="26"></boceto-logo>
+      <span class="docs__logo-text">Boceto</span>
+    </a>
+    <div class="docs__header-title">Componentes</div>
+    <div class="docs__header-actions">
+      <a class="docs__header-link" routerLink="/editor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 10h3M15 14h3"/></svg>
+        Abrir editor
+      </a>
+      <!-- Shell theme toggle -->
+      <button class="docs__theme-btn"
+        (click)="theme.toggle()"
+        [title]="theme.dark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+        @if (theme.dark()) {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        } @else {
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        }
+      </button>
+    </div>
+  </header>
+
+  <div class="docs__body">
+
+    <!-- SIDEBAR -->
+    <aside class="docs__sidebar">
+      <div class="docs__sidebar-label">Referencia</div>
+      @for (sec of sections; track sec.id) {
+        <button class="docs__sidebar-item"
+          [class.docs__sidebar-item--active]="activeSection() === sec.id"
+          (click)="scrollTo(sec.id)">
+          <span class="docs__sidebar-icon">{{ sec.icon }}</span>
+          {{ sec.label }}
+        </button>
+      }
+      <div class="docs__sidebar-divider"></div>
+      <div class="docs__sidebar-label">Recursos</div>
+      <a class="docs__sidebar-item" routerLink="/editor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+        Editor en vivo
+      </a>
+      <a class="docs__sidebar-item" routerLink="/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Inicio
+      </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="docs__main">
+
+      <!-- Intro banner -->
+      <div class="docs__intro">
+        <h1 class="docs__intro-title">Biblioteca de componentes</h1>
+        <p class="docs__intro-sub">
+          Todos los elementos disponibles en el DSL de Boceto, con preview en vivo y código listo para copiar.
+          Haz clic en <strong>Abrir en editor</strong> para experimentar con cualquier componente.
+        </p>
+        <div class="docs__intro-chips">
+          @for (sec of sections; track sec.id) {
+            <button class="docs__chip" (click)="scrollTo(sec.id)">{{ sec.label }}</button>
+          }
+        </div>
+      </div>
+
+      <!-- Component sections -->
+      @for (sec of sections; track sec.id) {
+        <section class="docs__section" [id]="'section-' + sec.id">
+          <div class="docs__section-header">
+            <div class="docs__section-icon">{{ sec.icon }}</div>
+            <h2 class="docs__section-title">{{ sec.label }}</h2>
+          </div>
+
+          <div class="docs__cards">
+            @for (item of sec.items; track item.id) {
+              <div class="docs__card">
+
+                <!-- Card header -->
+                <div class="docs__card-header">
+                  <div>
+                    <div class="docs__card-name">{{ item.name }}</div>
+                    <div class="docs__card-syntax">{{ item.syntax }}</div>
+                  </div>
+                  <div class="docs__card-actions">
+                    <button class="docs__btn-copy"
+                      [class.docs__btn-copy--ok]="copiedId() === item.id"
+                      (click)="copyDsl(item)">
+                      @if (copiedId() === item.id) {
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        Copiado
+                      } @else {
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        Copiar DSL
+                      }
+                    </button>
+                    <button class="docs__btn-editor" (click)="openInEditor(item)">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                      Abrir en editor
+                    </button>
+                  </div>
+                </div>
+
+                <p class="docs__card-desc">{{ item.desc }}</p>
+
+                <!-- Preview + Code split -->
+                <div class="docs__card-split">
+                  <!-- Live preview -->
+                  <div class="docs__preview-wrap">
+                    <div class="docs__preview-label">Preview</div>
+                    <div class="docs__preview">
+                      @if (item.page) {
+                        <page-view [page]="item.page"></page-view>
+                      }
+                    </div>
+                  </div>
+                  <!-- DSL code -->
+                  <div class="docs__code-wrap">
+                    <div class="docs__code-label">DSL</div>
+                    <pre class="docs__code"
+                      [innerHTML]="item.dsl.trim() | dslHighlight:(theme.dark() ? 'dark' : 'light')"></pre>
+                  </div>
+                </div>
+
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+    </main>
+  </div>
+
+</div>

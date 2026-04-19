@@ -1,0 +1,419 @@
+<!-- ══════════════════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════════════════ -->
+<nav class="l-nav">
+  <div class="l-nav__inner">
+    <a class="l-nav__logo" routerLink="/">
+      <boceto-logo [size]="28"></boceto-logo>
+      <span class="l-nav__logo-text">Boceto</span>
+    </a>
+    <div class="l-nav__links">
+      <a class="l-nav__link" routerLink="/docs">Componentes</a>
+      <a class="l-nav__link" routerLink="/editor">Editor</a>
+      <a class="l-nav__link l-nav__link--ext" href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
+      <!-- Shell theme toggle -->
+      <button class="l-nav__theme-btn"
+        (click)="theme.toggle()"
+        [title]="theme.dark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+        @if (theme.dark()) {
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        } @else {
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        }
+      </button>
+      <a class="l-nav__cta" routerLink="/editor">Abrir editor →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero__inner">
+    <!-- Left column -->
+    <div class="hero__copy">
+      <div class="hero__badge">v0.2.0 · MIT · Open Source</div>
+      <h1 class="hero__headline">
+        Wireframes<br>
+        <span class="hero__headline-accent">desde el teclado</span>
+      </h1>
+      <p class="hero__subtitle">
+        Un DSL de 40 palabras clave para prototipar interfaces interactivas.
+        Sin ratón, sin capas, sin fricción.
+      </p>
+      <div class="hero__ctas">
+        <a class="hero__cta-primary" routerLink="/editor">Abrir editor →</a>
+        <a class="hero__cta-ghost" href="https://github.com" target="_blank" rel="noopener">Ver en GitHub ↗</a>
+      </div>
+      <div class="hero__chips">
+        <span class="hero__chip">40 keywords</span>
+        <span class="hero__chip-sep">·</span>
+        <span class="hero__chip">4 temas</span>
+        <span class="hero__chip-sep">·</span>
+        <span class="hero__chip">~3 KB gzip</span>
+        <span class="hero__chip-sep">·</span>
+        <span class="hero__chip">Cero dependencias</span>
+      </div>
+    </div>
+
+    <!-- Right column: device frame -->
+    <div class="hero__device-wrap">
+      <div class="hero__glow"></div>
+      <div class="hero__device">
+        @if (heroPage) {
+          <page-view [page]="heroPage"></page-view>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section">
+  <div class="l-inner">
+    <div class="l-section__label">Por qué Boceto</div>
+    <h2 class="l-section__title">Diseña a la velocidad del pensamiento</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-card__icon">✏️</div>
+        <h3 class="feature-card__title">DSL Minimalista</h3>
+        <p class="feature-card__desc">40 keywords, indentación y · como separador. Si sabes escribir, sabes wireframear.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">⚡</div>
+        <h3 class="feature-card__title">Preview Instantáneo</h3>
+        <p class="feature-card__desc">El resultado aparece mientras escribes. Sin compilar, sin guardar, sin esperar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">🔗</div>
+        <h3 class="feature-card__title">Comparte al instante</h3>
+        <p class="feature-card__desc">El wireframe se codifica en la URL. Comparte el enlace, sin backend, sin cuenta.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">↓</div>
+        <h3 class="feature-card__title">Exporta a SVG</h3>
+        <p class="feature-card__desc">Descarga el wireframe como SVG para incluirlo en tu documentación o presentaciones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     LIVE DEMO
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section l-section--alt">
+  <div class="l-inner">
+    <div class="l-section__label">Demo en vivo</div>
+    <h2 class="l-section__title">Vélo en acción</h2>
+    <div class="demo-grid">
+      <!-- Code panel -->
+      <div class="demo-code-wrap">
+        <div class="demo-code-header">
+          <span class="demo-code-dot demo-code-dot--red"></span>
+          <span class="demo-code-dot demo-code-dot--yellow"></span>
+          <span class="demo-code-dot demo-code-dot--green"></span>
+          <span class="demo-code-filename">dashboard.wire</span>
+        </div>
+        <pre class="demo-code"><span class="dc-comment">// DSL de Boceto</span>
+<span class="dc-keyword">theme</span> paper
+
+<span class="dc-page">&#64;Dashboard</span>
+<span class="dc-keyword">nav</span> App · Inicio · Proyectos · Ajustes
+<span class="dc-heading"># Buenos días, Ana</span>
+<span class="dc-keyword">p</span> Resumen del día de hoy
+<span class="dc-keyword">row</span>
+  <span class="dc-keyword">kpi</span> 1.284 Usuarios
+  <span class="dc-keyword">kpi</span> 94% Activo
+<span class="dc-keyword">card</span> Proyectos recientes
+  <span class="dc-keyword">grid</span> Nombre · Estado · Fecha
+<span class="dc-keyword">row</span>
+  <span class="dc-keyword">btn</span> Nuevo proyecto
+  <span class="dc-keyword">ghost</span> Ver todos</pre>
+      </div>
+      <!-- Wireframe preview -->
+      <div class="demo-preview-wrap">
+        <div class="demo-preview-label">Preview</div>
+        <div class="demo-preview-frame">
+          @if (demoPage) {
+            <page-view [page]="demoPage"></page-view>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     THEMES
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section">
+  <div class="l-inner">
+    <div class="l-section__label">Personalización</div>
+    <h2 class="l-section__title">Cuatro temas, un DSL</h2>
+    <p class="l-section__subtitle">Cambia el aspecto con una sola línea: <code class="l-code">theme blueprint</code></p>
+    <div class="themes-grid">
+      @for (t of themeNames; track t) {
+        <div class="theme-card">
+          <div class="theme-card__header">
+            <span class="theme-card__icon">{{ themeIcons[t] }}</span>
+            <span class="theme-card__name">{{ themeLabels[t] }}</span>
+          </div>
+          <div class="theme-card__preview" [attr.style]="getThemeInlineVars(t)">
+            @if (themePreviews[t]) {
+              <page-view [page]="themePreviews[t]!"></page-view>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     INTEGRATIONS
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section l-section--alt">
+  <div class="l-inner">
+    <div class="l-section__label">Integraciones</div>
+    <h2 class="l-section__title">Se integra donde ya trabajas</h2>
+    <div class="integrations-grid">
+      <div class="integration-card">
+        <div class="integration-card__icon">🧩</div>
+        <h3 class="integration-card__title">VSCode</h3>
+        <p class="integration-card__desc">Syntax highlighting nativo con la extensión <code class="l-code">.tmLanguage</code>.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">📚</div>
+        <h3 class="integration-card__title">Docsify</h3>
+        <p class="integration-card__desc">Bloques <code class="l-code">```wirescript</code> en tus docs se vuelven prototipos interactivos.</p>
+      </div>
+      <div class="integration-card">
+        <div class="integration-card__icon">🎨</div>
+        <h3 class="integration-card__title">Prism.js</h3>
+        <p class="integration-card__desc">Resaltado de sintaxis en cualquier sitio estático con el plugin oficial.</p>
+      </div>
+    </div>
+    <!-- Code example -->
+    <div class="integration-code-wrap">
+      <div class="demo-code-header">
+        <span class="demo-code-dot demo-code-dot--red"></span>
+        <span class="demo-code-dot demo-code-dot--yellow"></span>
+        <span class="demo-code-dot demo-code-dot--green"></span>
+        <span class="demo-code-filename">docs/mi-pantalla.md</span>
+      </div>
+      <pre class="demo-code"><span class="dc-comment">```wirescript</span>
+<span class="dc-page">&#64;Login</span>
+<span class="dc-keyword">nav</span> MiApp
+<span class="dc-heading"># Iniciar sesión</span>
+<span class="dc-keyword">field</span> Email
+<span class="dc-keyword">field</span> Contraseña *
+<span class="dc-keyword">btn</span> Entrar > Dashboard
+<span class="dc-comment">```</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     SHARE
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section">
+  <div class="l-inner">
+    <div class="l-section__label">Colaboración</div>
+    <h2 class="l-section__title">Comparte al instante, sin cuenta</h2>
+    <p class="l-section__subtitle">
+      El wireframe se comprime en la propia URL. Quien recibe el enlace ve exactamente lo mismo que tú.
+    </p>
+    <div class="share-grid">
+      <!-- Step 1 -->
+      <div class="share-step">
+        <div class="share-step__num">1</div>
+        <div class="share-step__body">
+          <h3 class="share-step__title">Abre el editor y diseña</h3>
+          <p class="share-step__desc">Escribe tu DSL en la pestaña <strong>CÓDIGO</strong>, mira el resultado en <strong>PREVIEW</strong> en tiempo real.</p>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="share-step">
+        <div class="share-step__num">2</div>
+        <div class="share-step__body">
+          <h3 class="share-step__title">Pulsa <span class="share-pill">Compartir 🔗</span></h3>
+          <p class="share-step__desc">El botón en el header codifica todo el DSL en base64 y copia la URL al portapapeles.</p>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="share-step">
+        <div class="share-step__num">3</div>
+        <div class="share-step__body">
+          <h3 class="share-step__title">Comparte el enlace</h3>
+          <p class="share-step__desc">La URL tiene el formato <code class="l-code">#/view?w=…</code>. Cualquier navegador, sin login, lo abre idéntico.</p>
+        </div>
+      </div>
+      <!-- URL anatomy -->
+      <div class="share-url-box">
+        <div class="share-url-label">Anatomía de la URL compartida</div>
+        <div class="share-url-line">
+          <span class="su-origin">https://boceto.app</span><!--
+          --><span class="su-hash">/#/view</span><!--
+          --><span class="su-param">?w=</span><!--
+          --><span class="su-b64">dGhlbWUgcGFwZXIKQExvZ2lu...</span>
+        </div>
+        <div class="share-url-legend">
+          <span><span class="su-origin">·</span> dominio</span>
+          <span><span class="su-hash">·</span> ruta hash</span>
+          <span><span class="su-param">·</span> parámetro</span>
+          <span><span class="su-b64">·</span> DSL en base64</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     AI CONTEXT
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section l-section--alt">
+  <div class="l-inner">
+    <div class="l-section__label">Inteligencia Artificial</div>
+    <h2 class="l-section__title">Deja que la IA diseñe por ti</h2>
+    <p class="l-section__subtitle">
+      Claude, ChatGPT y Gemini pueden generar wireframes válidos si les das el contexto correcto.
+      Copia el prompt de sistema de abajo y pégalo antes de tu petición.
+    </p>
+    <div class="ai-layout">
+      <!-- System prompt -->
+      <div class="ai-prompt-wrap">
+        <div class="ai-prompt-header">
+          <span class="ai-prompt-label">📋 Prompt de sistema para la IA</span>
+          <button class="ai-copy-btn" (click)="copyAiPrompt()" [class.ai-copy-btn--ok]="aiCopied()">
+            {{ aiCopied() ? '✓ Copiado' : 'Copiar' }}
+          </button>
+        </div>
+        <pre class="ai-prompt-code">Genera wireframes usando el DSL de Boceto. Reglas:
+
+• Cada pantalla empieza con &#64;NombrePantalla
+• Palabras clave: nav · # ## ### · p · note · ---
+  field [label] [*=password] [?=opcional]
+  area [label]   pick [label] > opt1 opt2
+  check · toggle · btn [label] > Pantalla
+  ghost · link · img · avatar · badge · kpi
+  row · card [titulo] · aside   (indent children 2 sp)
+  grid col1 · col2   list · item1 · item2   tabs
+• Usa · (punto medio) para separar items en nav/grid/list/tabs
+• btn/ghost/link usan > Pantalla para navegar
+• theme paper|blueprint|sketch|noir al inicio (opcional)
+
+Ejemplo completo:
+theme paper
+
+&#64;Login
+nav MiApp
+# Bienvenido
+p Ingresa tus datos para continuar
+---
+field Email
+field Contraseña *
+check Mantener sesión
+btn Entrar > Dashboard
+link ¿Olvidaste tu contraseña? > Reset
+
+&#64;Dashboard
+nav MiApp · Inicio · Perfil
+# Panel principal
+row
+  kpi 1.284 Usuarios
+  kpi 94% Activo
+card Actividad reciente
+  grid Nombre · Fecha · Estado
+row
+  btn Nuevo > Crear
+  ghost Ver todos</pre>
+      </div>
+
+      <!-- How to use -->
+      <div class="ai-steps">
+        <div class="ai-step-item">
+          <div class="ai-step-icon">💬</div>
+          <div>
+            <strong>En Claude / ChatGPT</strong>
+            <p>Pega el prompt de sistema y luego describe tu app: «Diseña un wireframe para una app de gestión de tareas con login, dashboard y formulario de nueva tarea»</p>
+          </div>
+        </div>
+        <div class="ai-step-item">
+          <div class="ai-step-icon">📋</div>
+          <div>
+            <strong>Copia el DSL generado</strong>
+            <p>La IA devolverá el bloque DSL. Cópialo y pégalo en el editor para ver el resultado al instante.</p>
+          </div>
+        </div>
+        <div class="ai-step-item">
+          <div class="ai-step-icon">🔗</div>
+          <div>
+            <strong>Itera con contexto</strong>
+            <p>Pega el DSL actual de vuelta a la IA y pide cambios: «añade una pantalla de perfil» o «cambia el tema a blueprint».</p>
+          </div>
+        </div>
+        <div class="ai-example-link">
+          <a class="hero__cta-primary" routerLink="/editor">Abrir editor →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     DONATIONS
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="l-section donations">
+  <div class="l-inner donations__inner">
+    <div class="donations__emoji">☕</div>
+    <h2 class="donations__title">¿Te resulta útil Boceto?</h2>
+    <p class="donations__subtitle">
+      Es un proyecto open source mantenido por una sola persona.
+      Cualquier apoyo ayuda a seguir mejorándolo.
+    </p>
+    <div class="donations__buttons">
+      <a class="donation-btn donation-btn--kofi"
+         href="https://ko-fi.com/duvanjamid" target="_blank" rel="noopener">
+        ☕ Ko-fi
+      </a>
+      <a class="donation-btn donation-btn--github"
+         href="https://github.com/sponsors" target="_blank" rel="noopener">
+        ♥ GitHub Sponsors
+      </a>
+      <a class="donation-btn donation-btn--bmc"
+         href="https://buymeacoffee.com" target="_blank" rel="noopener">
+        Buy Me a Coffee
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════════════ -->
+<footer class="l-footer">
+  <div class="l-footer__inner">
+    <div class="l-footer__logo">
+      <boceto-logo [size]="22" label=""></boceto-logo>
+      <span>Boceto</span>
+      <span class="l-footer__meta">MIT License · 2025</span>
+    </div>
+    <div class="l-footer__links">
+      <a class="l-footer__link" routerLink="/editor">Editor</a>
+      <a class="l-footer__link" href="docs/README.md">Docs</a>
+      <a class="l-footer__link" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <a class="l-footer__link" href="https://npmjs.com" target="_blank" rel="noopener">npm</a>
+    </div>
+  </div>
+</footer>

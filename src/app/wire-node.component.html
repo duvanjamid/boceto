@@ -1,0 +1,266 @@
+@switch (node.type) {
+
+  <!-- ── Navigation bar ───────────────────────────────── -->
+  @case ('nav') {
+    <div class="wn-nav" [class.wn-nav--root]="depth === 0" [attr.style]="node.style || null">
+      <b class="wn-nav__logo">{{ node.items?.[0] }}</b>
+      <div class="wn-nav__links">
+        @for (item of node.items?.slice(1); track $index) {
+          <span class="wn-nav__link">{{ item }}</span>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Tabs ─────────────────────────────────────────── -->
+  @case ('tabs') {
+    <div class="wn-tabs">
+      <div class="wn-tabs__bar">
+        @for (item of node.items; track $index) {
+          <button
+            class="wn-tabs__tab"
+            [class.wn-tabs__tab--active]="getTab(node) === $index"
+            (click)="setTab(node, $index)">
+            {{ item }}
+          </button>
+        }
+      </div>
+      @if (node.children?.length) {
+        <div class="wn-tabs__content">
+          @for (child of getTabContent(node); track $index) {
+            <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── Row container ────────────────────────────────── -->
+  @case ('row') {
+    <div class="wn-row"
+      [class.wn-row--right]="node.align === 'right'"
+      [class.wn-row--center]="node.align === 'center'"
+      [class.wn-row--space]="node.align === 'space'">
+      @for (child of node.children; track $index) {
+        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+      }
+    </div>
+  }
+
+  <!-- ── Col container (vertical stack inside row) ────── -->
+  @case ('col') {
+    <div class="wn-col">
+      @for (child of node.children; track $index) {
+        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+      }
+    </div>
+  }
+
+  <!-- ── Card container ───────────────────────────────── -->
+  @case ('card') {
+    <div class="wn-card" [attr.style]="node.style || null">
+      @if (node.title || node.closable) {
+        <div class="wn-card__header">
+          <div class="wn-card__title">{{ node.title }}</div>
+          @if (node.closable) {
+            <button class="wn-card__close" aria-label="cerrar">×</button>
+          }
+        </div>
+      }
+      <div class="wn-card__body">
+        @for (child of node.children; track $index) {
+          <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Aside sidebar ────────────────────────────────── -->
+  @case ('aside') {
+    <div class="wn-aside">
+      @for (child of node.children; track $index) {
+        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+      }
+    </div>
+  }
+
+  <!-- ── Modal overlay ────────────────────────────────── -->
+  @case ('modal') {
+    <div class="wn-modal-backdrop">
+      <div class="wn-modal">
+        <div class="wn-modal__header">
+          <span class="wn-modal__title">{{ node.title }}</span>
+          <button class="wn-modal__close">×</button>
+        </div>
+        <div class="wn-modal__body">
+          @for (child of node.children; track $index) {
+            <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Typography ───────────────────────────────────── -->
+  @case ('h1')      { <div class="wn-h1">{{ node.text }}</div> }
+  @case ('h2')      { <div class="wn-h2">{{ node.text }}</div> }
+  @case ('h3')      { <div class="wn-h3">{{ node.text }}</div> }
+  @case ('para')    { <div class="wn-para">{{ node.text }}</div> }
+  @case ('note')    { <div class="wn-note">{{ node.text }}</div> }
+  @case ('divider') { <hr class="wn-divider"> }
+
+  <!-- ── Text field ───────────────────────────────────── -->
+  @case ('field') {
+    <div class="wn-field">
+      <div class="wn-field__label">
+        {{ node.label }}
+        @if (node.optional) { <span class="wn-field__opt"> — opcional</span> }
+      </div>
+      <div class="wn-field__input">
+        <span class="wn-field__placeholder">
+          {{ node.password ? '••••••••••' : (node.label ?? '').toLowerCase() + '...' }}
+        </span>
+      </div>
+    </div>
+  }
+
+  <!-- ── Textarea ─────────────────────────────────────── -->
+  @case ('area') {
+    <div class="wn-field">
+      <div class="wn-field__label">{{ node.label }}</div>
+      <div class="wn-area__input">
+        <span class="wn-field__placeholder">{{ (node.label ?? '').toLowerCase() }}...</span>
+      </div>
+    </div>
+  }
+
+  <!-- ── Dropdown ─────────────────────────────────────── -->
+  @case ('pick') {
+    <div class="wn-field">
+      <div class="wn-field__label">{{ node.label }}</div>
+      <div class="wn-pick__input">
+        <span class="wn-field__placeholder">{{ node.options?.[0] || 'Seleccionar…' }}</span>
+        <span class="wn-pick__arrow">▾</span>
+      </div>
+    </div>
+  }
+
+  <!-- ── Checkbox ─────────────────────────────────────── -->
+  @case ('check') {
+    <div class="wn-check" (click)="flipCheck(node)" style="cursor:pointer">
+      <div class="wn-check__box" [class.wn-check__box--on]="getCheck(node)">
+        @if (getCheck(node)) {
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 6l3 3 5-5"/>
+          </svg>
+        }
+      </div>
+      <span class="wn-check__label">{{ node.label }}</span>
+    </div>
+  }
+
+  <!-- ── Toggle ───────────────────────────────────────── -->
+  @case ('toggle') {
+    <div class="wn-toggle" (click)="flipToggle(node)" style="cursor:pointer">
+      <span class="wn-toggle__label">{{ node.label }}</span>
+      <div class="wn-toggle__track" [class.wn-toggle__track--on]="getToggle(node)">
+        <div class="wn-toggle__thumb" [class.wn-toggle__thumb--on]="getToggle(node)"></div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Primary button ───────────────────────────────── -->
+  @case ('btn') {
+    <button class="wn-btn"
+      [class.wn-btn--clickable]="!!node.target"
+      [attr.style]="node.style || null"
+      (click)="onNav(node.target)">
+      {{ node.label }}
+      @if (node.target) { <span class="wn-btn__arrow">→</span> }
+    </button>
+  }
+
+  <!-- ── Ghost button ─────────────────────────────────── -->
+  @case ('ghost') {
+    <button class="wn-ghost"
+      [class.wn-ghost--clickable]="!!node.target"
+      [attr.style]="node.style || null"
+      (click)="onNav(node.target)">
+      {{ node.label }}
+    </button>
+  }
+
+  <!-- ── Inline link ──────────────────────────────────── -->
+  @case ('link') {
+    <span class="wn-link" [class.wn-link--clickable]="!!node.target" [attr.style]="node.style || null" (click)="onNav(node.target)">
+      {{ node.label }}
+    </span>
+  }
+
+  <!-- ── Image placeholder ────────────────────────────── -->
+  @case ('img') {
+    <div class="wn-img" [attr.style]="node.style || null">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--w-inkFaint)" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      <span class="wn-img__label">{{ node.label }}</span>
+    </div>
+  }
+
+  <!-- ── Avatar ───────────────────────────────────────── -->
+  @case ('avatar') {
+    <div class="wn-avatar" [attr.style]="node.style || null">{{ initials(node.name ?? '') }}</div>
+  }
+
+  <!-- ── Badge ────────────────────────────────────────── -->
+  @case ('badge') {
+    <span class="wn-badge" [attr.style]="node.style || null">{{ node.text }}</span>
+  }
+
+  <!-- ── KPI metric ────────────────────────────────────── -->
+  @case ('kpi') {
+    <div class="wn-kpi" [attr.style]="node.style || null">
+      <div class="wn-kpi__value">{{ node.value }}</div>
+      <div class="wn-kpi__label">{{ node.label }}</div>
+    </div>
+  }
+
+  <!-- ── Data grid ─────────────────────────────────────── -->
+  @case ('grid') {
+    <div class="wn-grid">
+      <table>
+        <thead>
+          <tr>
+            @for (col of node.cols; track $index) {
+              <th>{{ col }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of [0, 1, 2]; track $index) {
+            <tr>
+              @for (col of node.cols; track col; let ci = $index) {
+                <td><div class="wn-grid__bar" [style.width]="barWidth(row, ci)"></div></td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- ── Bulleted list ─────────────────────────────────── -->
+  @case ('list') {
+    <div class="wn-list">
+      @for (item of node.items; track $index; let last = $last) {
+        <div class="wn-list__item" [class.wn-list__item--last]="last">
+          <div class="wn-list__dot"></div>
+          <span>{{ item }}</span>
+        </div>
+      }
+    </div>
+  }
+
+}

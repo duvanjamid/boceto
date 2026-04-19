@@ -17,14 +17,15 @@ export function parseDSL(src) {
 
   const indent   = l => l.match(/^(\s*)/)[1].length;
   const unquote  = s => s.replace(/^["']|["']$/g, "").trim();
-  const splitDot = s => s.split("·").map(x => x.trim()).filter(Boolean);
+  const splitDot = s => s.split(/[·|]/).map(x => x.trim()).filter(Boolean);
   const arrowT   = s => { const m = s.match(/>\s*(\w+)\s*$/); return m ? m[1] : null; };
   const noArrow  = s => s.replace(/>\s*\w+\s*$/, "").trim();
 
   for (const raw of lines) {
     const line = raw.trimEnd();
     if (!line.trim() || line.trim().startsWith("//")) continue;
-    const ind = indent(line), t = line.trim();
+    const ind = indent(line);
+    let t = line.trim();
 
     if (t.startsWith("theme ")) { theme = t.slice(6).trim(); continue; }
     if (t.startsWith("@")) {
@@ -35,6 +36,9 @@ export function parseDSL(src) {
 
     while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
     const parent = stack.length ? stack[stack.length - 1].node : cur;
+    const styleMatch = t.match(/\s*\$"([^"]*)"\s*$/);
+    const nodeStyle = styleMatch?.[1];
+    if (styleMatch) t = t.slice(0, t.lastIndexOf('$"')).trimEnd();
     const rest = t.replace(/^[^\s]+\s*/, "");
     let node = null;
 
@@ -46,7 +50,7 @@ export function parseDSL(src) {
     else if (t.startsWith("p "))        node = { type: "para",   text: unquote(rest) };
     else if (t.startsWith("note "))     node = { type: "note",   text: unquote(rest) };
     else if (t.startsWith("nav "))      node = { type: "nav",    items: splitDot(rest) };
-    else if (t.startsWith("tabs "))     node = { type: "tabs",   items: splitDot(rest) };
+    else if (t.startsWith("tabs "))     node = { type: "tabs",   items: splitDot(rest), children: [] };
     else if (t.startsWith("field ")) {
       const pw = rest.trimEnd().endsWith("*"), op = rest.trimEnd().endsWith("?");
       node = { type: "field", label: unquote(noArrow(rest).replace(/[*?]$/, "").trim()), password: pw, optional: op };
@@ -64,10 +68,15 @@ export function parseDSL(src) {
     else if (t.startsWith("img "))      node = { type: "img",    label: unquote(rest) };
     else if (t.startsWith("avatar "))   node = { type: "avatar", name: unquote(rest) };
     else if (t.startsWith("badge "))    node = { type: "badge",  text: unquote(rest) };
-    else if (t === "row")               node = { type: "row",    children: [] };
-    else if (t === "card" || t.startsWith("card "))
-      node = { type: "card", title: t.length > 4 ? unquote(rest) : "", children: [] };
+    else if (t === "row" || t.startsWith("row ")) node = { type: "row", align: t.length > 3 ? t.slice(4).trim() : "", children: [] };
+    else if (t === "col")               node = { type: "col",    children: [] };
+    else if (t === "card" || t === "card+" || t.startsWith("card ") || t.startsWith("card+ ")) {
+      const cl = t.startsWith("card+");
+      const tr = cl ? t.slice(5).trim() : rest;
+      node = { type: "card", title: tr ? unquote(tr) : "", closable: cl, children: [] };
+    }
     else if (t === "aside")             node = { type: "aside",  children: [] };
+    else if (t === "modal" || t.startsWith("modal ")) node = { type: "modal", title: rest ? unquote(rest) : "", children: [] };
     else if (t.startsWith("kpi ")) {
       const [v, ...r] = rest.split(/\s+/);
       node = { type: "kpi", value: v, label: r.join(" ") };
@@ -76,8 +85,9 @@ export function parseDSL(src) {
     else if (t.startsWith("list "))     node = { type: "list",   items: splitDot(rest) };
 
     if (node) {
+      if (nodeStyle) node.style = nodeStyle;
       parent.children.push(node);
-      if (["row", "card", "aside"].includes(node.type)) stack.push({ indent: ind, node });
+      if (["row", "col", "card", "aside", "modal", "tabs"].includes(node.type)) stack.push({ indent: ind, node });
     }
   }
   return { pages, theme };

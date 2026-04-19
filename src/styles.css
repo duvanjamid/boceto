@@ -1,0 +1,60 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+/* Editor shell manages its own overflow:hidden internally */
+body { font-family: 'Inter', system-ui, sans-serif; }
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--s-border); border-radius: 2px; }
+
+/* ─────────────────────────────────────────────
+   SHELL THEME  (editor chrome)
+   Toggle via data-shell="dark"|"light" on <html>
+───────────────────────────────────────────── */
+:root, [data-shell="dark"] {
+  --s-bg:         #0c0b14;
+  --s-surface:    #0e0d18;
+  --s-border:     #1a1826;
+  --s-ink:        #e4e0ff;
+  --s-ink2:       #6e6b8a;
+  --s-ink3:       #3d3a50;
+  --s-accent:     #7c6ff7;
+  --s-accentSoft: #1e1a30;
+  --s-accentText: #c4baff;
+}
+
+[data-shell="light"] {
+  --s-bg:         #f5f4fa;
+  --s-surface:    #ffffff;
+  --s-border:     #e2dff0;
+  --s-ink:        #1a1826;
+  --s-ink2:       #5a5670;
+  --s-ink3:       #9d9ab0;
+  --s-accent:     #7c6ff7;
+  --s-accentSoft: #ede9ff;
+  --s-accentText: #5a4ee8;
+}
+
+/* ─────────────────────────────────────────────
+   WIREFRAME THEME  (preview canvas)
+   Set by AppComponent effect() on :root
+───────────────────────────────────────────── */
+:root {
+  --w-bg:        #f8f7f4;
+  --w-surface:   #ffffff;
+  --w-border:    #d6d3cc;
+  --w-borderD:   #b0aca4;
+  --w-ink:       #1a1916;
+  --w-inkMid:    #6b6760;
+  --w-inkFaint:  #a8a49e;
+  --w-fill:      #eceae5;
+  --w-blue:      #3b5bdb;
+  --w-accent:    #1a1916;
+  --w-accentFg:  #f8f7f4;
+}
+
+/* CodeMirror host reset */
+.cm-editor { height: 100%; }
+.cm-scroller { font-family: 'JetBrains Mono', 'Fira Code', monospace !important; }
