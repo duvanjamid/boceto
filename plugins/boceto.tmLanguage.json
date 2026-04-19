@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "WireScript",
-  "scopeName": "source.wire",
+  "name": "Boceto",
+  "scopeName": "source.boceto",
   "fileTypes": ["wire", "ws"],
   "patterns": [
     { "include": "#comment" },

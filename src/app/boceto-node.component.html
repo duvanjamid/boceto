@@ -3,10 +3,20 @@
   <!-- ── Navigation bar ───────────────────────────────── -->
   @case ('nav') {
     <div class="wn-nav" [class.wn-nav--root]="depth === 0" [attr.style]="node.style || null">
-      <b class="wn-nav__logo" [attr.style]="iStyle(node.items?.[0] ?? '')">{{ iText(node.items?.[0] ?? '') }}</b>
+      <b class="wn-nav__logo" 
+        [attr.style]="iStyle(node.items?.[0] ?? '')"
+        [style.cursor]="iNavTarget(node.items?.[0] ?? '') ? 'pointer' : null" 
+        (click)="onNav(iNavTarget(node.items?.[0] ?? ''))">
+        {{ iText(node.items?.[0] ?? '') }}
+      </b>
       <div class="wn-nav__links">
         @for (item of node.items?.slice(1); track $index) {
-          <span class="wn-nav__link" [attr.style]="iStyle(item)">{{ iText(item) }}</span>
+          <span class="wn-nav__link" 
+            [attr.style]="iStyle(item)"
+            [style.cursor]="iNavTarget(item) ? 'pointer' : null" 
+            (click)="onNav(iNavTarget(item))">
+            {{ iText(item) }}
+          </span>
         }
       </div>
     </div>
@@ -29,7 +39,7 @@
       @if (node.children?.length) {
         <div class="wn-tabs__content">
           @for (child of getTabContent(node); track $index) {
-            <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+            <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
           }
         </div>
       }
@@ -44,7 +54,7 @@
       [class.wn-row--space]="node.align === 'space'"
       [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
-        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+        <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
       }
     </div>
   }
@@ -53,7 +63,7 @@
   @case ('col') {
     <div class="wn-col" [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
-        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+        <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
       }
     </div>
   }
@@ -71,7 +81,7 @@
       }
       <div class="wn-card__body">
         @for (child of node.children; track $index) {
-          <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+          <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
         }
       </div>
     </div>
@@ -81,7 +91,7 @@
   @case ('aside') {
     <div class="wn-aside" [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
-        <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+        <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
       }
     </div>
   }
@@ -96,7 +106,7 @@
         </div>
         <div class="wn-modal__body">
           @for (child of node.children; track $index) {
-            <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
+            <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
           }
         </div>
       </div>
@@ -142,7 +152,7 @@
       <div class="wn-field__label">{{ node.label }}</div>
       <div class="wn-pick__wrap">
         <div class="wn-pick__input" (click)="togglePickOpen(node)">
-          <span class="wn-field__placeholder">{{ node.options?.[getPickSel(node)] || 'Seleccionar…' }}</span>
+          <span class="wn-field__placeholder">{{ iText(node.options?.[getPickSel(node)] ?? '') || 'Seleccionar…' }}</span>
           <span class="wn-pick__arrow" [class.wn-pick__arrow--open]="isPickOpen(node)">▾</span>
         </div>
         @if (isPickOpen(node) && node.options?.length) {
@@ -150,8 +160,9 @@
             @for (opt of node.options; track $index) {
               <div class="wn-pick__option"
                 [class.wn-pick__option--sel]="getPickSel(node) === $index"
+                [attr.style]="iStyle(opt)"
                 (click)="selectPick(node, $index); $event.stopPropagation()">
-                {{ opt }}
+                {{ iText(opt) }}
               </div>
             }
           </div>
@@ -214,7 +225,10 @@
 
   <!-- ── Image placeholder ────────────────────────────── -->
   @case ('img') {
-    <div class="wn-img" [attr.style]="node.style || null">
+    <div class="wn-img" 
+      [attr.style]="node.style || null"
+      [style.cursor]="node.target ? 'pointer' : null" 
+      (click)="onNav(node.target)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--w-inkFaint)" stroke-width="1.5">
         <rect x="3" y="3" width="18" height="18" rx="2"/>
         <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -226,17 +240,30 @@
 
   <!-- ── Avatar ───────────────────────────────────────── -->
   @case ('avatar') {
-    <div class="wn-avatar" [attr.style]="node.style || null">{{ initials(node.name ?? '') }}</div>
+    <div class="wn-avatar" 
+      [attr.style]="node.style || null"
+      [style.cursor]="node.target ? 'pointer' : null" 
+      (click)="onNav(node.target)">
+      {{ initials(node.name ?? '') }}
+    </div>
   }
 
   <!-- ── Badge ────────────────────────────────────────── -->
   @case ('badge') {
-    <span class="wn-badge" [attr.style]="node.style || null">{{ node.text }}</span>
+    <span class="wn-badge" 
+      [attr.style]="node.style || null"
+      [style.cursor]="node.target ? 'pointer' : null" 
+      (click)="onNav(node.target)">
+      {{ node.text }}
+    </span>
   }
 
   <!-- ── KPI metric ────────────────────────────────────── -->
   @case ('kpi') {
-    <div class="wn-kpi" [attr.style]="node.style || null">
+    <div class="wn-kpi" 
+      [attr.style]="node.style || null"
+      [style.cursor]="node.target ? 'pointer' : null" 
+      (click)="onNav(node.target)">
       <div class="wn-kpi__value">{{ node.value }}</div>
       <div class="wn-kpi__label">{{ node.label }}</div>
     </div>
@@ -249,7 +276,7 @@
         <thead>
           <tr>
             @for (col of node.cols; track $index) {
-              <th>{{ col }}</th>
+              <th [attr.style]="iStyle(col)">{{ iText(col) }}</th>
             }
           </tr>
         </thead>
@@ -270,9 +297,9 @@
   @case ('list') {
     <div class="wn-list">
       @for (item of node.items; track $index; let last = $last) {
-        <div class="wn-list__item" [class.wn-list__item--last]="last">
+        <div class="wn-list__item" [class.wn-list__item--last]="last" [attr.style]="iStyle(item)">
           <div class="wn-list__dot"></div>
-          <span>{{ item }}</span>
+          <span>{{ iText(item) }}</span>
         </div>
       }
     </div>

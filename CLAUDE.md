@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**WireScript** is a text-based DSL for designing interactive UI wireframes. It serves dual purposes:
+**Boceto** is a text-based DSL for designing interactive UI wireframes. It serves dual purposes:
 - A full product website with landing page + interactive editor (Angular 17)
 - A distributable parser library for third-party integrations (Prism.js, Docsify, VSCode)
 
@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm install       # Install dependencies
 npm run dev       # Start dev server (opens browser automatically)
-npm run build     # Production build to dist/wirescript/
+npm run build     # Production build to dist/boceto/
 ```
 
 Uses **Angular CLI** (`ng serve` / `ng build`). No test or lint scripts configured yet.
@@ -35,30 +35,29 @@ Full editor component with Angular Signals. Additions over the basic editor:
 - **Home link**: `routerLink="/"` back to landing page.
 - URL param loading: on `ngOnInit`, reads `?w=` from `window.location.hash` and decodes it as the initial DSL.
 
-### Parser (`src/parser.js`)
-Framework-agnostic DSL parser (~85 lines). Returns `{ pages: Record<string, WirePage>, theme }`.
+### Parser (`src/parser.ts`)
+Single source of truth. TypeScript class hierarchy: `NodeHandler` interface → `BaseHandler` (leaf nodes) → `ContainerHandler` (nodes with children). One concrete handler class per DSL keyword. `DSLParser` orchestrates the registry.
 
-**Critical:** `parseDSL` is **inlined** in three places:
-1. `src/app/editor/editor-shell.component.ts`
-2. `src/app/landing/landing.component.ts`
-3. `plugins/wirescript-prism.js` and `plugins/wirescript-docsify.js`
+All Angular components import `parseDSL` from `src/parser.ts`. Package export (`package.json`) points here too.
 
-If you modify parser logic, update **all** of them.
+**If you modify parser logic, also update inline parsers in:**
+- `plugins/boceto-prism.js`
+- `plugins/boceto-docsify.js`
 
 ### Dual theme system
 - **Wireframe theme** (`paper` / `blueprint` / `sketch` / `noir`): set in DSL with `theme <name>`. Applied as CSS vars on `:root` (`--w-bg`, `--w-surface`, etc.) by an `effect()` in `EditorShellComponent` (and manually in `LandingComponent.ngOnInit` to paper defaults).
 - **Shell theme** (light / dark): toggled by ☀/🌙 button. Sets `data-shell="light|dark"` on `<html>`. Variables `--s-bg`, `--s-ink`, `--s-accent`, etc. defined in `src/styles.css`.
 
-### WireNodeComponent (`src/app/wire-node.component.*`)
+### BocNodeComponent (`src/app/boceto-node.component.*`)
 Recursive standalone component. Uses Angular 17 `@switch` control flow for 20+ DSL element types. Imports itself for recursive templates. All styles use `var(--w-*)` CSS properties — no `ngStyle` required.
 
 ### EditorComponent (`src/app/editor.component.ts`)
-CodeMirror 6 wrapper. Custom WireScript `StreamLanguage` in `src/wirescript-lang.ts`. Uses `Compartment` to hot-swap dark/light highlight styles without rebuilding the editor. Separate `lightHighlight` and `darkHighlight` style definitions.
+CodeMirror 6 wrapper. Custom Boceto DSL `StreamLanguage` in `src/boceto-lang.ts`. Uses `Compartment` to hot-swap dark/light highlight styles without rebuilding the editor. Separate `lightHighlight` and `darkHighlight` style definitions.
 
 ### Plugins (`plugins/`)
-- `wirescript-prism.js` — Prism.js grammar
-- `wirescript-docsify.js` — renders ` ```wirescript ``` ` fenced blocks as interactive wireframes
-- `wirescript.tmLanguage.json` — TextMate grammar (VSCode/Sublime/Zed)
+- `boceto-prism.js` — Prism.js grammar
+- `boceto-docsify.js` — renders ` ```boceto ``` ` fenced blocks as interactive wireframes
+- `boceto.tmLanguage.json` — TextMate grammar (VSCode/Sublime/Zed)
 
 ### Docs (`docs/README.md`)
 Guide for embedding WireScript blocks in Markdown with the Docsify/Prism plugins.
@@ -111,7 +110,7 @@ nav App | Inicio $"background:#1a1630"
 {
   ".":                 "src/parser.js",
   "./themes":          "src/themes.js",
-  "./plugins/prism":   "plugins/wirescript-prism.js",
-  "./plugins/docsify": "plugins/wirescript-docsify.js"
+  "./plugins/prism":   "plugins/boceto-prism.js",
+  "./plugins/docsify": "plugins/boceto-docsify.js"
 }
 ```

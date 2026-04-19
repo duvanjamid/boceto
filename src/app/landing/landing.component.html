@@ -125,21 +125,12 @@
           <span class="demo-code-dot demo-code-dot--green"></span>
           <span class="demo-code-filename">dashboard.wire</span>
         </div>
-        <pre class="demo-code"><span class="dc-comment">// DSL de Boceto</span>
-<span class="dc-keyword">theme</span> paper
-
-<span class="dc-page">&#64;Dashboard</span>
-<span class="dc-keyword">nav</span> App · Inicio · Proyectos · Ajustes
-<span class="dc-heading"># Buenos días, Ana</span>
-<span class="dc-keyword">p</span> Resumen del día de hoy
-<span class="dc-keyword">row</span>
-  <span class="dc-keyword">kpi</span> 1.284 Usuarios
-  <span class="dc-keyword">kpi</span> 94% Activo
-<span class="dc-keyword">card</span> Proyectos recientes
-  <span class="dc-keyword">grid</span> Nombre · Estado · Fecha
-<span class="dc-keyword">row</span>
-  <span class="dc-keyword">btn</span> Nuevo proyecto
-  <span class="dc-keyword">ghost</span> Ver todos</pre>
+        <boceto-editor 
+          class="demo-code" 
+          [value]="demoDslText" 
+          [darkMode]="theme.dark()" 
+          [readonly]="true">
+        </boceto-editor>
       </div>
       <!-- Wireframe preview -->
       <div class="demo-preview-wrap">
@@ -196,7 +187,7 @@
       <div class="integration-card">
         <div class="integration-card__icon">📚</div>
         <h3 class="integration-card__title">Docsify</h3>
-        <p class="integration-card__desc">Bloques <code class="l-code">```wirescript</code> en tus docs se vuelven prototipos interactivos.</p>
+        <p class="integration-card__desc">Bloques <code class="l-code">```boceto</code> en tus docs se vuelven prototipos interactivos.</p>
       </div>
       <div class="integration-card">
         <div class="integration-card__icon">🎨</div>
@@ -212,14 +203,12 @@
         <span class="demo-code-dot demo-code-dot--green"></span>
         <span class="demo-code-filename">docs/mi-pantalla.md</span>
       </div>
-      <pre class="demo-code"><span class="dc-comment">```wirescript</span>
-<span class="dc-page">&#64;Login</span>
-<span class="dc-keyword">nav</span> MiApp
-<span class="dc-heading"># Iniciar sesión</span>
-<span class="dc-keyword">field</span> Email
-<span class="dc-keyword">field</span> Contraseña *
-<span class="dc-keyword">btn</span> Entrar > Dashboard
-<span class="dc-comment">```</span></pre>
+      <boceto-editor 
+        class="demo-code" 
+        [value]="integrationDsl" 
+        [darkMode]="theme.dark()" 
+        [readonly]="true">
+      </boceto-editor>
     </div>
   </div>
 </section>
@@ -304,13 +293,13 @@
 • Cada pantalla empieza con &#64;NombrePantalla
 • Palabras clave: nav · # ## ### · p · note · ---
   field [label] [*=password] [?=opcional]
-  area [label]   pick [label] > opt1 opt2
-  check · toggle · btn [label] > Pantalla
+  pick [label] | opt1 | opt2
+  check · toggle · btn [label] > &#64;Pantalla
   ghost · link · img · avatar · badge · kpi
   row · card [titulo] · aside   (indent children 2 sp)
   grid col1 · col2   list · item1 · item2   tabs
-• Usa · (punto medio) para separar items en nav/grid/list/tabs
-• btn/ghost/link usan > Pantalla para navegar
+• Usa · (punto medio) o | para separar items en nav/grid/list/tabs
+• btn/ghost/link usan > &#64;Pantalla para navegar
 • theme paper|blueprint|sketch|noir al inicio (opcional)
 
 Ejemplo completo:
@@ -324,8 +313,8 @@ p Ingresa tus datos para continuar
 field Email
 field Contraseña *
 check Mantener sesión
-btn Entrar > Dashboard
-link ¿Olvidaste tu contraseña? > Reset
+btn Entrar > &#64;Dashboard
+link ¿Olvidaste tu contraseña? > &#64;Reset
 
 &#64;Dashboard
 nav MiApp · Inicio · Perfil
@@ -336,7 +325,7 @@ row
 card Actividad reciente
   grid Nombre · Fecha · Estado
 row
-  btn Nuevo > Crear
+  btn Nuevo > &#64;Crear
   ghost Ver todos</pre>
       </div>
 

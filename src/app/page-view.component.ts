@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { WireNode, WirePage } from '../types';
-import { WireNodeComponent } from './wire-node.component';
+import { WireNodeComponent } from './boceto-node.component';
 
 @Component({
   selector: 'page-view',
@@ -10,7 +10,7 @@ import { WireNodeComponent } from './wire-node.component';
     @if (page) {
       <div class="page-view">
         @for (node of page.children; track $index) {
-          <wire-node [node]="node" [depth]="0" (navigate)="navigate.emit($event)"></wire-node>
+          <boceto-node [node]="node" [depth]="0" (navigate)="navigate.emit($event)"></boceto-node>
         }
       </div>
     }

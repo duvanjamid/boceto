@@ -209,9 +209,23 @@
           @if (currentPageData()) {
             <div class="preview-frame-wrap">
               <div class="preview-frame-label">&#64;{{ currentPage() }}</div>
-              <div class="preview-frame" #previewFrame>
-                <page-view [page]="currentPageData()" (navigate)="navTo($event)"></page-view>
+
+              <div class="device-wrapper device-f-{{ parsed().frame || 'auto' }} device-{{ parsed().frame || 'auto' }}">
+                @if (parsed().frame === 'ios') { <div class="device-notch"></div> }
+                @if (parsed().frame === 'android') { <div class="device-camera"></div> }
+                @if (parsed().frame === 'browser') {
+                  <div class="device-browser-bar"><i></i><i></i><i></i></div>
+                }
+
+                <div class="preview-frame" #previewFrame>
+                  <page-view [page]="currentPageData()!" (navigate)="navTo($event)"></page-view>
+                </div>
+
+                @if (parsed().frame === 'ios' || parsed().frame === 'android') {
+                  <div class="device-home"></div>
+                }
               </div>
+
             </div>
           } @else {
             <div class="preview-empty">
@@ -229,13 +243,13 @@
 
       <!-- Code editor panel (shown in code + split modes) -->
       @if (view() === 'code' || view() === 'split') {
-        <wire-editor
+        <boceto-editor
           [class.editor-fill]="view() === 'code'"
           [class.editor-split]="view() === 'split'"
           [value]="dsl()"
           [darkMode]="theme.dark()"
           (valueChange)="dsl.set($event)">
-        </wire-editor>
+        </boceto-editor>
       }
 
     </div>

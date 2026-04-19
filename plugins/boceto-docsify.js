@@ -1,14 +1,14 @@
 /**
- * WireScript — Docsify Plugin
- * Renderiza bloques ```wire en tu documentación como wireframes interactivos.
+ * Boceto — Docsify Plugin
+ * Renderiza bloques ```boceto en tu documentación como wireframes interactivos.
  *
  * INSTALACIÓN:
- *   <script src="wirescript-docsify.js"></script>
+ *   <script src="boceto-docsify.js"></script>
  *   En docsify config:
- *     plugins: [WireScriptDocsify]
+ *     plugins: [BocetoDocsify]
  *
  * USO en Markdown:
- *   ```wire
+ *   ```boceto
  *   @Login
  *     # Welcome
  *     field Email
@@ -143,7 +143,7 @@
     if (!names.length) return `<div style="color:#999;font-style:italic">No screens defined.</div>`;
 
     const tabs = names.map((n,i)=>
-      `<button onclick="wsNav('${id}','${n}')" id="${id}-tab-${n}" style="padding:3px 9px;border-radius:5px;border:1px solid #ddd;background:${i===0?"#eee":"none"};font-size:10px;cursor:pointer">${n}</button>`
+      `<button onclick="bocetoNav('${id}','${n}')" id="${id}-tab-${n}" style="padding:3px 9px;border-radius:5px;border:1px solid #ddd;background:${i===0?"#eee":"none"};font-size:10px;cursor:pointer">${n}</button>`
     ).join("");
 
     const screens = names.map(n=>
@@ -153,7 +153,7 @@
 
     return `<div id="${id}" style="font-family:'Inter',system-ui,sans-serif;max-width:400px;margin:16px 0">
       <div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
-        <span style="font-size:10px;color:#999;font-family:monospace;margin-right:4px">wire</span>
+        <span style="font-size:10px;color:#999;font-family:monospace;margin-right:4px">boceto</span>
         ${tabs}
         <span style="margin-left:auto;font-size:9px;padding:2px 7px;background:#f0f0f5;border-radius:20px;color:#aaa;border:1px solid #e0e0ea">theme:${theme}</span>
       </div>
@@ -162,7 +162,7 @@
   }
 
   // ── Global nav helper ───────────────────────────────────────────────
-  window.wsNav = function(id, name) {
+  window.bocetoNav = function(id, name) {
     const widget = document.getElementById(id);
     if (!widget) return;
     widget.querySelectorAll('[id^="'+id+'-screen-"]').forEach(el => el.style.display="none");
@@ -178,16 +178,16 @@
   window.$docsify = window.$docsify || {};
   window.$docsify.plugins = (window.$docsify.plugins || []).concat(
 
-    // 1. Markdown: replace ```wire blocks with widget HTML
-    function wireAfterEach(hook) {
+    // 1. Markdown: replace ```boceto blocks with widget HTML
+    function bocetoAfterEach(hook) {
       hook.afterEach(function(html) {
         return html.replace(
-          /<pre[^>]*><code class="lang-wire">([\s\S]*?)<\/code><\/pre>/g,
+          /<pre[^>]*><code class="lang-boceto">([\s\S]*?)<\/code><\/pre>/g,
           function(_, encoded) {
             const src = encoded
               .replace(/&amp;/g,"&").replace(/&lt;/g,"<")
               .replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'");
-            const id = "ws-widget-" + (++_counter);
+            const id = "boceto-widget-" + (++_counter);
             return buildWidget(src, id);
           }
         );
@@ -198,9 +198,9 @@
   // ── Standalone init (non-Docsify pages) ────────────────────────────
   document.addEventListener("DOMContentLoaded", function() {
     if (window.$docsify) return; // Docsify handles it
-    document.querySelectorAll("pre code.language-wire, pre code.lang-wire").forEach(function(el) {
+    document.querySelectorAll("pre code.language-boceto, pre code.lang-boceto").forEach(function(el) {
       const src = el.textContent;
-      const id = "ws-widget-" + (++_counter);
+      const id = "boceto-widget-" + (++_counter);
       const wrapper = document.createElement("div");
       wrapper.innerHTML = buildWidget(src, id);
       el.closest("pre").replaceWith(wrapper.firstElementChild);

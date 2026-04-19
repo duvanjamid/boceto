@@ -1,14 +1,14 @@
 /**
- * WireScript — Prism.js Language Plugin
- * https://github.com/wirescript/prism-wirescript
+ * Boceto — Prism.js Language Plugin
+ * https://github.com/boceto/prism-boceto
  *
  * Usage:
  *   <script src="prism.js"></script>
- *   <script src="wirescript-prism.js"></script>
- *   <pre><code class="language-wire">...</code></pre>
+ *   <script src="boceto-prism.js"></script>
+ *   <pre><code class="language-boceto">...</code></pre>
  */
 (function (Prism) {
-  Prism.languages.wire = {
+  Prism.languages.boceto = {
     "comment": {
       pattern: /\/\/.*/,
       greedy: true
@@ -74,6 +74,6 @@
   };
 
   // Alias .ws files too
-  Prism.languages.ws = Prism.languages.wire;
+  Prism.languages.ws = Prism.languages.boceto;
 
 }(Prism));

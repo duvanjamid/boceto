@@ -330,11 +330,13 @@
   margin-bottom: 10px;
 }
 .docs__preview {
-  background: var(--w-bg);
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--s-border);
-  transform-origin: top left;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 200px;
+}
+.docs__preview .preview-frame {
+  min-height: auto;
 }
 
 .docs__editor-host {

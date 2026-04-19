@@ -1,5 +1,5 @@
 /**
- * WireScript Themes
+ * Boceto Themes
  * Token map consumed by all renderers (React, HTML, Canvas).
  *
  * Add your own:

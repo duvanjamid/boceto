@@ -1,12 +1,12 @@
 {
-  "name": "wirescript",
+  "name": "boceto",
   "version": "0.2.0",
   "description": "A text-based DSL for designing interactive UI wireframes",
   "exports": {
-    ".": "./src/parser.js",
+    ".": "./src/parser.ts",
     "./themes": "./src/themes.js",
-    "./plugins/prism": "./plugins/wirescript-prism.js",
-    "./plugins/docsify": "./plugins/wirescript-docsify.js"
+    "./plugins/prism": "./plugins/boceto-prism.js",
+    "./plugins/docsify": "./plugins/boceto-docsify.js"
   },
   "keywords": [
     "wireframe",

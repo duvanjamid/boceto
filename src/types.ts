@@ -26,7 +26,10 @@ export interface WirePage {
 export interface ParsedDSL {
   pages: Record<string, WirePage>;
   theme: string;
+  frame: string;
 }
+
+export type FrameType = 'ios' | 'android' | 'browser' | 'auto';
 
 export type ThemeName = 'paper' | 'blueprint' | 'sketch' | 'noir' | 'handwriting' | 'arch';
 

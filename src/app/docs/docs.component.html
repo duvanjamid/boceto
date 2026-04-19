@@ -121,7 +121,21 @@
                     <div class="docs__preview-label">Preview</div>
                     <div class="docs__preview">
                       @if (item.livePage ?? item.page; as pg) {
-                        <page-view [page]="pg"></page-view>
+                        <div class="device-wrapper device-f-{{ item.liveFrame || 'auto' }} device-{{ item.liveFrame || 'auto' }}">
+                          @if (item.liveFrame === 'ios') { <div class="device-notch"></div> }
+                          @if (item.liveFrame === 'android') { <div class="device-camera"></div> }
+                          @if (item.liveFrame === 'browser') {
+                            <div class="device-browser-bar"><i></i><i></i><i></i></div>
+                          }
+
+                          <div class="preview-frame">
+                            <page-view [page]="pg"></page-view>
+                          </div>
+
+                          @if (item.liveFrame === 'ios' || item.liveFrame === 'android') {
+                            <div class="device-home"></div>
+                          }
+                        </div>
                       }
                     </div>
                   </div>
@@ -129,11 +143,11 @@
                   <div class="docs__code-wrap">
                     <div class="docs__code-label">DSL — editable</div>
                     <div class="docs__editor-host">
-                      <wire-editor
+                      <boceto-editor
                         [value]="item.dslLive"
                         [darkMode]="theme.dark()"
                         (valueChange)="onDslChange(item, $event)">
-                      </wire-editor>
+                      </boceto-editor>
                     </div>
                   </div>
                 </div>

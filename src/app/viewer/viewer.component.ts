@@ -7,61 +7,7 @@ import { PageViewComponent } from '../page-view.component';
 import { THEMES, ThemeName, WirePage, ParsedDSL } from '../../types';
 import { ShellThemeService } from '../shell-theme.service';
 import { BacetoLogoComponent } from '../boceto-logo.component';
-
-// ── Inline parser (kept in sync with editor-shell) ───────────────────────────
-function parseDSL(src: string): ParsedDSL {
-  const lines = src.split('\n');
-  const pages: Record<string, any> = {};
-  let cur: any = null, stack: any[] = [], theme = 'paper';
-  const indent   = (l: string) => (l.match(/^(\s*)/) as RegExpMatchArray)[1].length;
-  const unquote  = (s: string) => s.replace(/^["']|["']$/g, '').trim();
-  const splitDot = (s: string) => s.split(/[·|]/).map(x => x.trim()).filter(Boolean);
-  const arrowT   = (s: string) => { const m = s.match(/>\s*(\w+)\s*$/); return m ? m[1] : null; };
-  const noArrow  = (s: string) => s.replace(/>\s*\w+\s*$/, '').trim();
-  for (const raw of lines) {
-    const line = raw.trimEnd();
-    if (!line.trim() || line.trim().startsWith('//')) continue;
-    const ind = indent(line);
-    let t = line.trim();
-    if (t.startsWith('theme ')) { theme = t.slice(6).trim(); continue; }
-    if (t.startsWith('@')) { cur = { name: t.slice(1).trim(), children: [] }; pages[cur.name] = cur; stack = []; continue; }
-    if (!cur) continue;
-    while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
-    const parent = stack.length ? stack[stack.length - 1].node : cur;
-    const _sm = t.match(/\s*\$"([^"]*)"\s*$/);
-    const nodeStyle = _sm?.[1];
-    if (_sm) t = t.slice(0, (_sm.index ?? t.length)).trim();
-    const rest = t.replace(/^[^\s]+\s*/, '');
-    let node: any = null;
-    if (t === '---')                    node = { type: 'divider' };
-    else if (/^#{1,3} /.test(t))       { const lvl = (t.match(/^(#+)/) as RegExpMatchArray)[1].length; node = { type: `h${lvl}`, text: t.replace(/^#+\s*/, '') }; }
-    else if (t.startsWith('p '))        node = { type: 'para',   text: unquote(rest) };
-    else if (t.startsWith('note '))     node = { type: 'note',   text: unquote(rest) };
-    else if (t.startsWith('nav '))      node = { type: 'nav',    items: splitDot(rest) };
-    else if (t.startsWith('tabs '))     node = { type: 'tabs',   items: splitDot(rest), children: [] };
-    else if (t.startsWith('field '))    { const pw = rest.trimEnd().endsWith('*'), op = rest.trimEnd().endsWith('?'); node = { type: 'field', label: unquote(noArrow(rest).replace(/[*?]$/, '').trim()), password: pw, optional: op }; }
-    else if (t.startsWith('area '))     node = { type: 'area',   label: unquote(rest) };
-    else if (t.startsWith('pick '))     { const parts = splitDot(rest); node = { type: 'pick', label: unquote(parts[0] ?? ''), options: parts.slice(1) }; }
-    else if (t.startsWith('check '))    { const ck = rest.trimEnd().endsWith('*'); node = { type: 'check',  label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
-    else if (t.startsWith('toggle '))   { const ck = rest.trimEnd().endsWith('*'); node = { type: 'toggle', label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
-    else if (t.startsWith('btn '))      node = { type: 'btn',    label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith('ghost '))    node = { type: 'ghost',  label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith('link '))     node = { type: 'link',   label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith('img '))      node = { type: 'img',    label: unquote(rest) };
-    else if (t.startsWith('avatar '))   node = { type: 'avatar', name: unquote(rest) };
-    else if (t.startsWith('badge '))    node = { type: 'badge',  text: unquote(rest) };
-    else if (t === 'row' || t.startsWith('row ')) node = { type: 'row', align: t.length > 3 ? t.slice(4).trim() : '', children: [] };
-    else if (t === 'col')               node = { type: 'col',    children: [] };
-    else if (t === 'card' || t === 'card+' || t.startsWith('card ') || t.startsWith('card+ ')) { const cl = t.startsWith('card+'); const tr = cl ? t.slice(5).trim() : rest; node = { type: 'card', title: tr ? unquote(tr) : '', closable: cl, children: [] }; }
-    else if (t === 'aside')             node = { type: 'aside',  children: [] };
-    else if (t === 'modal' || t.startsWith('modal ')) node = { type: 'modal', title: rest ? unquote(rest) : '', children: [] };
-    else if (t.startsWith('kpi '))      { const [v, ...r] = rest.split(/\s+/); node = { type: 'kpi', value: v, label: r.join(' ') }; }
-    else if (t.startsWith('grid '))     node = { type: 'grid',   cols: splitDot(rest) };
-    else if (t.startsWith('list '))     node = { type: 'list',   items: splitDot(rest) };
-    if (node) { if (nodeStyle) node.style = nodeStyle; parent.children.push(node); if (['row','col','card','aside','modal','tabs'].includes(node.type)) stack.push({ indent: ind, node }); }
-  }
-  return { pages, theme };
-}
+import { parseDSL } from '../../parser';
 
 @Component({
   selector: 'app-viewer',
@@ -72,7 +18,7 @@ function parseDSL(src: string): ParsedDSL {
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ViewerComponent implements OnInit {
-  parsed      = signal<ParsedDSL>({ pages: {}, theme: 'paper' });
+  parsed      = signal<ParsedDSL>({ pages: {}, theme: 'paper', frame: 'auto' });
   currentPage = signal<string | null>(null);
   history     = signal<string[]>([]);
   dslRaw      = signal('');
