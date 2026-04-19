@@ -62,20 +62,19 @@ const unquote  = (s: string): string =>
   s.replace(/^["']|["']$/g, '').trim();
 
 /**
- * Splits a string by the `|` or `·` (middle-dot) separators, trims each
+ * Splits a string by the `|` separator, trims each
  * segment, and filters out empty results.
  *
- * Used to parse multi-item elements like `nav`, `tabs`, `grid`, `pick`, and `list`.
+ * Used to parse multi-item elements like `nav`, `tabs`, `grid`, `pick`, and `list` (previously).
  *
  * @param s - The raw segment string (e.g. `"App | Inicio | Ajustes"`).
  * @returns An array of trimmed, non-empty items.
  *
  * @example
- * splitDot('App | Inicio | Perfil') // → ['App', 'Inicio', 'Perfil']
- * splitDot('App · Inicio · Perfil') // → ['App', 'Inicio', 'Perfil']
+ * splitPipe('App | Inicio | Perfil') // → ['App', 'Inicio', 'Perfil']
  */
-const splitDot = (s: string): string[] =>
-  s.split(/[·|]/).map(x => x.trim()).filter(Boolean);
+const splitPipe = (s: string): string[] =>
+  s.split('|').map(x => x.trim()).filter(Boolean);
 
 /**
  * Extracts the navigation target from a `> @ScreenName` suffix.
@@ -301,7 +300,7 @@ class NavHandler extends BaseHandler {
   /** @returns `true` — nav items support per-item `$"css"` modifiers. */
   override get hasItemStyles(): boolean { return true; }
   canHandle(t: string): boolean { return t.startsWith('nav '); }
-  parse(_t: string, rest: string): WireNode { return { type: 'nav', items: splitDot(rest) }; }
+  parse(_t: string, rest: string): WireNode { return { type: 'nav', items: splitPipe(rest) }; }
 }
 
 /**
@@ -365,7 +364,7 @@ class PickHandler extends BaseHandler {
   override get hasItemStyles(): boolean { return true; }
   canHandle(t: string): boolean { return t.startsWith('pick '); }
   parse(_t: string, rest: string): WireNode {
-    const parts = splitDot(rest);
+    const parts = splitPipe(rest);
     return { type: 'pick', label: unquote(parts[0] ?? ''), options: parts.slice(1) };
   }
 }
@@ -558,29 +557,23 @@ class GridHandler extends BaseHandler {
   /** @returns `true` — grid columns support per-item `$"css"` modifiers. */
   override get hasItemStyles(): boolean { return true; }
   canHandle(t: string): boolean { return t.startsWith('grid '); }
-  parse(_t: string, rest: string): WireNode { return { type: 'grid', cols: splitDot(rest) }; }
+  parse(_t: string, rest: string): WireNode { return { type: 'grid', cols: splitPipe(rest) }; }
 }
 
 /**
- * Handles `list` — a bulleted list.
+ * Handles `list` — a bulleted list container.
  *
  * DSL syntax:
  * ```boceto
- * list Revisión de diseño | Aprobación cliente | Deploy a producción
- * ```
- *
- * Items are separated by `|` or `·`.
- *
- * **Per-item styles**: List items can carry `$"css"` modifiers:
- * ```boceto
- * list Urgente $"color:red" | Normal | Baja prioridad
+ * list
+ *   p Revisión de diseño
+ *   p Aprobación cliente
+ *   btn Deploy a producción
  * ```
  */
-class ListHandler extends BaseHandler {
-  /** @returns `true` — list items support per-item `$"css"` modifiers. */
-  override get hasItemStyles(): boolean { return true; }
-  canHandle(t: string): boolean { return t.startsWith('list '); }
-  parse(_t: string, rest: string): WireNode { return { type: 'list', items: splitDot(rest) }; }
+class ListHandler extends ContainerHandler {
+  canHandle(t: string): boolean { return t === 'list'; }
+  parse(): WireNode { return { type: 'list', children: [] }; }
 }
 
 // ── Container handlers ───────────────────────────────────────────────────────
@@ -612,7 +605,7 @@ class TabsHandler extends ContainerHandler {
   override get hasItemStyles(): boolean { return true; }
   canHandle(t: string): boolean { return t.startsWith('tabs '); }
   parse(_t: string, rest: string): WireNode {
-    return { type: 'tabs', items: splitDot(rest), children: [] };
+    return { type: 'tabs', items: splitPipe(rest), children: [] };
   }
 }
 

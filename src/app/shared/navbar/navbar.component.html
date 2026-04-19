@@ -1,0 +1,41 @@
+<nav class="navbar">
+  <div class="navbar__container">
+    
+    <!-- BRAND / LOGO -->
+    <a routerLink="/" class="navbar__brand">
+      <boceto-logo [size]="28"></boceto-logo>
+      <span class="navbar__logo-text">Boceto</span>
+    </a>
+
+    <!-- LINKS -->
+    <div class="navbar__links">
+      <a routerLink="/docs" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="navbar__link">
+        <i class="fa-solid fa-shapes"></i>
+        <span>Componentes</span>
+      </a>
+      <a routerLink="/docs/embed" routerLinkActive="active" class="navbar__link">
+        <i class="fa-solid fa-book"></i>
+        <span>Editor</span>
+      </a>
+      <a routerLink="/editor" routerLinkActive="active" class="navbar__link">
+        <i class="fa-solid fa-laptop-code"></i>
+        <span>LIVE Editor</span>
+      </a>
+      <a href="https://github.com/duvanjamid/boceto" target="_blank" class="navbar__link navbar__link--external">
+        <i class="fa-brands fa-github"></i>
+        <span>GitHub</span>
+        <i class="fa-solid fa-arrow-up-right-from-square navbar__ext-icon"></i>
+      </a>
+    </div>
+
+    <!-- THEME TOGGLE (Persistent) -->
+    <button class="navbar__theme-toggle" (click)="theme.toggle()" [title]="theme.dark() ? 'Modo claro' : 'Modo oscuro'">
+      @if (theme.dark()) {
+        <i class="fa-solid fa-sun"></i>
+      } @else {
+        <i class="fa-solid fa-moon"></i>
+      }
+    </button>
+
+  </div>
+</nav>

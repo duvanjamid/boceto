@@ -5,10 +5,14 @@
 .shell {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 56px);
   background: var(--s-bg);
   color: var(--s-ink);
   overflow: hidden;
+}
+.shell--embed {
+  height: 100%;
+  min-height: 400px;
 }
 
 /* ── HEADER ─────────────────────────────────────────── */
@@ -69,6 +73,8 @@
 .header__theme-dot[data-theme="blueprint"] { background: #0d1f3c; border-color: #1e4080; }
 .header__theme-dot[data-theme="sketch"]    { background: #ffffff; border-color: #222222; }
 .header__theme-dot[data-theme="noir"]      { background: #141414; border-color: #2e2e2e; }
+.header__theme-dot[data-theme="cyberpunk"] { background: #05040a; border-color: #f3f315; }
+.header__theme-dot[data-theme="dots"]      { background: #ffffff; border-color: #475569; }
 
 /* Theme picker */
 .header__theme-wrap { position: relative; flex-shrink: 0; }
@@ -372,6 +378,28 @@
   flex-direction: column;
   align-items: center;
   padding: 20px 16px 32px;
+  position: relative;
+}
+/* Pattern for technical theme */
+.shell[attr-dots="true"] .preview-canvas::before {
+  display: block;
+  opacity: 0.15;
+  background-image: 
+    linear-gradient(var(--w-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--w-border) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Scanlines for cyberpunk */
+.shell[attr-theme="cyberpunk"] .preview-canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 4px, 3px 100%;
+  opacity: 0.3;
 }
 .preview-frame-wrap { width: 100%; transition: max-width 0.3s; margin: 0 auto; }
 .preview-frame-label {

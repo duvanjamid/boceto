@@ -1,0 +1,81 @@
+<div class="guide">
+  <div class="guide__body">
+    <!-- CONTENT -->
+    <main class="guide__main">
+      <header class="guide__content-header">
+        <h1 class="guide__title">Editor</h1>
+        <p class="guide__intro">
+          Aprende a integrar prototipos interactivos en tus blogs, documentación o herramientas internas mediante el uso de <code>iframes</code>.
+        </p>
+      </header>
+
+      <section class="guide__section">
+        <h2>1. El código base</h2>
+        <p>Utiliza el siguiente fragmento HTML para insertar un playground. Solo necesitas reemplazar el parámetro <code>w</code> con tu código DSL codificado en Base64.</p>
+        
+        <div class="guide__code-block">
+          <pre><code>{{ iframeCode }}</code></pre>
+        </div>
+      </section>
+
+      <section class="guide__section">
+        <h2>2. Configuración (Query Params)</h2>
+        <p>Personaliza cada inserción mediante los parámetros de la URL:</p>
+
+        <table class="guide__table">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Descripción</th>
+              <th>Valores</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>mode</code></td>
+              <td>Controla la complejidad de la interfaz.</td>
+              <td><code>lite</code>, <code>preview</code>, <code>full</code></td>
+            </tr>
+            <tr>
+              <td><code>theme</code></td>
+              <td>El color de la interfaz (shell) del editor.</td>
+              <td><code>dark</code>, <code>light</code></td>
+            </tr>
+            <tr>
+              <td><code>readonly</code></td>
+              <td>Si es true, el visitante no podrá editar el código.</td>
+              <td><code>true</code>, <code>false</code></td>
+            </tr>
+            <tr>
+              <td><code>w</code></td>
+              <td>Tu código DSL codificado en Base64.</td>
+              <td>String</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="guide__section">
+        <h2>3. Demo Interactiva</h2>
+        <p>Este es un ejemplo de cómo se ve el modo <code>lite</code> con el tema <code>blueprint</code> forzado.</p>
+        
+        <div class="guide__demo-wrap">
+          <boceto-playground 
+            mode="lite" 
+            [initialCode]="sampleDsl"
+            [shellTheme]="'light'"
+            [readonly]="false">
+          </boceto-playground>
+        </div>
+      </section>
+
+      <div class="guide__info-box">
+        <i class="guide__info-icon fa-solid fa-lightbulb"></i>
+        <div>
+          <strong>Truco:</strong> En el editor principal, puedes pulsar el botón <strong>"Incrustar"</strong> para que generemos este código automáticamente por ti.
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

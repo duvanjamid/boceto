@@ -1,20 +1,45 @@
-# WireScript ⬡
+<div align="center">
 
-A plain-text DSL for designing interactive UI wireframes — navigate between screens, switch themes, and modify with AI.
+# ✏️ Boceto
 
-```wire
+**Text-based DSL for interactive UI wireframes**
+
+Write screens in plain text → navigate between them → export to SVG → switch themes
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](./LICENSE)
+[![Commercial License](https://img.shields.io/badge/License-Commercial-green.svg)](./LICENSE-COMMERCIAL)
+[![npm](https://img.shields.io/badge/npm-boceto-red.svg)](https://www.npmjs.com/package/boceto)
+
+</div>
+
+---
+
+```boceto
 theme paper
 
 @Login
-  nav MyApp
-  # Welcome back
-  field Email
-  field Password *
-  btn Sign in > Dashboard
-  link Forgot password? > Reset
+nav Boceto
+# Diseña sin ratón
+p Prototipos interactivos desde texto puro
+---
+field Email
+field Contraseña *
+btn Entrar > Dashboard
+link ¿Olvidaste tu contraseña?
+
+@Dashboard
+nav Boceto | Inicio | Proyectos | Ajustes
+row
+  kpi 1.284 Usuarios
+  kpi 94% Activo
+card Proyectos recientes
+  grid Nombre | Estado | Fecha
+row right
+  btn Nuevo proyecto
+  ghost Ver todos
 ```
 
-**→ Renders as a clickable wireframe. `btn` navigates. AI rewrites on request.**
+→ Renders as a **clickable wireframe**. `btn > Page` navigates. AI can generate and edit.
 
 ---
 
@@ -25,171 +50,74 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Open [http://localhost:4200](http://localhost:4200)
 
 ---
 
-## Language reference
+## DSL Reference
 
-### Pages
-```
-@PageName          — defines a screen (no spaces, use CamelCase or _)
-```
+Full reference → **[DSL.md](./DSL.md)**
 
-### Typography
-```
-# Big heading      — H1
-## Medium heading  — H2
-### Small heading  — H3
-p  Body text       — paragraph
-note Hint text     — muted annotation
----                — horizontal divider
-```
+| Keyword | Description |
+|---------|-------------|
+| `@Name` | Define a screen |
+| `theme paper\|blueprint\|sketch\|noir\|handwriting\|arch\|cyberpunk\|dots` | Visual theme |
+| `# H1` `## H2` `### H3` | Headings |
+| `p Text` · `note Text` · `---` | Paragraph, annotation, divider |
+| `nav Logo \| Link \| Link` | Top navigation bar |
+| `tabs Tab1 \| Tab2` | Tab switcher (`---` splits content per tab) |
+| `row` `col` `card` `card+` `aside` `modal` | Layout containers |
+| `field Label [*\|?]` · `area` · `pick Label \| Opt1 \| Opt2` | Form inputs |
+| `check Label [*]` · `toggle Label [*]` | Interactive checkbox / toggle |
+| `btn Label [> Page]` · `ghost` · `link` | Action buttons |
+| `img` · `avatar Name` · `badge Text` · `kpi Value Label` | Media & content |
+| `grid Col1 \| Col2` · `list Item1 \| Item2` | Table / list |
+| `$"css"` | Inline CSS on any element |
 
-### Navigation & layout
-```
-nav Logo · Link · Link   — top navbar  (· separates items)
-tabs Tab1 · Tab2 · Tab3  — tab bar
-row                      — horizontal flex container (indent children 2 spaces)
-card                     — bordered card  (optional: card My title)
-aside                    — left sidebar panel
-```
-
-### Forms
-```
-field Label          — text input
-field Label *        — password input  (* suffix)
-field Label ?        — optional field  (? suffix)
-area  Label          — textarea
-pick  Label > A B C  — select/dropdown with options
-check Label          — checkbox
-toggle Label         — toggle switch
-```
-
-### Actions
-```
-btn   Label > PageName   — primary button, navigates to @PageName
-ghost Label > PageName   — outline/secondary button
-link  Label > PageName   — inline link
-```
-> Omit `> PageName` to render a static (non-navigating) element.
-
-### Content & data
-```
-img    "Description"     — image placeholder
-avatar Name              — circular avatar with initials
-badge  Text              — small chip/label
-kpi    Value Label       — large metric  (e.g. kpi 94% Satisfaction)
-grid   Col1 · Col2 · Col3 — table with mock rows
-list   · Item1 · Item2   — bulleted list  (· separates items)
-```
-
-### Themes
-```
-theme paper      ☕ warm cream (default)
-theme blueprint  📐 technical blue
-theme sketch     ✏️  clean black & white
-theme noir       🌙 dark minimal
-```
-
-Declare once at the top of the file, before any `@Page`.
+Separator: `|` and `·` are interchangeable everywhere.
 
 ---
 
 ## Plugins
 
 ### VSCode / Sublime / Zed / TextMate
-Copy `plugins/wirescript.tmLanguage.json` into your editor's extension folder.  
-For VSCode, add to `contributes.grammars` in your extension's `package.json`:
+Copy `plugins/boceto.tmLanguage.json` into your editor's grammar folder.
 
-```json
-{
-  "language": "wire",
-  "scopeName": "source.wire",
-  "path": "./wirescript.tmLanguage.json"
-}
-```
-
-### Prism.js (any static site)
+### Prism.js
 ```html
-<script src="prism.js"></script>
-<script src="plugins/wirescript-prism.js"></script>
-
-<pre><code class="language-wire">
+<script src="plugins/boceto-prism.js"></script>
+<pre><code class="language-boceto">
 @Login
-  # Hello
-  field Email
-  btn Enter > Dashboard
+field Email
+btn Entrar > Dashboard
 </code></pre>
 ```
 
 ### Docsify
 ```html
-<!-- index.html -->
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-<script src="plugins/wirescript-docsify.js"></script>
+<script src="plugins/boceto-docsify.js"></script>
 ```
-
-Then in any Markdown file:
-````markdown
-```wire
-theme sketch
-
-@Checkout
-  # Payment details
-  field Card number
-  field Expiry *
-  btn Pay now > Confirmation
-```
-````
-
-The plugin renders an interactive wireframe with screen navigation inline.
-
----
-
-## AI integration
-
-WireScript is designed to be generated and edited by LLMs.  
-Include this in your system prompt:
-
-```
-You are a wireframe expert. Use WireScript syntax:
-  theme paper|blueprint|sketch|noir
-  @PageName
-  # H1 / ## H2 / p text / note hint / ---
-  nav Logo · Link    (· separates items)
-  field Label (* password, ? optional)
-  area / pick Label > Op1 Op2 / check / toggle
-  btn Label > Page / ghost Label > Page / link Label > Page
-  kpi Value Label / grid Col1 · Col2 / list · Item1 · Item2
-  row / card / card Title / aside  (indent children 2 spaces)
-
-Reply ONLY with WireScript. No markdown, no backticks.
-```
-
-The built-in ✦ AI tab already has this prompt configured.
+Then in any Markdown file, use fenced ` ```boceto ``` ` blocks — they render as interactive wireframes.
 
 ---
 
 ## Project structure
 
 ```
-wirescript/
+boceto/
 ├── src/
-│   ├── main.jsx          — React entry point
-│   ├── App.jsx           — Main editor (Figma-like UI)
-│   ├── parser.js         — DSL parser  (framework-agnostic)
-│   └── themes.js         — Theme token maps
+│   ├── parser.ts              — DSL parser (TypeScript, class hierarchy)
+│   ├── types.ts               — Type definitions
+│   ├── boceto-lang.ts         — CodeMirror 6 language definition
+│   └── themes.js              — Theme token maps
 ├── plugins/
-│   ├── wirescript-prism.js      — Prism.js language plugin
-│   ├── wirescript-docsify.js    — Docsify plugin (render + nav)
-│   └── wirescript.tmLanguage.json — TextMate grammar (VSCode, Sublime, Zed)
-├── docs/
-│   └── index.html        — Full documentation site
-├── examples/
-│   └── saas-app.wire     — Example wireframe file
-├── index.html            — Vite HTML entry
-├── vite.config.js
+│   ├── boceto-prism.js        — Prism.js language plugin
+│   ├── boceto-docsify.js      — Docsify plugin
+│   └── boceto.tmLanguage.json — TextMate grammar
+├── src/app/                   — Angular 17 web app
+├── DSL.md                     — Full DSL language reference
+├── LICENSE                    — AGPLv3
+├── LICENSE-COMMERCIAL         — Commercial license terms
 └── package.json
 ```
 
@@ -197,4 +125,19 @@ wirescript/
 
 ## License
 
-MIT © WireScript contributors
+Boceto is **dual-licensed**:
+
+| | Open Source | Commercial |
+|--|------------|------------|
+| Personal use | ✅ Free | ✅ Free |
+| Open source projects | ✅ Free | — |
+| Internal tools (source published) | ✅ Free | — |
+| SaaS / closed-source products | ❌ Requires commercial | ✅ |
+| White-label / no attribution | ❌ | ✅ |
+
+**Open Source:** [AGPLv3](./LICENSE) — free as long as you publish your modifications.
+
+**Commercial:** [LICENSE-COMMERCIAL](./LICENSE-COMMERCIAL) — for proprietary and SaaS use.
+Contact **duvanjamid.work@gmail.com** for pricing.
+
+> © 2024 Duvan Jamid

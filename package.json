@@ -15,7 +15,7 @@
     "design",
     "ui"
   ],
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "ng serve --open",
     "start": "ng serve",

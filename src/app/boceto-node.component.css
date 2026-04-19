@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 11px 16px;
-  border-bottom: 1.5px solid var(--w-border);
+  border-bottom: 1.5px var(--w-border-style, solid) var(--w-border);
   background: var(--w-surface);
   margin: 0 -16px;
 }
@@ -20,7 +20,7 @@
 .wn-tabs { width: 100%; }
 .wn-tabs__bar {
   display: flex;
-  border-bottom: 1.5px solid var(--w-border);
+  border-bottom: 1.5px var(--w-border-style, solid) var(--w-border);
 }
 .wn-tabs__tab {
   padding: 7px 13px;
@@ -65,13 +65,26 @@
 /* ── CARD ────────────────────────────── */
 .wn-card {
   background: var(--w-surface);
-  border: 1.5px solid var(--w-border);
-  border-radius: 8px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  box-shadow: var(--w-glow, none);
+  border-radius: var(--w-radius, 8px);
   padding: 14px 16px;
   margin: 3px 0;
   flex: 1;
   min-width: 0;
+  position: relative;
 }
+/* Corner accents for Dot/Technical theme */
+.shell[attr-dots="true"] .wn-card::before,
+.shell[attr-dots="true"] .wn-card::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  border: 1.5px solid var(--w-borderD);
+  pointer-events: none;
+}
+.shell[attr-dots="true"] .wn-card::before { top: -1.5px; left: -1.5px; border-right: none; border-bottom: none; }
+.shell[attr-dots="true"] .wn-card::after  { bottom: -1.5px; right: -1.5px; border-left: none; border-top: none; }
 .wn-card__header {
   display: flex;
   align-items: center;
@@ -106,8 +119,8 @@
   width: 140px;
   flex-shrink: 0;
   background: var(--w-fill);
-  border-radius: 6px;
-  border: 1.5px solid var(--w-border);
+  border-radius: var(--w-radius, 6px);
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
   padding: 12px 10px;
   display: flex;
   flex-direction: column;
@@ -136,8 +149,8 @@
 .wn-field__input {
   height: 34px;
   background: var(--w-bg);
-  border: 1.5px solid var(--w-border);
-  border-radius: 6px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  border-radius: var(--w-radius, 6px);
   display: flex;
   align-items: center;
   padding: 0 11px;
@@ -146,16 +159,16 @@
 .wn-area__input {
   height: 76px;
   background: var(--w-bg);
-  border: 1.5px solid var(--w-border);
-  border-radius: 6px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  border-radius: var(--w-radius, 6px);
   padding: 9px 11px;
 }
 .wn-pick__wrap { position: relative; }
 .wn-pick__input {
   height: 34px;
   background: var(--w-bg);
-  border: 1.5px solid var(--w-border);
-  border-radius: 6px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  border-radius: var(--w-radius, 6px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -170,8 +183,8 @@
   top: calc(100% + 3px);
   left: 0; right: 0;
   background: var(--w-surface);
-  border: 1.5px solid var(--w-border);
-  border-radius: 6px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  border-radius: var(--w-radius, 6px);
   overflow: hidden;
   z-index: 10;
   box-shadow: 0 4px 12px rgba(0,0,0,.10);
@@ -189,7 +202,7 @@
 .wn-check { display: flex; align-items: center; gap: 9px; }
 .wn-check__box {
   width: 16px; height: 16px;
-  border: 1.5px solid var(--w-border);
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
   border-radius: 3px;
   background: var(--w-bg);
   flex-shrink: 0;
@@ -212,7 +225,7 @@
   width: 38px; height: 22px;
   background: var(--w-fill);
   border-radius: 11px;
-  border: 1.5px solid var(--w-border);
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
   position: relative;
   transition: background .2s, border-color .2s;
   flex-shrink: 0;
@@ -242,7 +255,9 @@
   background: var(--w-accent);
   color: var(--w-accentFg);
   border: none;
-  border-radius: 6px;
+  box-shadow: var(--w-glow, none);
+  border-radius: var(--w-radius, 6px);
+  animation: var(--w-flicker, none);
   font-size: 12px;
   font-weight: 600;
   cursor: default;
@@ -260,8 +275,8 @@
   padding: 0 18px;
   background: transparent;
   color: var(--w-ink);
-  border: 1.5px solid var(--w-borderD);
-  border-radius: 6px;
+  border: 1.5px var(--w-border-style, solid) var(--w-borderD);
+  border-radius: var(--w-radius, 6px);
   font-size: 12px;
   font-weight: 500;
   cursor: default;
@@ -300,7 +315,7 @@
   width: 38px; height: 38px;
   border-radius: 50%;
   background: var(--w-fill);
-  border: 1.5px solid var(--w-border);
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,7 +329,7 @@
   display: inline-block;
   padding: 3px 9px;
   background: var(--w-fill);
-  border: 1px solid var(--w-border);
+  border: 1px var(--w-border-style, solid) var(--w-border);
   border-radius: 20px;
   font-size: 10px;
   color: var(--w-inkMid);
@@ -332,7 +347,7 @@
 .wn-grid th {
   padding: 7px 10px;
   background: var(--w-fill);
-  border: 1px solid var(--w-border);
+  border: 1px var(--w-border-style, solid) var(--w-border);
   text-align: left;
   color: var(--w-inkMid);
   font-weight: 700;
@@ -340,22 +355,27 @@
   text-transform: uppercase;
   letter-spacing: .06em;
 }
-.wn-grid td { padding: 8px 10px; border: 1px solid var(--w-border); }
+.wn-grid td { padding: 8px 10px;  border: 1px var(--w-border-style, solid) var(--w-border);
+}
 .wn-grid__bar { height: 8px; background: var(--w-fill); border-radius: 3px; }
 
 /* ── LIST ────────────────────────────── */
 .wn-list { width: 100%; }
 .wn-list__item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--w-border);
+  padding: 6px 0;
   font-size: 12px;
   color: var(--w-inkMid);
 }
-.wn-list__item--last { border-bottom: none; }
-.wn-list__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--w-borderD); flex-shrink: 0; }
+.wn-list__dot { 
+  width: 5px; height: 5px; 
+  border-radius: 50%; 
+  background: var(--w-borderD); 
+  flex-shrink: 0; 
+  margin-top: 6px;
+}
 
 /* ── IMG inside row ─────────────────── */
 .wn-row .wn-img { flex: 1; width: auto; min-width: 80px; }
@@ -382,8 +402,9 @@
 }
 .wn-modal {
   background: var(--w-surface);
-  border: 1.5px solid var(--w-border);
-  border-radius: 10px;
+  border: 1.5px var(--w-border-style, solid) var(--w-border);
+  box-shadow: var(--w-glow, none);
+  border-radius: var(--w-radius, 10px);
   width: 100%;
   max-width: 360px;
   overflow: hidden;
@@ -422,3 +443,18 @@
 }
 
 /* Inline styles via $"css" are applied via [attr.style] — no classes needed */
+
+/* Cyberpunk flicker animation */
+@keyframes wn-flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px var(--w-border));
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.8;
+    filter: none;
+  }
+}
+.shell[attr-theme="cyberpunk"] {
+  --w-flicker: wn-flicker 3s infinite;
+}

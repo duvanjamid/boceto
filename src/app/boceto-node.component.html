@@ -75,7 +75,9 @@
         <div class="wn-card__header">
           <div class="wn-card__title">{{ node.title }}</div>
           @if (node.closable) {
-            <button class="wn-card__close" aria-label="cerrar">×</button>
+            <button class="wn-card__close" aria-label="cerrar">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           }
         </div>
       }
@@ -102,7 +104,9 @@
       <div class="wn-modal">
         <div class="wn-modal__header">
           <span class="wn-modal__title">{{ node.title }}</span>
-          <button class="wn-modal__close">×</button>
+          <button class="wn-modal__close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
         <div class="wn-modal__body">
           @for (child of node.children; track $index) {
@@ -153,7 +157,7 @@
       <div class="wn-pick__wrap">
         <div class="wn-pick__input" (click)="togglePickOpen(node)">
           <span class="wn-field__placeholder">{{ iText(node.options?.[getPickSel(node)] ?? '') || 'Seleccionar…' }}</span>
-          <span class="wn-pick__arrow" [class.wn-pick__arrow--open]="isPickOpen(node)">▾</span>
+          <i class="fa-solid fa-chevron-down wn-pick__arrow" [class.wn-pick__arrow--open]="isPickOpen(node)"></i>
         </div>
         @if (isPickOpen(node) && node.options?.length) {
           <div class="wn-pick__dropdown">
@@ -176,9 +180,7 @@
     <div class="wn-check" (click)="flipCheck(node)" style="cursor:pointer" [attr.style]="node.style ? 'cursor:pointer;' + node.style : 'cursor:pointer'">
       <div class="wn-check__box" [class.wn-check__box--on]="getCheck(node)">
         @if (getCheck(node)) {
-          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 6l3 3 5-5"/>
-          </svg>
+          <i class="fa-solid fa-check" style="font-size: 10px; color: #fff;"></i>
         }
       </div>
       <span class="wn-check__label">{{ node.label }}</span>
@@ -202,7 +204,7 @@
       [attr.style]="node.style || null"
       (click)="onNav(node.target)">
       {{ node.label }}
-      @if (node.target) { <span class="wn-btn__arrow">→</span> }
+      @if (node.target) { <i class="fa-solid fa-arrow-right wn-btn__arrow"></i> }
     </button>
   }
 
@@ -229,11 +231,7 @@
       [attr.style]="node.style || null"
       [style.cursor]="node.target ? 'pointer' : null" 
       (click)="onNav(node.target)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--w-inkFaint)" stroke-width="1.5">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <path d="M21 15l-5-5L5 21"/>
-      </svg>
+      <i class="fa-solid fa-image" style="font-size: 24px; color: var(--w-inkFaint);"></i>
       <span class="wn-img__label">{{ node.label }}</span>
     </div>
   }
@@ -296,10 +294,10 @@
   <!-- ── Bulleted list ─────────────────────────────────── -->
   @case ('list') {
     <div class="wn-list">
-      @for (item of node.items; track $index; let last = $last) {
-        <div class="wn-list__item" [class.wn-list__item--last]="last" [attr.style]="iStyle(item)">
+      @for (child of node.children; track $index) {
+        <div class="wn-list__item">
           <div class="wn-list__dot"></div>
-          <span>{{ iText(item) }}</span>
+          <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
         </div>
       }
     </div>

@@ -1,0 +1,32 @@
+Boceto Commercial License
+Copyright (c) 2024 Duvan Jamid
+
+COMMERCIAL USE LICENSE
+
+This license grants you (the Licensee) the right to use, copy, modify,
+and distribute Boceto for commercial purposes without the requirements
+of the GNU Affero General Public License (AGPL-3.0).
+
+Grant of Rights
+---------------
+Subject to the terms of a valid paid license agreement, Licensee may:
+- Use Boceto in proprietary and commercial software
+- Integrate Boceto into SaaS products without disclosing source code
+- Distribute Boceto as part of a larger commercial product
+- Create and distribute derivative works without AGPL obligations
+
+Restrictions
+------------
+- This license is non-transferable and non-sublicensable
+- You may not resell or redistribute Boceto itself as a standalone product
+- You may not remove copyright notices or this license from the source
+
+Obtaining a Commercial License
+-------------------------------
+Contact: duvanjamid.work@gmail.com
+
+Warranty Disclaimer
+-------------------
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.

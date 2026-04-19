@@ -1,5 +1,5 @@
 import {
-  Component, signal, computed, effect,
+  Component, signal, computed, effect, Input,
   ChangeDetectionStrategy, OnInit, ElementRef, ViewChild, AfterViewInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { parseDSL } from '../../parser';
 
 // ── Demo DSL ──────────────────────────────────────────────────────────────────
 const DEMO = `// Boceto DSL
-// @ pantalla  # título  > navega  · separa ítems
+// @ pantalla  # título  > navega  | separa ítems
 
 theme paper
 
@@ -30,7 +30,7 @@ btn Entrar > @Dashboard
 link ¿Olvidaste tu contraseña? > @Reset
 
 @Dashboard
-nav Kova · Inicio · Proyectos · Ajustes
+nav Kova | Inicio | Proyectos | Ajustes
 # Buenos días, Ana
 p Resumen de hoy
 row
@@ -38,17 +38,17 @@ row
   kpi 94% Satisfacción
   kpi 38 Tareas
 card+ Proyectos recientes
-  grid Nombre · Estado · Fecha · Dueño
+  grid Nombre | Estado | Fecha | Dueño
 row
-  btn Nuevo proyecto > @Crear
+  btn Nuevo proyecto > @Dashboard
   ghost Ver todos
   ghost Eliminar $"color:#dc2626;border-color:#dc2626"
 
 @Crear
-nav Kova · Inicio · Proyectos
+nav Kova | Inicio | Proyectos
 # Nuevo proyecto
 p Completa los campos para crear el proyecto
-tabs General · Avanzado
+tabs General | Avanzado
   field Nombre del proyecto
   area Descripción ?
   pick Tipo | Web | Mobile | Backend | Diseño
@@ -72,19 +72,32 @@ link Volver al inicio > @Login
 // ─────────────────────────────────────────────────────────────────────────────
 
 @Component({
-  selector: 'app-editor-shell',
+  selector: 'boceto-playground',
   standalone: true,
   imports: [FormsModule, RouterLink, PageViewComponent, EditorComponent, BacetoLogoComponent],
-  templateUrl: './editor-shell.component.html',
-  styleUrls: ['./editor-shell.component.css'],
+  templateUrl: './playground.component.html',
+  styleUrls: ['./playground.component.css'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditorShellComponent implements OnInit, AfterViewInit {
+export class PlaygroundComponent implements OnInit, AfterViewInit {
   @ViewChild('previewFrame') previewFrameRef?: ElementRef<HTMLDivElement>;
   @ViewChild(EditorComponent) editorRef?: EditorComponent;
   private _pendingScroll: string | null = null;
 
+  @Input() mode: 'full' | 'lite' | 'preview' = 'full';
+  @Input() readonly: boolean = false;
+  @Input() initialCode: string | null = null;
+  @Input() shellTheme: 'dark' | 'light' | 'auto' = 'auto';
+
   // ── State ──────────────────────────────────────────
+  effectiveShellTheme = computed(() => {
+    if (this.shellTheme === 'dark') return 'dark';
+    if (this.shellTheme === 'light') return 'light';
+    return this.theme.dark() ? 'dark' : 'light';
+  });
+
+  isDark = computed(() => this.effectiveShellTheme() === 'dark');
+
   dsl          = signal(DEMO);
   parsed       = signal<ParsedDSL>({ pages: {}, theme: 'paper', frame: 'auto' });
   currentPage  = signal<string | null>(null);
@@ -95,7 +108,7 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
   newPageName  = '';
   showThemePicker = signal(false);
   copied       = signal(false);
-  exporting    = signal(false);
+  copiedEmbed  = signal(false);
 
   // ── Derived ────────────────────────────────────────
   pageNames = computed(() => Object.keys(this.parsed().pages));
@@ -106,10 +119,13 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
     return name ? (p.pages[name] ?? null) : null;
   });
 
-  readonly themeNames: ThemeName[] = ['paper', 'blueprint', 'sketch', 'noir', 'handwriting', 'arch'];
+  readonly themeNames: ThemeName[] = ['paper', 'blueprint', 'sketch', 'noir', 'handwriting', 'arch', 'cyberpunk', 'dots'];
   readonly themeIcons = THEME_ICONS;
 
-  constructor(readonly theme: ShellThemeService) {
+  constructor(
+    readonly theme: ShellThemeService,
+    private host: ElementRef
+  ) {
     // ── effects need injection context → constructor ───
     // Parse DSL reactively
     effect(() => {
@@ -124,23 +140,25 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
       } catch { /* keep last valid parse */ }
     }, { allowSignalWrites: true });
 
-    // In split mode, scroll code editor to active page
+    // In split mode, scroll code editor to active page (skip in lite mode to prevent doc scrolling)
     effect(() => {
       const page = this.currentPage();
       const v = this.view();
-      if (v === 'split' && page) {
+      if (v === 'split' && page && this.mode !== 'lite') {
         if (this.editorRef) {
-          this.editorRef.scrollToPage(page);
+          this.editorRef.scrollToPage(page, false);
         } else {
           this._pendingScroll = page; // editor not rendered yet
         }
       }
     });
 
-    // Apply wireframe theme CSS custom properties
+    // Apply wireframe theme CSS custom properties to host element
     effect(() => {
-      const T = THEMES[this.wireTheme()] ?? THEMES['paper'];
-      const el = document.documentElement;
+      const tName = this.wireTheme();
+      const T = THEMES[tName] ?? THEMES['paper'];
+      const el = this.host.nativeElement;
+      
       el.style.setProperty('--w-bg',       T.bg);
       el.style.setProperty('--w-surface',  T.surface);
       el.style.setProperty('--w-border',   T.border);
@@ -152,19 +170,28 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
       el.style.setProperty('--w-blue',     T.blue);
       el.style.setProperty('--w-accent',   T.accent);
       el.style.setProperty('--w-accentFg', T.accentFg);
+
+      // Special styles for dots/cyberpunk
+      el.style.setProperty('--w-border-style', tName === 'dots' ? 'dashed' : 'solid');
+      el.style.setProperty('--w-glow', tName === 'cyberpunk' ? `0 0 12px ${T.border}, inset 0 0 4px ${T.border}` : 'none');
+      el.style.setProperty('--w-radius', (tName === 'dots' || tName === 'arch') ? '0px' : (tName === 'cyberpunk' ? '2px' : '8px'));
     });
   }
 
   ngAfterViewInit(): void {
-    // Handle any scroll request that came before the editor was rendered
-    if (this._pendingScroll && this.editorRef) {
-      this.editorRef.scrollToPage(this._pendingScroll);
+    // Handle any scroll request that came before the editor was rendered (skip in lite mode)
+    if (this._pendingScroll && this.editorRef && this.mode !== 'lite') {
+      this.editorRef.scrollToPage(this._pendingScroll, false);
       this._pendingScroll = null;
     }
   }
 
   ngOnInit(): void {
-    // Load shared DSL from URL hash  ?w=<base64>
+    if (this.initialCode !== null) {
+      this.dsl.set(this.initialCode);
+    }
+    
+    // Load shared DSL from URL hash ?w=<base64> (only relevant if mode is full or embed loads from URL)
     const hash = window.location.hash;
     const match = hash.match(/[?&]w=([^&]+)/);
     if (match) {
@@ -172,6 +199,14 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
         const b64 = decodeURIComponent(match[1]);
         this.dsl.set(decodeURIComponent(escape(atob(b64))));
       } catch {}
+    }
+    
+    // Auto-configure view based on mode
+    if (this.mode === 'preview') {
+      this.view.set('preview');
+    } else if (this.mode === 'lite') {
+      this.view.set('split');
+      this.showSidebar.set(false);
     }
   }
 
@@ -236,42 +271,24 @@ export class EditorShellComponent implements OnInit, AfterViewInit {
   // ── Share ─────────────────────────────────────────
   copyShareUrl(): void {
     const b64 = btoa(unescape(encodeURIComponent(this.dsl())));
-    const url = `${window.location.origin}/#/view?w=${encodeURIComponent(b64)}`;
+    const url = `${window.location.origin}${window.location.pathname}#/editor?w=${encodeURIComponent(b64)}`;
     navigator.clipboard.writeText(url).then(() => {
       this.copied.set(true);
-      setTimeout(() => this.copied.set(false), 2200);
+      setTimeout(() => this.copied.set(false), 2000);
     });
   }
 
-  // ── SVG Export ────────────────────────────────────
-  exportSvg(): void {
-    const el = this.previewFrameRef?.nativeElement;
-    if (!el) return;
-    this.exporting.set(true);
-    const { width, height } = el.getBoundingClientRect();
-    const T = THEMES[this.wireTheme()] ?? THEMES['paper'];
-    const cssVars = [
-      `--w-bg:${T.bg}`, `--w-surface:${T.surface}`, `--w-border:${T.border}`,
-      `--w-borderD:${T.borderD}`, `--w-ink:${T.ink}`, `--w-inkMid:${T.inkMid}`,
-      `--w-inkFaint:${T.inkFaint}`, `--w-fill:${T.fill}`, `--w-blue:${T.blue}`,
-      `--w-accent:${T.accent}`, `--w-accentFg:${T.accentFg}`,
-    ].join(';');
-    const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-  <foreignObject x="0" y="0" width="${width}" height="${height}">
-    <div xmlns="http://www.w3.org/1999/xhtml"
-         style="${cssVars};font-family:'Inter',system-ui,sans-serif;background:${T.bg};min-height:${height}px">
-      ${el.innerHTML}
-    </div>
-  </foreignObject>
-</svg>`;
-    const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.currentPage() ?? 'wireframe'}.svg`;
-    a.click();
-    URL.revokeObjectURL(url);
-    this.exporting.set(false);
+  copyEmbedCode(emMode: string = 'lite', emReadOnly: boolean = false): void {
+    const b64 = btoa(unescape(encodeURIComponent(this.dsl())));
+    const baseUrl = `${window.location.origin}${window.location.pathname}#/embed`;
+    const themeStr = this.shellTheme === 'auto' ? (this.theme.dark() ? 'dark' : 'light') : this.shellTheme;
+    const url = `${baseUrl}?mode=${emMode}&theme=${themeStr}&readonly=${emReadOnly}&w=${encodeURIComponent(b64)}`;
+    const iframe = `<iframe src="${url}" width="100%" height="500px" style="border:0;border-radius:12px;overflow:hidden;" title="Boceto Preview"></iframe>`;
+    
+    navigator.clipboard.writeText(iframe).then(() => {
+      this.copiedEmbed.set(true);
+      setTimeout(() => this.copiedEmbed.set(false), 2000);
+    });
   }
+
 }

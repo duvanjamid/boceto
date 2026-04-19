@@ -1,3 +1,9 @@
+/**
+ * Boceto — Type definitions
+ * Copyright (c) 2024 Duvan Jamid
+ * AGPL-3.0-or-later | Commercial License: duvanjamid.work@gmail.com
+ */
+
 export interface WireNode {
   type: string;
   text?: string;
@@ -31,7 +37,7 @@ export interface ParsedDSL {
 
 export type FrameType = 'ios' | 'android' | 'browser' | 'auto';
 
-export type ThemeName = 'paper' | 'blueprint' | 'sketch' | 'noir' | 'handwriting' | 'arch';
+export type ThemeName = 'paper' | 'blueprint' | 'sketch' | 'noir' | 'handwriting' | 'arch' | 'cyberpunk' | 'dots';
 
 export interface ThemeTokens {
   bg: string; surface: string; border: string; borderD: string;
@@ -46,9 +52,11 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
   noir:        { bg:'#141414', surface:'#1e1e1e', border:'#2e2e2e', borderD:'#444444', ink:'#f0f0f0', inkMid:'#aaaaaa', inkFaint:'#555555', fill:'#252525', blue:'#60a5fa', accent:'#f0f0f0', accentFg:'#141414' },
   handwriting: { bg:'#fdf8f0', surface:'#fff9f2', border:'#c4a882', borderD:'#9a7855', ink:'#2c1a08', inkMid:'#7a5a35', inkFaint:'#c4a070', fill:'#f5e8cc', blue:'#4a7fc4', accent:'#3d2010', accentFg:'#fdf8f0' },
   arch:        { bg:'#030912', surface:'#060f22', border:'#0c2e74', borderD:'#1850cc', ink:'#c8e4ff', inkMid:'#4a84d4', inkFaint:'#0c2a6a', fill:'#040c20', blue:'#38b6ff', accent:'#38b6ff', accentFg:'#030912' },
+  cyberpunk:   { bg:'#05040a', surface:'#0f0f1b', border:'#f3f315', borderD:'#ff003c', ink:'#ffffff', inkMid:'#f3f315', inkFaint:'#222233', fill:'#1a1a2e', blue:'#00f0ff', accent:'#f3f315', accentFg:'#000000' },
+  dots:        { bg:'#f8fafc', surface:'#ffffff', border:'#475569', borderD:'#0f172a', ink:'#0f172a', inkMid:'#475569', inkFaint:'#94a3b8', fill:'#f1f5f9', blue:'#0ea5e9', accent:'#0f172a', accentFg:'#ffffff' },
 };
 
 export const THEME_ICONS: Record<string, string> = {
   paper: '☕', blueprint: '📐', sketch: '✏️', noir: '🌙',
-  handwriting: '🖊️', arch: '📏',
+  handwriting: '🖊️', arch: '📏', cyberpunk: '🕹️', dots: '🔘',
 };

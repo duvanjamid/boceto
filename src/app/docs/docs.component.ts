@@ -1,11 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WirePage, ParsedDSL, THEMES } from '../../types';
-import { PageViewComponent } from '../page-view.component';
-import { EditorComponent } from '../editor.component';
+import { PlaygroundComponent } from '../playground/playground.component';
 import { ShellThemeService } from '../shell-theme.service';
 import { BacetoLogoComponent } from '../boceto-logo.component';
-import { parseDSL } from '../../parser';
 
 export interface DocItem {
   id: string;
@@ -14,9 +12,6 @@ export interface DocItem {
   desc: string;
   dsl: string;
   dslLive: string;
-  page?: WirePage | null;
-  livePage?: WirePage | null;
-  liveFrame?: string;
   copied?: boolean;
 }
 
@@ -32,16 +27,16 @@ interface RawSection { id: string; label: string; icon: string; items: RawItem[]
 
 const RAW_SECTIONS: RawSection[] = [
   {
-    id: 'globals', label: 'Configuración Global', icon: '⚙',
+    id: 'globals', label: 'Configuración Global', icon: 'fa-solid fa-sliders',
     items: [
-      { id: 'theme',   name: 'Tema',         syntax: 'theme [paper|noir|sketch|blueprint|handwriting|arch]', desc: 'Establece el tema global visual de todo el prototipo. Debe ir en la primera línea del archivo.',
+      { id: 'theme',   name: 'Tema',         syntax: 'theme [paper|noir|sketch|blueprint|handwriting|arch|cyberpunk|dots]', desc: 'Establece el tema global visual de todo el prototipo. Debe ir en la primera línea del archivo.',
         dsl: 'theme noir\n@P\nnav Mi App\n# Tema Oscuro\np Este es el tema noir.\n' },
       { id: 'frame',   name: 'Marco de Disp.',syntax: 'frame [auto|ios|android|browser]', desc: 'Envuelve la vista en un marco de dispositivo interactivo. Solo visible en el previsualizador global.',
         dsl: 'frame ios\n@P\nnav Mi App\n# App Móvil\np Esta vista sería truncada y estilizada con un notch.' },
     ],
   },
   {
-    id: 'typography', label: 'Tipografía', icon: 'T',
+    id: 'typography', label: 'Tipografía', icon: 'fa-solid fa-font',
     items: [
       { id: 'h1',      name: 'Título H1',    syntax: '# Texto',          desc: 'Encabezado principal de sección.',
         dsl: '@P\n# Título principal\n## Subtítulo\n### Sección menor\n' },
@@ -52,16 +47,16 @@ const RAW_SECTIONS: RawSection[] = [
     ],
   },
   {
-    id: 'navigation', label: 'Navegación', icon: 'N',
+    id: 'navigation', label: 'Navegación', icon: 'fa-solid fa-compass',
     items: [
-      { id: 'nav',  name: 'Barra nav',  syntax: 'nav Logo | Link [> @Pantalla] | Link [$"css"]', desc: 'Barra de navegación. Añade > @Pantalla a cualquier ítem para navegar. Usa | o · para separar.',
+      { id: 'nav',  name: 'Barra nav',  syntax: 'nav Logo | Link [> @Pantalla] | Link [$"css"]', desc: 'Barra de navegación. Añade > @Pantalla a cualquier ítem para navegar. Usa | para separar.',
         dsl: '@P\nnav App | Inicio > @Inicio | Proyectos | Ajustes\nnav App | Inicio | Proyectos $"background:#0d1b2a;color:#c8e4ff"\n# Contenido\n' },
       { id: 'tabs', name: 'Pestañas',   syntax: 'tabs Tab1 | Tab2\n  contenido\n  ---\n  otro', desc: 'Pestañas interactivas. Indenta el contenido de cada tab, usa --- para separar secciones.',
         dsl: '@P\ntabs General | Seguridad | Billing\n  field Nombre completo\n  field Email\n  btn Guardar\n  ---\n  toggle Autenticación 2FA\n  toggle Sesiones activas\n  ---\n  pick Plan | Free | Pro | Enterprise\n  note Facturación mensual\n' },
     ],
   },
   {
-    id: 'layout', label: 'Layout', icon: 'L',
+    id: 'layout', label: 'Layout', icon: 'fa-solid fa-layer-group',
     items: [
       { id: 'row',   name: 'Fila',     syntax: 'row [right|center|space]\n  hijo\n  hijo', desc: 'Agrupa hijos en fila horizontal. Opciones de alineación: right, center, space.',
         dsl: '@P\nrow\n  card Columna A\n    p Texto aquí\n  card Columna B\n    p Otro contenido\nrow right\n  ghost Cancelar\n  btn Guardar\n' },
@@ -76,7 +71,7 @@ const RAW_SECTIONS: RawSection[] = [
     ],
   },
   {
-    id: 'forms', label: 'Formularios', icon: 'F',
+    id: 'forms', label: 'Formularios', icon: 'fa-solid fa-list-check',
     items: [
       { id: 'field',  name: 'Campo',       syntax: 'field Label [* | ?]', desc: 'Input de texto. Añade * para contraseña, ? para opcional.',
         dsl: '@P\nfield Nombre completo\nfield Correo electrónico\nfield Contraseña *\nfield Teléfono ?\n' },
@@ -91,7 +86,7 @@ const RAW_SECTIONS: RawSection[] = [
     ],
   },
   {
-    id: 'actions', label: 'Acciones', icon: 'A',
+    id: 'actions', label: 'Acciones', icon: 'fa-solid fa-bolt',
     items: [
       { id: 'btn',   name: 'Botón',       syntax: 'btn Label [> @Pantalla] [$"css"]',   desc: 'Botón primario. Usa $"css" al final para personalizar colores. Añade > @Pantalla para navegar.',
         dsl: '@P\nrow\n  btn Guardar\n  btn Eliminar $"background:#dc2626"\n  btn Publicar $"background:#16a34a"\n' },
@@ -102,7 +97,7 @@ const RAW_SECTIONS: RawSection[] = [
     ],
   },
   {
-    id: 'media', label: 'Medios', icon: 'M',
+    id: 'media', label: 'Medios', icon: 'fa-solid fa-image',
     items: [
       { id: 'img',    name: 'Imagen',  syntax: 'img "Alt text" [> @Pantalla]',              desc: 'Placeholder de imagen. Añade > @Pantalla para navegar. Dentro de row se distribuyen en columnas.',
         dsl: '@P\nrow\n  img "Foto principal" > @Galeria\n  img "Miniatura"\nimg "Banner ancho completo"\n' },
@@ -113,14 +108,14 @@ const RAW_SECTIONS: RawSection[] = [
     ],
   },
   {
-    id: 'data', label: 'Datos', icon: 'D',
+    id: 'data', label: 'Datos', icon: 'fa-solid fa-chart-simple',
     items: [
       { id: 'kpi',  name: 'KPI',       syntax: 'kpi Valor Label [> @Pantalla]',         desc: 'Métrica destacada: valor grande + etiqueta. Añade > @Pantalla para navegar.',
         dsl: '@P\nrow\n  kpi 1.284 Usuarios > @Usuarios\n  kpi 94% Uptime\n  kpi 38 Tareas\n  kpi $12k MRR\n' },
-      { id: 'grid', name: 'Tabla',     syntax: 'grid Col1 · Col2 · Col3', desc: 'Tabla con cabeceras y filas de datos simuladas.',
-        dsl: '@P\ngrid Nombre · Rol · Estado · Fecha\n' },
-      { id: 'list', name: 'Lista',     syntax: 'list · Item1 · Item2',    desc: 'Lista de elementos con viñetas.',
-        dsl: '@P\nlist · Diseño de interfaz · Revisión de código · Deploy a producción · Testing QA\n' },
+      { id: 'grid', name: 'Tabla',     syntax: 'grid Col1 | Col2 | Col3', desc: 'Tabla con cabeceras y filas de datos simuladas.',
+        dsl: '@P\ngrid Nombre | Rol | Estado | Fecha\n' },
+      { id: 'list', name: 'Lista',     syntax: 'list\n  hijo',    desc: 'Contenedor de elementos con viñetas.',
+        dsl: '@P\nlist\n  p Diseño de interfaz\n  p Revisión de código\n  p Deploy a producción\n  p Testing QA\n' },
     ],
   },
 ];
@@ -128,13 +123,13 @@ const RAW_SECTIONS: RawSection[] = [
 @Component({
   selector: 'app-docs',
   standalone: true,
-  imports: [RouterLink, PageViewComponent, EditorComponent, BacetoLogoComponent],
+  imports: [RouterLink, PlaygroundComponent, BacetoLogoComponent],
   templateUrl: './docs.component.html',
   styleUrls: ['./docs.component.css'],
 })
 export class DocsComponent implements OnInit {
   sections: DocSection[] = [];
-  activeSection = signal('typography');
+  activeSection = signal('globals');
   copiedId = signal<string | null>(null);
 
   constructor(readonly theme: ShellThemeService) {}
@@ -155,15 +150,14 @@ export class DocsComponent implements OnInit {
     el.style.setProperty('--w-accent',   T.accent);
     el.style.setProperty('--w-accentFg', T.accentFg);
 
-    // Parse DSL for every example
+    // Prepare DSL for every example
     this.sections = RAW_SECTIONS.map(sec => ({
       ...sec,
-      items: sec.items.map(item => {
-        const dslLive = item.dsl.trim();
-        const parsed = parseDSL(dslLive);
-        const page = parsed.pages['P'] ?? null;
-        return { ...item, dslLive, page, livePage: page, liveFrame: parsed.frame, copied: false };
-      }),
+      items: sec.items.map(item => ({
+        ...item,
+        dslLive: item.dsl.trim(),
+        copied: false
+      })),
     }));
   }
 
@@ -175,9 +169,6 @@ export class DocsComponent implements OnInit {
 
   onDslChange(item: DocItem, dsl: string): void {
     item.dslLive = dsl;
-    const parsed = parseDSL(dsl);
-    item.livePage = parsed.pages['P'] ?? null;
-    item.liveFrame = parsed.frame;
   }
 
   copyDsl(item: DocItem): void {

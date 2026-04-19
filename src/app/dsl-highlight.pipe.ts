@@ -47,7 +47,7 @@ const PALETTES: Record<HighlightTheme, Record<string, string>> = {
     content:   '#fbbf24',  // img, avatar, kpi…
     text:      '#60a5fa',  // p, note
     target:    '#4ade80',  // > @PageName
-    separator: '#4a4868',  // · |
+    separator: '#4a4868',  // |
     divider:   '#4a4868',  // ---
     modifier:  '#f472b6',  // * ?
     string:    '#4ade80',  // "quoted text"
@@ -66,7 +66,7 @@ const PALETTES: Record<HighlightTheme, Record<string, string>> = {
     content:   '#b45309',
     text:      '#2563eb',
     target:    '#15803d',
-    separator: '#c4b5fd',
+    separator: '#c4b5fd', // |
     divider:   '#c4b5fd',
     modifier:  '#be185d',
     string:    '#16a34a',
@@ -85,7 +85,7 @@ const PALETTES: Record<HighlightTheme, Record<string, string>> = {
     content:   '#b58900',   // yellow
     text:      '#268bd2',   // blue
     target:    '#859900',   // green
-    separator: '#586e75',   // base01
+    separator: '#586e75',   // |
     divider:   '#586e75',
     modifier:  '#d33682',   // magenta
     string:    '#2aa198',   // cyan
@@ -159,8 +159,8 @@ function highlightLine(line: string, p: Record<string, string>): string {
       `</span>${span(p['style'], s)}<span style="color:${p['default']}">`
     );
 
-    // Replace · and | with colored separator
-    rest = rest.replace(/[·|]/g, sep =>
+    // Replace | with colored separator
+    rest = rest.replace(/\|/g, sep =>
       `</span>${span(p['separator'], sep)}<span style="color:${p['default']}">`
     );
 

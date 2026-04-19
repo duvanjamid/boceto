@@ -32,7 +32,7 @@ row
 |-------|-------------|
 | `@Nombre` | Define una pantalla nueva. Todo lo que sigue hasta el próximo `@` pertenece a esta pantalla. |
 | Indentación | Determina la jerarquía. Usa **2 espacios** para hijos de contenedores. |
-| `\|` | Separa ítems en nav, grid, list, pick, tabs. |
+| `\|` | Separa ítems en nav, grid, pick, tabs. |
 | `//` | Comentario. La línea se ignora. |
 | `$"css"` | Inyecta CSS inline en cualquier elemento. |
 
@@ -319,19 +319,20 @@ kpi 94% Tasa de retención
 kpi $2.4M Ingresos > @ReporteFinanciero
 ```
 
-### `grid` — tabla con datos de ejemplo
-
+### `grid` — tabla
 ```boceto
 grid Nombre | Estado | Fecha | Acciones
 ```
-
 Muestra encabezados reales y filas simuladas con barras de placeholder.
 
-### `list` — lista con viñetas
-
+### `list` — contenedor con viñetas
 ```boceto
-list Revisión de diseño | Aprobación cliente | Deploy a producción
+list
+  p Revisión de diseño
+  p Aprobación cliente
+  btn Deploy a producción
 ```
+Cada hijo indentado se muestra con una viñeta.
 
 ---
 
@@ -416,15 +417,3 @@ row right
 ```
 
 ---
-
-## Separadores
-
-Boceto acepta tanto `|` como `·` (punto medio) como separadores:
-
-```boceto
-// Equivalentes:
-nav App | Inicio | Proyectos
-nav App · Inicio · Proyectos
-```
-
-Se recomienda `|` por ser más fácil de escribir.

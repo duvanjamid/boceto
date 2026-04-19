@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PageViewComponent } from '../page-view.component';
-import { EditorComponent } from '../editor.component';
+import { PlaygroundComponent } from '../playground/playground.component';
 import { THEMES, ThemeName, WirePage, ParsedDSL } from '../../types';
 import { ShellThemeService } from '../shell-theme.service';
 import { BacetoLogoComponent } from '../boceto-logo.component';
@@ -23,14 +23,14 @@ link ¿Olvidaste tu contraseña?
 // ── Live demo DSL ─────────────────────────────────────────────────────────────
 const DEMO_DSL = `theme paper
 @Dashboard
-nav App · Inicio · Proyectos · Ajustes
+nav App | Inicio | Proyectos | Ajustes
 # Buenos días, Ana
 p Resumen del día de hoy
 row
   kpi 1.284 Usuarios
   kpi 94% Activo
 card Proyectos recientes
-  grid Nombre · Estado · Fecha
+  grid Nombre | Estado | Fecha
 row
   btn Nuevo proyecto > @Dashboard
   ghost Ver todos
@@ -46,26 +46,26 @@ row
   kpi 1.284 Usuarios
   kpi 94% Activo
 card Reciente
-  grid Nombre · Estado · Fecha
+  grid Nombre | Estado | Fecha
 `;
 }
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, PageViewComponent, EditorComponent, BacetoLogoComponent],
+  imports: [RouterLink, PageViewComponent, PlaygroundComponent, BacetoLogoComponent],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css'],
 })
 export class LandingComponent implements OnInit {
-  readonly themeNames: ThemeName[] = ['paper', 'blueprint', 'sketch', 'noir', 'handwriting', 'arch'];
+  readonly themeNames: ThemeName[] = ['paper', 'blueprint', 'sketch', 'noir', 'handwriting', 'arch', 'cyberpunk', 'dots'];
   readonly themeIcons: Record<ThemeName, string> = {
     paper: '☕', blueprint: '📐', sketch: '✏️', noir: '🌙',
-    handwriting: '🖊️', arch: '📏',
+    handwriting: '🖊️', arch: '📏', cyberpunk: '🕹️', dots: '🔘',
   };
   readonly themeLabels: Record<ThemeName, string> = {
     paper: 'Paper', blueprint: 'Blueprint', sketch: 'Sketch', noir: 'Noir',
-    handwriting: 'Handwriting', arch: 'Arch',
+    handwriting: 'Handwriting', arch: 'Arch', cyberpunk: 'Cyberpunk', dots: 'Dots',
   };
 
   heroPage: WirePage | null = null;
@@ -79,14 +79,14 @@ export class LandingComponent implements OnInit {
 theme paper
 
 @Dashboard
-nav App · Inicio · Proyectos · Ajustes
+nav App | Inicio | Proyectos | Ajustes
 # Buenos días, Ana
 p Resumen del día de hoy
 row
   kpi 1.284 Usuarios
   kpi 94% Activo
 card Proyectos recientes
-  grid Nombre · Estado · Fecha
+  grid Nombre | Estado | Fecha
 row
   btn Nuevo proyecto > @Dashboard
   ghost Ver todos`;
@@ -99,6 +99,12 @@ field Email
 field Contraseña *
 btn Entrar > @Dashboard
 \`\`\``;
+
+  readonly embedCodeExample = `<iframe 
+  src="https://boceto.app/#/embed?mode=preview&w=..." 
+  width="100%" height="500px" 
+  style="border:0; border-radius:12px;">
+</iframe>`;
 
   ngOnInit(): void {
     // Apply paper theme CSS vars for wireframe previews on landing
@@ -138,11 +144,11 @@ btn Entrar > @Dashboard
 • Palabras clave: nav · # ## ### · p · note · ---
   field [label] [*=password] [?=opcional]
   pick [label] | opt1 | opt2
-  check · toggle · btn [label] > @Pantalla
-  ghost · link · img · avatar · badge · kpi
-  row · card [titulo] · aside   (indent children 2 sp)
-  grid col1 · col2   list · item1 · item2   tabs
-• Usa · (punto medio) o | para separar items en nav/grid/list/tabs
+  check | toggle | btn [label] > @Pantalla
+  ghost | link | img | avatar | badge | kpi
+  row | card [titulo] | aside   (indent children 2 sp)
+  grid col1 | col2   list (indent children)   tabs
+• Usa | para separar items en nav/grid/tabs
 • btn/ghost/link usan > @Pantalla para navegar
 • theme paper|blueprint|sketch|noir al inicio (opcional)
 
@@ -161,13 +167,13 @@ btn Entrar > @Dashboard
 link ¿Olvidaste tu contraseña? > @Reset
 
 @Dashboard
-nav MiApp · Inicio · Perfil
+nav MiApp | Inicio | Perfil
 # Panel principal
 row
   kpi 1.284 Usuarios
   kpi 94% Activo
 card Actividad reciente
-  grid Nombre · Fecha · Estado
+  grid Nombre | Fecha | Estado
 row
   btn Nuevo > @Crear
   ghost Ver todos`;

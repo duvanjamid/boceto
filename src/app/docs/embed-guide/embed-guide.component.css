@@ -1,0 +1,193 @@
+:host {
+  display: block;
+  background: var(--s-bg);
+  color: var(--s-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Reusing design tokens from Docs */
+.guide__header {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-surface);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  gap: 16px;
+}
+.guide__logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.guide__logo-text { font-weight: 700; font-size: 14px; letter-spacing: -0.3px; color: var(--s-ink); }
+
+.guide__header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--s-ink2);
+  border-left: 1px solid var(--s-border);
+  padding-left: 16px;
+}
+.guide__header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.guide__theme-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--s-border);
+  background: none;
+  color: var(--s-ink2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.guide__header-link {
+  font-size: 13px;
+  color: var(--l-accent, #7c6ff7);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.guide__body {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 54px);
+}
+
+.guide__sidebar {
+  width: 196px;
+  flex-shrink: 0;
+  padding: 20px 12px;
+  border-right: 1px solid var(--s-border);
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.guide__sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--s-ink3);
+  padding: 6px 10px 4px;
+}
+.guide__sidebar-divider { height: 1px; background: var(--s-border); margin: 10px 0; }
+.guide__sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: var(--s-ink2);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background .1s;
+}
+.guide__sidebar-item:hover { background: var(--s-accentSoft); }
+.guide__sidebar-item--active { background: var(--s-accentSoft); color: var(--s-accentText); font-weight: 600; }
+.guide__sidebar-icon { font-size: 14px; }
+
+.guide__main {
+  flex: 1;
+  padding: 48px 60px;
+  max-width: 800px;
+}
+
+.guide__title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0 0 16px;
+}
+.guide__intro {
+  font-size: 16px;
+  color: var(--s-ink2);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.guide__section { margin-bottom: 48px; }
+.guide__section h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.guide__section p {
+  font-size: 14px;
+  color: var(--s-ink2);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.guide__code-block {
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 10px;
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #a78bfa;
+  overflow-x: auto;
+}
+
+.guide__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.guide__table th, .guide__table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid var(--s-border);
+  font-size: 13px;
+}
+.guide__table th {
+  color: var(--s-ink3);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: .05em;
+}
+.guide__table td code {
+  color: var(--s-accent);
+}
+
+.guide__demo-wrap {
+  border: 1px solid var(--s-border);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 400px;
+  margin-top: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+}
+
+.guide__info-box {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: var(--s-accentSoft);
+  border-left: 4px solid var(--s-accent);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--s-ink2);
+  line-height: 1.6;
+}
+.guide__info-icon { font-size: 20px; }
+
+@media (max-width: 900px) {
+  .guide__sidebar { display: none; }
+  .guide__main { padding: 32px 24px; }
+}

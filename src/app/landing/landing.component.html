@@ -1,38 +1,3 @@
-<!-- ══════════════════════════════════════════════════════════════════════
-     NAV
-═══════════════════════════════════════════════════════════════════════ -->
-<nav class="l-nav">
-  <div class="l-nav__inner">
-    <a class="l-nav__logo" routerLink="/">
-      <boceto-logo [size]="28"></boceto-logo>
-      <span class="l-nav__logo-text">Boceto</span>
-    </a>
-    <div class="l-nav__links">
-      <a class="l-nav__link" routerLink="/docs">Componentes</a>
-      <a class="l-nav__link" routerLink="/editor">Editor</a>
-      <a class="l-nav__link l-nav__link--ext" href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
-      <!-- Shell theme toggle -->
-      <button class="l-nav__theme-btn"
-        (click)="theme.toggle()"
-        [title]="theme.dark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
-        @if (theme.dark()) {
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"/>
-            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-        } @else {
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-          </svg>
-        }
-      </button>
-      <a class="l-nav__cta" routerLink="/editor">Abrir editor →</a>
-    </div>
-  </div>
-</nav>
 
 <!-- ══════════════════════════════════════════════════════════════════════
      HERO
@@ -52,7 +17,7 @@
       </p>
       <div class="hero__ctas">
         <a class="hero__cta-primary" routerLink="/editor">Abrir editor →</a>
-        <a class="hero__cta-ghost" href="https://github.com" target="_blank" rel="noopener">Ver en GitHub ↗</a>
+        <a class="hero__cta-ghost" href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener">Ver en GitHub ↗</a>
       </div>
       <div class="hero__chips">
         <span class="hero__chip">40 keywords</span>
@@ -86,22 +51,22 @@
     <h2 class="l-section__title">Diseña a la velocidad del pensamiento</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-card__icon">✏️</div>
+        <div class="feature-card__icon"><i class="fa-solid fa-pen-nib"></i></div>
         <h3 class="feature-card__title">DSL Minimalista</h3>
-        <p class="feature-card__desc">40 keywords, indentación y · como separador. Si sabes escribir, sabes wireframear.</p>
+        <p class="feature-card__desc">40 keywords, indentación y | como separador. Si sabes escribir, sabes wireframear.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-card__icon">⚡</div>
+        <div class="feature-card__icon"><i class="fa-solid fa-bolt"></i></div>
         <h3 class="feature-card__title">Preview Instantáneo</h3>
         <p class="feature-card__desc">El resultado aparece mientras escribes. Sin compilar, sin guardar, sin esperar.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-card__icon">🔗</div>
+        <div class="feature-card__icon"><i class="fa-solid fa-share-nodes"></i></div>
         <h3 class="feature-card__title">Comparte al instante</h3>
         <p class="feature-card__desc">El wireframe se codifica en la URL. Comparte el enlace, sin backend, sin cuenta.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-card__icon">↓</div>
+        <div class="feature-card__icon"><i class="fa-solid fa-file-export"></i></div>
         <h3 class="feature-card__title">Exporta a SVG</h3>
         <p class="feature-card__desc">Descarga el wireframe como SVG para incluirlo en tu documentación o presentaciones.</p>
       </div>
@@ -116,31 +81,12 @@
   <div class="l-inner">
     <div class="l-section__label">Demo en vivo</div>
     <h2 class="l-section__title">Vélo en acción</h2>
-    <div class="demo-grid">
-      <!-- Code panel -->
-      <div class="demo-code-wrap">
-        <div class="demo-code-header">
-          <span class="demo-code-dot demo-code-dot--red"></span>
-          <span class="demo-code-dot demo-code-dot--yellow"></span>
-          <span class="demo-code-dot demo-code-dot--green"></span>
-          <span class="demo-code-filename">dashboard.wire</span>
-        </div>
-        <boceto-editor 
-          class="demo-code" 
-          [value]="demoDslText" 
-          [darkMode]="theme.dark()" 
-          [readonly]="true">
-        </boceto-editor>
-      </div>
-      <!-- Wireframe preview -->
-      <div class="demo-preview-wrap">
-        <div class="demo-preview-label">Preview</div>
-        <div class="demo-preview-frame">
-          @if (demoPage) {
-            <page-view [page]="demoPage"></page-view>
-          }
-        </div>
-      </div>
+    <div class="demo-playground-wrap">
+      <boceto-playground 
+        mode="lite" 
+        [initialCode]="demoDslText" 
+        [shellTheme]="theme.dark() ? 'dark' : 'light'">
+      </boceto-playground>
     </div>
   </div>
 </section>
@@ -180,35 +126,46 @@
     <h2 class="l-section__title">Se integra donde ya trabajas</h2>
     <div class="integrations-grid">
       <div class="integration-card">
-        <div class="integration-card__icon">🧩</div>
+        <div class="integration-card__icon"><i class="fa-solid fa-puzzle-piece"></i></div>
         <h3 class="integration-card__title">VSCode</h3>
         <p class="integration-card__desc">Syntax highlighting nativo con la extensión <code class="l-code">.tmLanguage</code>.</p>
       </div>
       <div class="integration-card">
-        <div class="integration-card__icon">📚</div>
+        <div class="integration-card__icon"><i class="fa-solid fa-book-open"></i></div>
         <h3 class="integration-card__title">Docsify</h3>
         <p class="integration-card__desc">Bloques <code class="l-code">```boceto</code> en tus docs se vuelven prototipos interactivos.</p>
       </div>
       <div class="integration-card">
-        <div class="integration-card__icon">🎨</div>
+        <div class="integration-card__icon"><i class="fa-solid fa-paintbrush"></i></div>
         <h3 class="integration-card__title">Prism.js</h3>
         <p class="integration-card__desc">Resaltado de sintaxis en cualquier sitio estático con el plugin oficial.</p>
       </div>
-    </div>
-    <!-- Code example -->
-    <div class="integration-code-wrap">
-      <div class="demo-code-header">
-        <span class="demo-code-dot demo-code-dot--red"></span>
-        <span class="demo-code-dot demo-code-dot--yellow"></span>
-        <span class="demo-code-dot demo-code-dot--green"></span>
-        <span class="demo-code-filename">docs/mi-pantalla.md</span>
+      <div class="integration-card integration-card--featured">
+        <div class="integration-card__icon"><i class="fa-solid fa-plug"></i></div>
+        <h3 class="integration-card__title">Embed (iFrame)</h3>
+        <p class="integration-card__desc">Incrusta un editor funcional o solo la preview en Notion, Medium o tus propios docs.</p>
       </div>
-      <boceto-editor 
-        class="demo-code" 
-        [value]="integrationDsl" 
-        [darkMode]="theme.dark()" 
-        [readonly]="true">
-      </boceto-editor>
+    </div>
+    <!-- Embed details -->
+    <div class="embed-info">
+      <div class="embed-info__copy">
+        <h3 class="embed-info__title">Incrusta tus prototipos en cualquier lugar</h3>
+        <p class="embed-info__text">
+          Usa nuestro componente de <strong>Playground</strong> ultra-ligero para añadir interactividad a tus artículos o documentación. Configura el modo, el tema y la protección de escritura mediante parámetros de URL.
+        </p>
+        <ul class="embed-info__list">
+          <li><strong>mode:</strong> <code>lite</code>, <code>preview</code> o <code>full</code></li>
+          <li><strong>theme:</strong> <code>dark</code> o <code>light</code></li>
+          <li><strong>readonly:</strong> Protege tu código de cambios</li>
+        </ul>
+        <a class="embed-info__link" routerLink="/docs/embed">Leer guía de inserción completa ↗</a>
+      </div>
+      <div class="embed-info__code">
+        <div class="demo-code-header">
+          <span class="demo-code-filename">html</span>
+        </div>
+        <pre class="embed-code-pre"><code>{{ embedCodeExample }}</code></pre>
+      </div>
     </div>
   </div>
 </section>
@@ -365,7 +322,7 @@ row
 ═══════════════════════════════════════════════════════════════════════ -->
 <section class="l-section donations">
   <div class="l-inner donations__inner">
-    <div class="donations__emoji">☕</div>
+    <div class="donations__emoji"><i class="fa-solid fa-mug-hot"></i></div>
     <h2 class="donations__title">¿Te resulta útil Boceto?</h2>
     <p class="donations__subtitle">
       Es un proyecto open source mantenido por una sola persona.
@@ -374,15 +331,15 @@ row
     <div class="donations__buttons">
       <a class="donation-btn donation-btn--kofi"
          href="https://ko-fi.com/duvanjamid" target="_blank" rel="noopener">
-        ☕ Ko-fi
+        <i class="fa-solid fa-coffee"></i> Ko-fi
       </a>
       <a class="donation-btn donation-btn--github"
          href="https://github.com/sponsors" target="_blank" rel="noopener">
-        ♥ GitHub Sponsors
+        <i class="fa-solid fa-heart"></i> GitHub Sponsors
       </a>
       <a class="donation-btn donation-btn--bmc"
          href="https://buymeacoffee.com" target="_blank" rel="noopener">
-        Buy Me a Coffee
+        <i class="fa-solid fa-mug-saucer"></i> Buy Me a Coffee
       </a>
     </div>
   </div>
@@ -401,7 +358,7 @@ row
     <div class="l-footer__links">
       <a class="l-footer__link" routerLink="/editor">Editor</a>
       <a class="l-footer__link" href="docs/README.md">Docs</a>
-      <a class="l-footer__link" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <a class="l-footer__link" href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener">GitHub</a>
       <a class="l-footer__link" href="https://npmjs.com" target="_blank" rel="noopener">npm</a>
     </div>
   </div>

@@ -208,7 +208,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   /** In split mode, scroll editor so the @PageName line is visible */
-  scrollToPage(pageName: string): void {
+  scrollToPage(pageName: string, focus = true): void {
     if (!this.view) return;
     const text = this.view.state.doc.toString();
     const token = '@' + pageName;
@@ -217,11 +217,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy, OnChanges {
     const pos = idx < 0 ? -1 : (text[idx] === '\n' ? idx + 1 : idx);
     if (pos < 0) return;
     const line = this.view.state.doc.lineAt(pos);
-    this.view.dispatch({
-      selection: { anchor: line.from },
-      effects: EditorView.scrollIntoView(line.from, { y: 'start', yMargin: 24 }),
-    });
-    this.view.focus();
+    if (focus) {
+      this.view.dispatch({
+        selection: { anchor: line.from },
+        effects: EditorView.scrollIntoView(line.from, { y: 'start', yMargin: 24 }),
+      });
+      this.view.focus();
+    } else {
+      this.view.dispatch({
+        effects: EditorView.scrollIntoView(line.from, { y: 'start', yMargin: 24 }),
+      });
+    }
   }
 
   ngOnDestroy(): void {

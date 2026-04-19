@@ -1,0 +1,117 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 56px;
+  background: var(--w-surface);
+  border-bottom: 1.5px solid var(--w-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+/* For dark mode, we might want it slightly more transparent */
+:host-context([data-shell="dark"]) .navbar {
+  background: rgba(13, 17, 23, 0.85); /* specific dark bg or just surface */
+}
+
+.navbar__container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--w-ink);
+  transition: opacity 0.2s;
+}
+
+.navbar__brand:hover { opacity: 0.8; }
+
+.navbar__logo-text {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--w-inkMid);
+  transition: all 0.2s;
+}
+
+.navbar__link i {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.navbar__link:hover {
+  background: var(--w-fill);
+  color: var(--w-ink);
+}
+
+.navbar__link.active {
+  background: var(--w-accent);
+  color: var(--w-accentFg);
+}
+
+.navbar__link.active i { opacity: 1; }
+
+.navbar__link--external {
+  color: var(--w-inkFaint);
+}
+
+.navbar__ext-icon {
+  font-size: 10px !important;
+  margin-top: -2px;
+}
+
+.navbar__theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--w-border);
+  background: var(--w-bg);
+  color: var(--w-inkMid);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-left: 10px;
+}
+
+.navbar__theme-toggle:hover {
+  border-color: var(--w-borderD);
+  color: var(--w-ink);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .navbar__logo-text { display: none; }
+  .navbar__link span { display: none; }
+  .navbar__links { gap: 4px; }
+  .navbar__link { padding: 8px 10px; }
+}
