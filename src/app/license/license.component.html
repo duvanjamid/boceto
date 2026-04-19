@@ -1,0 +1,112 @@
+<div class="lic">
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav class="lic__nav">
+    <a routerLink="/" class="lic__nav-logo">
+      <boceto-logo [size]="24"></boceto-logo>
+      <span>Boceto</span>
+    </a>
+    <div class="lic__nav-links">
+      <a routerLink="/docs" class="lic__nav-link">Docs</a>
+      <a routerLink="/editor" class="lic__nav-link">Editor</a>
+      <a href="https://github.com/duvanjamid/boceto" class="lic__nav-link" target="_blank">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ─────────────────────────────────────────── -->
+  <header class="lic__hero">
+    <p class="lic__eyebrow">Licenciamiento</p>
+    <h1 class="lic__title">Simple, transparente, justo</h1>
+    <p class="lic__subtitle">
+      Boceto es open source bajo AGPL. Las empresas que no pueden cumplir con AGPL
+      adquieren una licencia comercial.
+    </p>
+  </header>
+
+  <!-- ── Plans grid ───────────────────────────────────── -->
+  <section class="lic__plans">
+    @for (plan of plans; track plan.id) {
+      <div class="lic__plan" [class.lic__plan--highlight]="plan.badge === 'Popular'">
+        @if (plan.badge) {
+          <div class="lic__plan-badge">{{ plan.badge }}</div>
+        }
+        <div class="lic__plan-name">{{ plan.name }}</div>
+        <div class="lic__plan-price">
+          {{ plan.price }}<span class="lic__plan-period">{{ plan.period }}</span>
+        </div>
+        <a [href]="plan.ctaHref" class="lic__plan-cta"
+           [class.lic__plan-cta--outline]="plan.id === 'community'"
+           target="{{ plan.ctaHref.startsWith('mailto') ? '_self' : '_blank' }}">
+          {{ plan.cta }}
+        </a>
+        <ul class="lic__plan-features">
+          @for (f of plan.features; track f) {
+            <li class="lic__plan-feature lic__plan-feature--yes">
+              <span class="lic__check">✓</span> {{ f }}
+            </li>
+          }
+          @for (f of plan.excluded; track f) {
+            <li class="lic__plan-feature lic__plan-feature--no">
+              <span class="lic__cross">✕</span> {{ f }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  <!-- ── Comparison table ─────────────────────────────── -->
+  <section class="lic__table-wrap">
+    <h2 class="lic__section-title">¿Cuándo necesito una licencia?</h2>
+    <table class="lic__table">
+      <thead>
+        <tr>
+          <th>Caso de uso</th>
+          <th>Community (AGPL)</th>
+          <th>Comercial</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Uso personal / hobbyist</td><td class="yes">✓ Gratis</td><td class="yes">✓</td></tr>
+        <tr><td>Proyecto open source público</td><td class="yes">✓ Gratis</td><td class="yes">✓</td></tr>
+        <tr><td>Herramienta interna (código publicado)</td><td class="yes">✓ Gratis</td><td class="yes">✓</td></tr>
+        <tr><td>SaaS / producto de pago</td><td class="no">✕ Requiere publicar código</td><td class="yes">✓ Incluido</td></tr>
+        <tr><td>Herramienta interna privada</td><td class="no">✕ Requiere publicar código</td><td class="yes">✓ Incluido</td></tr>
+        <tr><td>White-label / sin branding</td><td class="no">✕</td><td class="yes">✓ Business+</td></tr>
+        <tr><td>Redistribución en producto</td><td class="no">✕</td><td class="yes">✓ Business+</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────── -->
+  <section class="lic__faq">
+    <h2 class="lic__section-title">Preguntas frecuentes</h2>
+    <div class="lic__faq-list">
+      @for (item of faq; track item.q) {
+        <details class="lic__faq-item">
+          <summary class="lic__faq-q">{{ item.q }}</summary>
+          <p class="lic__faq-a">{{ item.a }}</p>
+        </details>
+      }
+    </div>
+  </section>
+
+  <!-- ── Contact ──────────────────────────────────────── -->
+  <section class="lic__contact">
+    <h2 class="lic__contact-title">¿Dudas sobre qué plan necesitas?</h2>
+    <p class="lic__contact-sub">Escribenos y te respondemos en menos de 24h.</p>
+    <a href="mailto:duvanjamid.work@gmail.com?subject=Boceto%20License%20Inquiry"
+       class="lic__contact-btn">
+      duvanjamid.work@gmail.com
+    </a>
+  </section>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer class="lic__footer">
+    <span>© 2024 Duvan Jamid</span>
+    <a routerLink="/">Boceto</a>
+    <a href="https://github.com/duvanjamid/boceto/blob/main/LICENSE" target="_blank">AGPLv3</a>
+    <a href="https://github.com/duvanjamid/boceto/blob/main/LICENSE-COMMERCIAL" target="_blank">Comercial</a>
+  </footer>
+
+</div>

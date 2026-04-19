@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: boceto
+Upstream-Contact: duvanjamid.work@gmail.com
+Source: https://github.com/duvanjamid/boceto
+
+Files: src/* plugins/* docs/*
+Copyright: 2024 Duvan Jamid
+License: AGPL-3.0-or-later
+
+Files: src/assets/*
+Copyright: 2024 Duvan Jamid
+License: AGPL-3.0-or-later
+
+Files: plugins/boceto-prism.js plugins/boceto-docsify.js plugins/boceto.tmLanguage.json
+Copyright: 2024 Duvan Jamid
+License: AGPL-3.0-or-later

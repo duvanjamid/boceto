@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
+import { LicenseComponent } from './license/license.component';
 import { PlaygroundComponent } from './playground/playground.component';
 import { ViewerComponent } from './viewer/viewer.component';
 import { DocsComponent } from './docs/docs.component';
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'view',   component: ViewerComponent },
   { path: 'docs',   component: DocsComponent },
   { path: 'docs/embed', component: EmbedGuideComponent },
+  { path: 'license', component: LicenseComponent },
   { path: '**',     redirectTo: '' },
 ];

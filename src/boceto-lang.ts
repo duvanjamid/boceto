@@ -1,17 +1,18 @@
 /**
- * Boceto DSL language definition for CodeMirror 6.
- * Uses StreamLanguage for lightweight token-based highlighting.
+ * Boceto — CodeMirror 6 language definition
+ * Copyright (c) 2024 Duvan Jamid
+ * AGPL-3.0-or-later | Commercial License: duvanjamid.work@gmail.com
  *
- * Token color mapping (via CodeMirror theme):
- * Token color mapping (via CodeMirror theme):
- *   'def'          → page declarations (@PageName)
- *   'heading'      → headings (# ## ###)
- *   (Custom precise tags for every keyword)
- *   'string'       → quoted strings and $"..." style blocks
- *   'link'         → navigation targets (> @PageName)
- *   'operator'     → separators (· |)
- *   'meta'         → markers (* ? ---) and theme line
- *   'comment'      → // comments
+ * Token types:
+ *   'def'      → @PageName declarations
+ *   'heading'  → # ## ###
+ *   'keyword'  → structural/layout/form keywords
+ *   'atom'     → action keywords (btn / ghost / link)
+ *   'string'   → quoted strings and $"..." style blocks
+ *   'link'     → navigation targets (> PageName)
+ *   'operator' → separators (· |)
+ *   'meta'     → markers (* ? ---) and theme line
+ *   'comment'  → // comments
  */
 import { StreamLanguage, LanguageSupport } from '@codemirror/language';
 import { Tag, tags } from '@lezer/highlight';

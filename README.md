@@ -1,6 +1,8 @@
 <div align="center">
 
-# ✏️ Boceto
+<img src="src/assets/logo.svg" width="64" height="64" alt="Boceto logo"/>
+
+# Boceto
 
 **Text-based DSL for interactive UI wireframes**
 
