@@ -4,7 +4,6 @@ import { PageViewComponent } from '../page-view.component';
 import { PlaygroundComponent } from '../playground/playground.component';
 import { THEMES, ThemeName, WirePage, ParsedDSL } from '../../types';
 import { ShellThemeService } from '../shell-theme.service';
-import { BacetoLogoComponent } from '../boceto-logo.component';
 import { parseDSL } from '../../parser';
 
 // ── Hero DSL sample ───────────────────────────────────────────────────────────
@@ -53,7 +52,7 @@ card Reciente
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, PageViewComponent, PlaygroundComponent, BacetoLogoComponent],
+  imports: [RouterLink, PageViewComponent, PlaygroundComponent],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css'],
 })

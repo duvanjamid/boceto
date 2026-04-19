@@ -13,24 +13,26 @@ body { font-family: 'Inter', system-ui, sans-serif; }
    SHELL THEME  (editor chrome)
 ───────────────────────────────────────────── */
 :root, [data-shell="dark"] {
-  --s-bg:         #0c0b14;
-  --s-surface:    #0e0d18;
-  --s-border:     #1a1826;
+  --s-bg:         #09080f; /* Match landing bg */
+  --s-surface:    #0d0b1a;
+  --s-border:     #1e1b2e;
+  --s-borderD:    #2a2440;
   --s-ink:        #e4e0ff;
-  --s-ink2:       #6e6b8a;
-  --s-ink3:       #3d3a50;
+  --s-ink2:       #9590c0;
+  --s-ink3:       #6e6b8a;
   --s-accent:     #7c6ff7;
-  --s-accentSoft: #1e1a30;
+  --s-accentSoft: rgba(124, 111, 247, 0.1);
   --s-accentText: #c4baff;
 }
 
 [data-shell="light"] {
-  --s-bg:         #f5f4fa;
+  --s-bg:         #f8f7ff;
   --s-surface:    #ffffff;
-  --s-border:     #e2dff0;
-  --s-ink:        #1a1826;
-  --s-ink2:       #5a5670;
-  --s-ink3:       #9d9ab0;
+  --s-border:     #ddd8f8;
+  --s-borderD:    #c4b5fd;
+  --s-ink:        #1a1630;
+  --s-ink2:       #524c72;
+  --s-ink3:       #a89ec0;
   --s-accent:     #7c6ff7;
   --s-accentSoft: #ede9ff;
   --s-accentText: #5a4ee8;

@@ -1,7 +1,7 @@
 <nav class="navbar">
   <div class="navbar__container">
-    
-    <!-- BRAND / LOGO -->
+
+    <!-- BRAND -->
     <a routerLink="/" class="navbar__brand">
       <boceto-logo [size]="28"></boceto-logo>
       <span class="navbar__logo-text">Boceto</span>
@@ -9,26 +9,15 @@
 
     <!-- LINKS -->
     <div class="navbar__links">
-      <a routerLink="/docs" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="navbar__link">
-        <i class="fa-solid fa-shapes"></i>
-        <span>Componentes</span>
-      </a>
-      <a routerLink="/docs/embed" routerLinkActive="active" class="navbar__link">
-        <i class="fa-solid fa-book"></i>
-        <span>Editor</span>
-      </a>
-      <a routerLink="/editor" routerLinkActive="active" class="navbar__link">
-        <i class="fa-solid fa-laptop-code"></i>
-        <span>LIVE Editor</span>
-      </a>
-      <a href="https://github.com/duvanjamid/boceto" target="_blank" class="navbar__link navbar__link--external">
-        <i class="fa-brands fa-github"></i>
-        <span>GitHub</span>
-        <i class="fa-solid fa-arrow-up-right-from-square navbar__ext-icon"></i>
-      </a>
+      <a routerLink="/docs"    routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="navbar__link">Componentes</a>
+      <a routerLink="/plugins" routerLinkActive="active" class="navbar__link">Plugins</a>
+      <a routerLink="/editor"  routerLinkActive="active" class="navbar__link">Editor</a>
+      <a routerLink="/license" routerLinkActive="active" class="navbar__link">Licencia</a>
+      <a href="https://www.npmjs.com/package/@duvanjamid/boceto" target="_blank" rel="noopener" class="navbar__link navbar__link--external">npm ↗</a>
+      <a href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener" class="navbar__link navbar__link--external">GitHub ↗</a>
     </div>
 
-    <!-- THEME TOGGLE (Persistent) -->
+    <!-- THEME TOGGLE -->
     <button class="navbar__theme-toggle" (click)="theme.toggle()" [title]="theme.dark() ? 'Modo claro' : 'Modo oscuro'">
       @if (theme.dark()) {
         <i class="fa-solid fa-sun"></i>

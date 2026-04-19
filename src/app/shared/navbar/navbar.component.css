@@ -2,24 +2,34 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 56px;
-  background: var(--w-surface);
-  border-bottom: 1.5px solid var(--w-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  height: 58px;
+  background: rgba(var(--s-surface-rgb, 13, 11, 26), 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--s-border);
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
+  transition: background 0.3s, border-color 0.3s;
 }
 
-/* For dark mode, we might want it slightly more transparent */
-:host-context([data-shell="dark"]) .navbar {
-  background: rgba(13, 17, 23, 0.85); /* specific dark bg or just surface */
+:host {
+  display: block;
+  /* Utility to get RGB for glass effects */
+}
+
+:host-context([data-shell="dark"]) {
+  --s-surface-rgb: 13, 11, 26; /* #0d0b1a */
+}
+
+:host-context([data-shell="light"]) {
+  --s-surface-rgb: 255, 255, 255;
+  .navbar { background: rgba(255, 255, 255, 0.8); }
 }
 
 .navbar__container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -31,14 +41,14 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: var(--w-ink);
+  color: var(--s-ink);
   transition: opacity 0.2s;
 }
 
 .navbar__brand:hover { opacity: 0.8; }
 
 .navbar__logo-text {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.4px;
 }
@@ -58,7 +68,7 @@
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  color: var(--w-inkMid);
+  color: var(--s-ink2);
   transition: all 0.2s;
 }
 
@@ -68,19 +78,19 @@
 }
 
 .navbar__link:hover {
-  background: var(--w-fill);
-  color: var(--w-ink);
+  background: var(--s-accentSoft);
+  color: var(--s-ink);
 }
 
 .navbar__link.active {
-  background: var(--w-accent);
-  color: var(--w-accentFg);
+  background: var(--s-accent);
+  color: #fff;
 }
 
 .navbar__link.active i { opacity: 1; }
 
 .navbar__link--external {
-  color: var(--w-inkFaint);
+  color: var(--s-ink3);
 }
 
 .navbar__ext-icon {
@@ -89,12 +99,12 @@
 }
 
 .navbar__theme-toggle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1.5px solid var(--w-border);
-  background: var(--w-bg);
-  color: var(--w-inkMid);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--s-border);
+  background: transparent;
+  color: var(--s-ink3);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -104,12 +114,14 @@
 }
 
 .navbar__theme-toggle:hover {
-  border-color: var(--w-borderD);
-  color: var(--w-ink);
+  border-color: var(--s-accent);
+  background: var(--s-accentSoft);
+  color: var(--s-accent);
   transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
+  .navbar { padding: 0 16px; }
   .navbar__logo-text { display: none; }
   .navbar__link span { display: none; }
   .navbar__links { gap: 4px; }
