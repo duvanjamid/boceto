@@ -32,9 +32,9 @@ function parseDSL(src: string): ParsedDSL {
 
     while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
     const parent = stack.length ? stack[stack.length - 1].node : cur;
-    const styleMatch = t.match(/\s*\$"([^"]*)"\s*$/);
-    const nodeStyle = styleMatch?.[1];
-    if (styleMatch) t = t.slice(0, t.lastIndexOf('$"')).trimEnd();
+    const _sm = t.match(/\s*\$"([^"]*)"\s*$/);
+    const nodeStyle = _sm?.[1];
+    if (_sm) t = t.slice(0, (_sm.index ?? t.length)).trim();
     const rest = t.replace(/^[^\s]+\s*/, '');
     let node: any = null;
 
@@ -53,11 +53,11 @@ function parseDSL(src: string): ParsedDSL {
     }
     else if (t.startsWith('area '))     node = { type: 'area',   label: unquote(rest) };
     else if (t.startsWith('pick ')) {
-      const [l, ...o] = rest.split('>');
-      node = { type: 'pick', label: unquote(l.trim()), options: o.join('>').trim().split(/\s+/).filter(Boolean) };
+      const parts = splitDot(rest);
+      node = { type: 'pick', label: unquote(parts[0] ?? ''), options: parts.slice(1) };
     }
-    else if (t.startsWith('check '))    node = { type: 'check',  label: unquote(rest) };
-    else if (t.startsWith('toggle '))   node = { type: 'toggle', label: unquote(rest) };
+    else if (t.startsWith('check '))    { const ck = rest.trimEnd().endsWith('*'); node = { type: 'check',  label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
+    else if (t.startsWith('toggle '))   { const ck = rest.trimEnd().endsWith('*'); node = { type: 'toggle', label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
     else if (t.startsWith('btn '))      node = { type: 'btn',    label: unquote(noArrow(rest)), target: arrowT(rest) };
     else if (t.startsWith('ghost '))    node = { type: 'ghost',  label: unquote(noArrow(rest)), target: arrowT(rest) };
     else if (t.startsWith('link '))     node = { type: 'link',   label: unquote(noArrow(rest)), target: arrowT(rest) };

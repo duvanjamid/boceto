@@ -11,84 +11,104 @@
  */
 
 export function parseDSL(src) {
-  const lines = src.split("\n");
-  const pages = {};
-  let cur = null, stack = [], theme = "paper";
+    const lines = src.split("\n");
+    const pages = {};
+    let cur = null, stack = [], theme = "paper";
 
-  const indent   = l => l.match(/^(\s*)/)[1].length;
-  const unquote  = s => s.replace(/^["']|["']$/g, "").trim();
-  const splitDot = s => s.split(/[·|]/).map(x => x.trim()).filter(Boolean);
-  const arrowT   = s => { const m = s.match(/>\s*(\w+)\s*$/); return m ? m[1] : null; };
-  const noArrow  = s => s.replace(/>\s*\w+\s*$/, "").trim();
+    const indent = l => l.match(/^(\s*)/)[1].length;
+    const unquote = s => s.replace(/^["']|["']$/g, "").trim();
+    const splitDot = s => s.split(/[·|]/).map(x => x.trim()).filter(Boolean);
+    const arrowT = s => {
+        const m = s.match(/>\s*(\w+)\s*$/);
+        return m ? m[1] : null;
+    };
+    const noArrow = s => s.replace(/>\s*\w+\s*$/, "").trim();
 
-  for (const raw of lines) {
-    const line = raw.trimEnd();
-    if (!line.trim() || line.trim().startsWith("//")) continue;
-    const ind = indent(line);
-    let t = line.trim();
+    for (const raw of lines) {
+        const line = raw.trimEnd();
+        if (!line.trim() || line.trim().startsWith("//")) continue;
+        const ind = indent(line);
+        let t = line.trim();
 
-    if (t.startsWith("theme ")) { theme = t.slice(6).trim(); continue; }
-    if (t.startsWith("@")) {
-      cur = { name: t.slice(1).trim(), children: [] };
-      pages[cur.name] = cur; stack = []; continue;
-    }
-    if (!cur) continue;
+        if (t.startsWith("theme ")) {
+            theme = t.slice(6).trim();
+            continue;
+        }
+        if (t.startsWith("@")) {
+            cur = {name: t.slice(1).trim(), children: []};
+            pages[cur.name] = cur;
+            stack = [];
+            continue;
+        }
+        if (!cur) continue;
 
-    while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
-    const parent = stack.length ? stack[stack.length - 1].node : cur;
-    const styleMatch = t.match(/\s*\$"([^"]*)"\s*$/);
-    const nodeStyle = styleMatch?.[1];
-    if (styleMatch) t = t.slice(0, t.lastIndexOf('$"')).trimEnd();
-    const rest = t.replace(/^[^\s]+\s*/, "");
-    let node = null;
+        while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
+        const parent = stack.length ? stack[stack.length - 1].node : cur;
+        const _sm = t.match(/\s*\$"([^"]*)"\s*$/);
+        const nodeStyle = _sm?.[1];
+        if (_sm) t = t.slice(0, (_sm.index ?? t.length)).trim();
+        const rest = t.replace(/^[^\s]+\s*/, "");
+        let node = null;
 
-    if (t === "---")                    node = { type: "divider" };
-    else if (/^#{1,3} /.test(t)) {
-      const lvl = t.match(/^(#+)/)[1].length;
-      node = { type: `h${lvl}`, text: t.replace(/^#+\s*/, "") };
-    }
-    else if (t.startsWith("p "))        node = { type: "para",   text: unquote(rest) };
-    else if (t.startsWith("note "))     node = { type: "note",   text: unquote(rest) };
-    else if (t.startsWith("nav "))      node = { type: "nav",    items: splitDot(rest) };
-    else if (t.startsWith("tabs "))     node = { type: "tabs",   items: splitDot(rest), children: [] };
-    else if (t.startsWith("field ")) {
-      const pw = rest.trimEnd().endsWith("*"), op = rest.trimEnd().endsWith("?");
-      node = { type: "field", label: unquote(noArrow(rest).replace(/[*?]$/, "").trim()), password: pw, optional: op };
-    }
-    else if (t.startsWith("area "))     node = { type: "area",   label: unquote(rest) };
-    else if (t.startsWith("pick ")) {
-      const [l, ...o] = rest.split(">");
-      node = { type: "pick", label: unquote(l.trim()), options: o.join(">").trim().split(/\s+/).filter(Boolean) };
-    }
-    else if (t.startsWith("check "))    node = { type: "check",  label: unquote(rest) };
-    else if (t.startsWith("toggle "))   node = { type: "toggle", label: unquote(rest) };
-    else if (t.startsWith("btn "))      node = { type: "btn",    label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith("ghost "))    node = { type: "ghost",  label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith("link "))     node = { type: "link",   label: unquote(noArrow(rest)), target: arrowT(rest) };
-    else if (t.startsWith("img "))      node = { type: "img",    label: unquote(rest) };
-    else if (t.startsWith("avatar "))   node = { type: "avatar", name: unquote(rest) };
-    else if (t.startsWith("badge "))    node = { type: "badge",  text: unquote(rest) };
-    else if (t === "row" || t.startsWith("row ")) node = { type: "row", align: t.length > 3 ? t.slice(4).trim() : "", children: [] };
-    else if (t === "col")               node = { type: "col",    children: [] };
-    else if (t === "card" || t === "card+" || t.startsWith("card ") || t.startsWith("card+ ")) {
-      const cl = t.startsWith("card+");
-      const tr = cl ? t.slice(5).trim() : rest;
-      node = { type: "card", title: tr ? unquote(tr) : "", closable: cl, children: [] };
-    }
-    else if (t === "aside")             node = { type: "aside",  children: [] };
-    else if (t === "modal" || t.startsWith("modal ")) node = { type: "modal", title: rest ? unquote(rest) : "", children: [] };
-    else if (t.startsWith("kpi ")) {
-      const [v, ...r] = rest.split(/\s+/);
-      node = { type: "kpi", value: v, label: r.join(" ") };
-    }
-    else if (t.startsWith("grid "))     node = { type: "grid",   cols: splitDot(rest) };
-    else if (t.startsWith("list "))     node = { type: "list",   items: splitDot(rest) };
+        if (t === "---") node = {type: "divider"};
+        else if (/^#{1,3} /.test(t)) {
+            const lvl = t.match(/^(#+)/)[1].length;
+            node = {type: `h${lvl}`, text: t.replace(/^#+\s*/, "")};
+        } else if (t.startsWith("p ")) node = {type: "para", text: unquote(rest)};
+        else if (t.startsWith("note ")) node = {type: "note", text: unquote(rest)};
+        else if (t.startsWith("nav ")) node = {type: "nav", items: splitDot(rest)};
+        else if (t.startsWith("tabs ")) node = {type: "tabs", items: splitDot(rest), children: []};
+        else if (t.startsWith("field ")) {
+            const pw = rest.trimEnd().endsWith("*"), op = rest.trimEnd().endsWith("?");
+            node = {
+                type: "field",
+                label: unquote(noArrow(rest).replace(/[*?]$/, "").trim()),
+                password: pw,
+                optional: op
+            };
+        } else if (t.startsWith("area ")) node = {type: "area", label: unquote(rest)};
+        else if (t.startsWith("pick ")) {
+            const parts = splitDot(rest);
+            node = {type: "pick", label: unquote(parts[0] ?? ""), options: parts.slice(1)};
+        } else if (t.startsWith("check ")) {
+            const ck = rest.trimEnd().endsWith("*");
+            node = {type: "check", label: unquote(rest.trimEnd().replace(/\*$/, "").trim()), checked: ck || undefined};
+        } else if (t.startsWith("toggle ")) {
+            const ck = rest.trimEnd().endsWith("*");
+            node = {type: "toggle", label: unquote(rest.trimEnd().replace(/\*$/, "").trim()), checked: ck || undefined};
+        } else if (t.startsWith("btn ")) node = {type: "btn", label: unquote(noArrow(rest)), target: arrowT(rest)};
+        else if (t.startsWith("ghost ")) node = {type: "ghost", label: unquote(noArrow(rest)), target: arrowT(rest)};
+        else if (t.startsWith("link ")) node = {type: "link", label: unquote(noArrow(rest)), target: arrowT(rest)};
+        else if (t.startsWith("img ")) node = {type: "img", label: unquote(rest)};
+        else if (t.startsWith("avatar ")) node = {type: "avatar", name: unquote(rest)};
+        else if (t.startsWith("badge ")) node = {type: "badge", text: unquote(rest)};
+        else if (t === "row" || t.startsWith("row ")) node = {
+            type: "row",
+            align: t.length > 3 ? t.slice(4).trim() : "",
+            children: []
+        };
+        else if (t === "col") node = {type: "col", children: []};
+        else if (t === "card" || t === "card+" || t.startsWith("card ") || t.startsWith("card+ ")) {
+            const cl = t.startsWith("card+");
+            const tr = cl ? t.slice(5).trim() : rest;
+            node = {type: "card", title: tr ? unquote(tr) : "", closable: cl, children: []};
+        } else if (t === "aside") node = {type: "aside", children: []};
+        else if (t === "modal" || t.startsWith("modal ")) node = {
+            type: "modal",
+            title: rest ? unquote(rest) : "",
+            children: []
+        };
+        else if (t.startsWith("kpi ")) {
+            const [v, ...r] = rest.split(/\s+/);
+            node = {type: "kpi", value: v, label: r.join(" ")};
+        } else if (t.startsWith("grid ")) node = {type: "grid", cols: splitDot(rest)};
+        else if (t.startsWith("list ")) node = {type: "list", items: splitDot(rest)};
 
-    if (node) {
-      if (nodeStyle) node.style = nodeStyle;
-      parent.children.push(node);
-      if (["row", "col", "card", "aside", "modal", "tabs"].includes(node.type)) stack.push({ indent: ind, node });
+        if (node) {
+            if (nodeStyle) node.style = nodeStyle;
+            parent.children.push(node);
+            if (["row", "col", "card", "aside", "modal", "tabs"].includes(node.type)) stack.push({indent: ind, node});
+        }
     }
-  }
-  return { pages, theme };
+    return {pages, theme};
 }

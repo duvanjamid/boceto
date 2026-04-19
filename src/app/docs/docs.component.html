@@ -114,22 +114,27 @@
 
                 <p class="docs__card-desc">{{ item.desc }}</p>
 
-                <!-- Preview + Code split -->
+                <!-- Preview + Editor split -->
                 <div class="docs__card-split">
                   <!-- Live preview -->
                   <div class="docs__preview-wrap">
                     <div class="docs__preview-label">Preview</div>
                     <div class="docs__preview">
-                      @if (item.page) {
-                        <page-view [page]="item.page"></page-view>
+                      @if (item.livePage ?? item.page; as pg) {
+                        <page-view [page]="pg"></page-view>
                       }
                     </div>
                   </div>
-                  <!-- DSL code -->
+                  <!-- Live DSL editor -->
                   <div class="docs__code-wrap">
-                    <div class="docs__code-label">DSL</div>
-                    <pre class="docs__code"
-                      [innerHTML]="item.dsl.trim() | dslHighlight:(theme.dark() ? 'dark' : 'light')"></pre>
+                    <div class="docs__code-label">DSL — editable</div>
+                    <div class="docs__editor-host">
+                      <wire-editor
+                        [value]="item.dslLive"
+                        [darkMode]="theme.dark()"
+                        (valueChange)="onDslChange(item, $event)">
+                      </wire-editor>
+                    </div>
                   </div>
                 </div>
 

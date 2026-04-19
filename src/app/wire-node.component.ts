@@ -26,14 +26,26 @@ export class WireNodeComponent {
   private toggleStates = new Map<WireNode, boolean>();
   /** Checkbox checked state per check-node instance */
   private checkStates  = new Map<WireNode, boolean>();
+  /** Selected option index per pick-node instance */
+  private pickSelected = new Map<WireNode, number>();
+  /** Open/closed state per pick-node instance */
+  private pickOpen     = new Map<WireNode, boolean>();
 
   getTab(node: WireNode): number   { return this.tabStates.get(node) ?? 0; }
   setTab(node: WireNode, i: number): void { this.tabStates.set(node, i); }
 
-  getToggle(node: WireNode): boolean { return this.toggleStates.get(node) ?? false; }
+  getPickSel(node: WireNode): number  { return this.pickSelected.get(node) ?? 0; }
+  isPickOpen(node: WireNode): boolean { return this.pickOpen.get(node) ?? false; }
+  togglePickOpen(node: WireNode): void { this.pickOpen.set(node, !this.isPickOpen(node)); }
+  selectPick(node: WireNode, i: number): void {
+    this.pickSelected.set(node, i);
+    this.pickOpen.set(node, false);
+  }
+
+  getToggle(node: WireNode): boolean { return this.toggleStates.get(node) ?? node.checked ?? false; }
   flipToggle(node: WireNode): void   { this.toggleStates.set(node, !this.getToggle(node)); }
 
-  getCheck(node: WireNode): boolean { return this.checkStates.get(node) ?? false; }
+  getCheck(node: WireNode): boolean { return this.checkStates.get(node) ?? node.checked ?? false; }
   flipCheck(node: WireNode): void   { this.checkStates.set(node, !this.getCheck(node)); }
 
   /** Split tab children at divider nodes — returns content for active tab */
@@ -67,4 +79,15 @@ export class WireNodeComponent {
   }
 
   trackByIdx(_i: number): number { return _i; }
+
+  /** Extract inline style from item string: "App $\"color:red\"" → "color:red" */
+  iStyle(item: string): string | null {
+    const m = [...item.matchAll(/\$"([^"]*)"/g)];
+    return m.length ? m.map(x => x[1]).join(';') : null;
+  }
+
+  /** Strip inline style from item string: "App $\"color:red\"" → "App" */
+  iText(item: string): string {
+    return item.replace(/\s*\$"[^"]*"/g, '').trim();
+  }
 }

@@ -337,19 +337,10 @@
   transform-origin: top left;
 }
 
-.docs__code {
-  background: var(--s-bg);
+.docs__editor-host {
+  height: 260px;
   border-radius: 8px;
-  padding: 12px 14px;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 11.5px;
-  line-height: 1.7;
-  color: var(--s-ink2);
-  overflow-x: auto;
-  white-space: pre;
-  margin: 0;
-  max-height: 240px;
-  overflow-y: auto;
+  overflow: hidden;
   border: 1px solid var(--s-border);
 }
 

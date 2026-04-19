@@ -13,6 +13,7 @@ export interface WireNode {
   password?: boolean;
   optional?: boolean;
   style?: string;     // inline CSS via $"prop:val;prop:val"
+  checked?: boolean;  // check/toggle initial state: check Label *
   align?: string;     // row right | row center | row space
   closable?: boolean; // card+ renders a close × in the header
 }

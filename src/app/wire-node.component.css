@@ -150,6 +150,7 @@
   border-radius: 6px;
   padding: 9px 11px;
 }
+.wn-pick__wrap { position: relative; }
 .wn-pick__input {
   height: 34px;
   background: var(--w-bg);
@@ -159,8 +160,30 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 11px;
+  cursor: pointer;
+  user-select: none;
 }
-.wn-pick__arrow { color: var(--w-inkFaint); font-size: 9px; }
+.wn-pick__arrow { color: var(--w-inkFaint); font-size: 9px; transition: transform 0.15s; }
+.wn-pick__arrow--open { transform: rotate(180deg); }
+.wn-pick__dropdown {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0; right: 0;
+  background: var(--w-surface);
+  border: 1.5px solid var(--w-border);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+}
+.wn-pick__option {
+  padding: 7px 11px;
+  font-size: 13px;
+  color: var(--w-ink);
+  cursor: pointer;
+}
+.wn-pick__option:hover { background: var(--w-fill); }
+.wn-pick__option--sel { background: var(--w-fill); font-weight: 600; }
 
 /* ── CHECKBOX ────────────────────────── */
 .wn-check { display: flex; align-items: center; gap: 9px; }

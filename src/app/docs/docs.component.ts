@@ -2,8 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WirePage, ParsedDSL, THEMES } from '../../types';
 import { PageViewComponent } from '../page-view.component';
+import { EditorComponent } from '../editor.component';
 import { ShellThemeService } from '../shell-theme.service';
-import { DslHighlightPipe } from '../dsl-highlight.pipe';
 import { BacetoLogoComponent } from '../boceto-logo.component';
 
 // ── Inline parser (kept in sync) ─────────────────────────────────────────────
@@ -26,9 +26,9 @@ function parseDSL(src: string): ParsedDSL {
     if (!cur) continue;
     while (stack.length && stack[stack.length - 1].indent >= ind) stack.pop();
     const parent = stack.length ? stack[stack.length - 1].node : cur;
-    const styleMatch = t.match(/\s*\$"([^"]*)"\s*$/);
-    const nodeStyle = styleMatch?.[1];
-    if (styleMatch) t = t.slice(0, t.lastIndexOf('$"')).trimEnd();
+    const _sm = t.match(/\s*\$"([^"]*)"\s*$/);
+    const nodeStyle = _sm?.[1];
+    if (_sm) t = t.slice(0, (_sm.index ?? t.length)).trim();
     const rest = t.replace(/^[^\s]+\s*/, '');
     let node: any = null;
     if (t === '---')                    node = { type: 'divider' };
@@ -39,9 +39,9 @@ function parseDSL(src: string): ParsedDSL {
     else if (t.startsWith('tabs '))     node = { type: 'tabs',   items: splitDot(rest), children: [] };
     else if (t.startsWith('field '))    { const pw = rest.trimEnd().endsWith('*'), op = rest.trimEnd().endsWith('?'); node = { type: 'field', label: unquote(noArrow(rest).replace(/[*?]$/, '').trim()), password: pw, optional: op }; }
     else if (t.startsWith('area '))     node = { type: 'area',   label: unquote(rest) };
-    else if (t.startsWith('pick '))     { const [l, ...o] = rest.split('>'); node = { type: 'pick', label: unquote(l.trim()), options: o.join('>').trim().split(/\s+/).filter(Boolean) }; }
-    else if (t.startsWith('check '))    node = { type: 'check',  label: unquote(rest) };
-    else if (t.startsWith('toggle '))   node = { type: 'toggle', label: unquote(rest) };
+    else if (t.startsWith('pick '))     { const parts = splitDot(rest); node = { type: 'pick', label: unquote(parts[0] ?? ''), options: parts.slice(1) }; }
+    else if (t.startsWith('check '))    { const ck = rest.trimEnd().endsWith('*'); node = { type: 'check',  label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
+    else if (t.startsWith('toggle '))   { const ck = rest.trimEnd().endsWith('*'); node = { type: 'toggle', label: unquote(rest.trimEnd().replace(/\*$/, '').trim()), checked: ck || undefined }; }
     else if (t.startsWith('btn '))      node = { type: 'btn',    label: unquote(noArrow(rest)), target: arrowT(rest) };
     else if (t.startsWith('ghost '))    node = { type: 'ghost',  label: unquote(noArrow(rest)), target: arrowT(rest) };
     else if (t.startsWith('link '))     node = { type: 'link',   label: unquote(noArrow(rest)), target: arrowT(rest) };
@@ -67,7 +67,9 @@ export interface DocItem {
   syntax: string;
   desc: string;
   dsl: string;
+  dslLive: string;
   page?: WirePage | null;
+  livePage?: WirePage | null;
   copied?: boolean;
 }
 
@@ -96,8 +98,8 @@ const RAW_SECTIONS: RawSection[] = [
   {
     id: 'navigation', label: 'Navegación', icon: 'N',
     items: [
-      { id: 'nav',  name: 'Barra nav',  syntax: 'nav Logo · Link · Link', desc: 'Barra de navegación superior. Usa · para separar elementos.',
-        dsl: '@P\nnav App · Inicio · Proyectos · Ajustes\n# Contenido\n' },
+      { id: 'nav',  name: 'Barra nav',  syntax: 'nav Logo | Link | Link [$"css"]', desc: 'Barra de navegación. Usa | o · para separar ítems. $"css" aplica estilos al nav.',
+        dsl: '@P\nnav App | Inicio | Proyectos | Ajustes\nnav App | Inicio | Proyectos $"background:#0d1b2a;color:#c8e4ff"\n# Contenido\n' },
       { id: 'tabs', name: 'Pestañas',   syntax: 'tabs Tab1 · Tab2\n  contenido\n  ---\n  otro', desc: 'Pestañas interactivas. Indenta el contenido de cada tab, usa --- para separar secciones.',
         dsl: '@P\ntabs General · Seguridad · Billing\n  field Nombre completo\n  field Email\n  btn Guardar\n  ---\n  toggle Autenticación 2FA\n  toggle Sesiones activas\n  ---\n  pick Plan > Free Pro Enterprise\n  note Facturación mensual\n' },
     ],
@@ -108,7 +110,7 @@ const RAW_SECTIONS: RawSection[] = [
       { id: 'row',   name: 'Fila',     syntax: 'row [right|center|space]\n  hijo\n  hijo', desc: 'Agrupa hijos en fila horizontal. Opciones de alineación: right, center, space.',
         dsl: '@P\nrow\n  card Columna A\n    p Texto aquí\n  card Columna B\n    p Otro contenido\nrow right\n  ghost Cancelar\n  btn Guardar\n' },
       { id: 'col',   name: 'Columna',  syntax: 'col\n  hijo\n  hijo',                       desc: 'Apila hijos en columna vertical dentro de un row.',
-        dsl: '@P\nrow\n  img Foto de perfil\n  col\n    # Ana García\n    p Diseñadora UX · Madrid\n    row\n      badge Pro\n      badge Activo\n' },
+        dsl: '@P\nrow\n  img Foto de perfil\n  col\n    # Ana García\n    p Diseñadora UX | Madrid\n    row\n      badge Pro $"background:#f3e8ff;color:#7e22ce;border-color:#d8b4fe"\n      badge Activo $"background:#dcfce7;color:#166534;border-color:#86efac"\n' },
       { id: 'card',  name: 'Tarjeta',  syntax: 'card [Título] / card+ [Título]',             desc: 'Contenedor con borde. card+ agrega botón × para cerrar.',
         dsl: '@P\ncard Resumen\n  p Descripción del contenido\n  row\n    kpi 128 Activos\n    kpi 94% Éxito\ncard+ Configuración\n  toggle Notificaciones\n  toggle Modo oscuro\n' },
       { id: 'modal', name: 'Modal',    syntax: 'modal Título\n  contenido',                  desc: 'Diálogo modal con overlay y botón de cierre.',
@@ -170,7 +172,7 @@ const RAW_SECTIONS: RawSection[] = [
 @Component({
   selector: 'app-docs',
   standalone: true,
-  imports: [RouterLink, PageViewComponent, DslHighlightPipe, BacetoLogoComponent],
+  imports: [RouterLink, PageViewComponent, EditorComponent, BacetoLogoComponent],
   templateUrl: './docs.component.html',
   styleUrls: ['./docs.component.css'],
 })
@@ -201,9 +203,10 @@ export class DocsComponent implements OnInit {
     this.sections = RAW_SECTIONS.map(sec => ({
       ...sec,
       items: sec.items.map(item => {
-        const parsed = parseDSL(item.dsl);
+        const dslLive = item.dsl.trim();
+        const parsed = parseDSL(dslLive);
         const page = parsed.pages['P'] ?? null;
-        return { ...item, page, copied: false };
+        return { ...item, dslLive, page, livePage: page, copied: false };
       }),
     }));
   }
@@ -214,15 +217,21 @@ export class DocsComponent implements OnInit {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  onDslChange(item: DocItem, dsl: string): void {
+    item.dslLive = dsl;
+    const parsed = parseDSL(dsl);
+    item.livePage = parsed.pages['P'] ?? null;
+  }
+
   copyDsl(item: DocItem): void {
-    navigator.clipboard.writeText(item.dsl.trim()).then(() => {
+    navigator.clipboard.writeText(item.dslLive.trim()).then(() => {
       this.copiedId.set(item.id);
       setTimeout(() => this.copiedId.set(null), 2000);
     });
   }
 
   openInEditor(item: DocItem): void {
-    const b64 = btoa(unescape(encodeURIComponent(item.dsl)));
+    const b64 = btoa(unescape(encodeURIComponent(item.dslLive)));
     window.location.href = `${window.location.origin}/#/editor?w=${encodeURIComponent(b64)}`;
   }
 }

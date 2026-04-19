@@ -3,10 +3,10 @@
   <!-- ── Navigation bar ───────────────────────────────── -->
   @case ('nav') {
     <div class="wn-nav" [class.wn-nav--root]="depth === 0" [attr.style]="node.style || null">
-      <b class="wn-nav__logo">{{ node.items?.[0] }}</b>
+      <b class="wn-nav__logo" [attr.style]="iStyle(node.items?.[0] ?? '')">{{ iText(node.items?.[0] ?? '') }}</b>
       <div class="wn-nav__links">
         @for (item of node.items?.slice(1); track $index) {
-          <span class="wn-nav__link">{{ item }}</span>
+          <span class="wn-nav__link" [attr.style]="iStyle(item)">{{ iText(item) }}</span>
         }
       </div>
     </div>
@@ -20,8 +20,9 @@
           <button
             class="wn-tabs__tab"
             [class.wn-tabs__tab--active]="getTab(node) === $index"
+            [attr.style]="iStyle(item)"
             (click)="setTab(node, $index)">
-            {{ item }}
+            {{ iText(item) }}
           </button>
         }
       </div>
@@ -40,7 +41,8 @@
     <div class="wn-row"
       [class.wn-row--right]="node.align === 'right'"
       [class.wn-row--center]="node.align === 'center'"
-      [class.wn-row--space]="node.align === 'space'">
+      [class.wn-row--space]="node.align === 'space'"
+      [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
         <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
       }
@@ -49,7 +51,7 @@
 
   <!-- ── Col container (vertical stack inside row) ────── -->
   @case ('col') {
-    <div class="wn-col">
+    <div class="wn-col" [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
         <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
       }
@@ -77,7 +79,7 @@
 
   <!-- ── Aside sidebar ────────────────────────────────── -->
   @case ('aside') {
-    <div class="wn-aside">
+    <div class="wn-aside" [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
         <wire-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></wire-node>
       }
@@ -102,11 +104,11 @@
   }
 
   <!-- ── Typography ───────────────────────────────────── -->
-  @case ('h1')      { <div class="wn-h1">{{ node.text }}</div> }
-  @case ('h2')      { <div class="wn-h2">{{ node.text }}</div> }
-  @case ('h3')      { <div class="wn-h3">{{ node.text }}</div> }
-  @case ('para')    { <div class="wn-para">{{ node.text }}</div> }
-  @case ('note')    { <div class="wn-note">{{ node.text }}</div> }
+  @case ('h1')      { <div class="wn-h1"   [attr.style]="node.style || null">{{ node.text }}</div> }
+  @case ('h2')      { <div class="wn-h2"   [attr.style]="node.style || null">{{ node.text }}</div> }
+  @case ('h3')      { <div class="wn-h3"   [attr.style]="node.style || null">{{ node.text }}</div> }
+  @case ('para')    { <div class="wn-para" [attr.style]="node.style || null">{{ node.text }}</div> }
+  @case ('note')    { <div class="wn-note" [attr.style]="node.style || null">{{ node.text }}</div> }
   @case ('divider') { <hr class="wn-divider"> }
 
   <!-- ── Text field ───────────────────────────────────── -->
@@ -136,18 +138,31 @@
 
   <!-- ── Dropdown ─────────────────────────────────────── -->
   @case ('pick') {
-    <div class="wn-field">
+    <div class="wn-field" [attr.style]="node.style || null">
       <div class="wn-field__label">{{ node.label }}</div>
-      <div class="wn-pick__input">
-        <span class="wn-field__placeholder">{{ node.options?.[0] || 'Seleccionar…' }}</span>
-        <span class="wn-pick__arrow">▾</span>
+      <div class="wn-pick__wrap">
+        <div class="wn-pick__input" (click)="togglePickOpen(node)">
+          <span class="wn-field__placeholder">{{ node.options?.[getPickSel(node)] || 'Seleccionar…' }}</span>
+          <span class="wn-pick__arrow" [class.wn-pick__arrow--open]="isPickOpen(node)">▾</span>
+        </div>
+        @if (isPickOpen(node) && node.options?.length) {
+          <div class="wn-pick__dropdown">
+            @for (opt of node.options; track $index) {
+              <div class="wn-pick__option"
+                [class.wn-pick__option--sel]="getPickSel(node) === $index"
+                (click)="selectPick(node, $index); $event.stopPropagation()">
+                {{ opt }}
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
   }
 
   <!-- ── Checkbox ─────────────────────────────────────── -->
   @case ('check') {
-    <div class="wn-check" (click)="flipCheck(node)" style="cursor:pointer">
+    <div class="wn-check" (click)="flipCheck(node)" style="cursor:pointer" [attr.style]="node.style ? 'cursor:pointer;' + node.style : 'cursor:pointer'">
       <div class="wn-check__box" [class.wn-check__box--on]="getCheck(node)">
         @if (getCheck(node)) {
           <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -161,7 +176,7 @@
 
   <!-- ── Toggle ───────────────────────────────────────── -->
   @case ('toggle') {
-    <div class="wn-toggle" (click)="flipToggle(node)" style="cursor:pointer">
+    <div class="wn-toggle" (click)="flipToggle(node)" [attr.style]="node.style ? 'cursor:pointer;' + node.style : 'cursor:pointer'">
       <span class="wn-toggle__label">{{ node.label }}</span>
       <div class="wn-toggle__track" [class.wn-toggle__track--on]="getToggle(node)">
         <div class="wn-toggle__thumb" [class.wn-toggle__thumb--on]="getToggle(node)"></div>
