@@ -4,7 +4,7 @@
 
 # Boceto
 
-Write screens in plain text → navigate between them → export to SVG → switch themes
+Write screens in plain text → navigate between them → switch themes → embed anywhere
 
 **Live Demo: [boceto.online](https://boceto.online/)**
 

@@ -32,8 +32,7 @@ export class LicenseComponent {
         'Proyectos open source',
         'Todas las funciones del editor',
         'Todos los temas',
-        'Export SVG',
-        'Plugins (Prism, Docsify, VSCode)',
+        'Todos los plugins (Web Component, React, Vue, remark…)',
         'Publicar modificaciones (AGPL)',
       ],
       excluded: [
