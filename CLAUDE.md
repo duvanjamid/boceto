@@ -76,6 +76,8 @@ CodeMirror 6 wrapper. Custom Boceto DSL `StreamLanguage` in `src/boceto-lang.ts`
 - `boceto-vscode/` — full VSCode extension
 - `boceto-obsidian/` — Obsidian community plugin
 - `boceto-intellij/` — IntelliJ/WebStorm/PyCharm bundle
+- `boceto-ai-tools.js` — Schemas para Anthropic/OpenAI/Google + `handleToolCall(name, input)` + `DSL_REFERENCE` + `SYSTEM_PROMPT`. Requiere `dist/lib/parser.js`.
+- `boceto-mcp.js` — Servidor MCP ejecutable (`node plugins/boceto-mcp.js`). Expone `parse_boceto` y `get_dsl_reference` sobre stdio. Requiere `@modelcontextprotocol/sdk`.
 
 ## Boceto DSL Reference
 
@@ -135,6 +137,7 @@ nav App | Inicio $"background:#1a1630"
   "./plugins/vue":            "plugins/boceto-vue.js",
   "./plugins/remark":         "plugins/boceto-remark.js",
   "./plugins/prism":          "plugins/boceto-prism.js",
-  "./plugins/docsify":        "plugins/boceto-docsify.js"
+  "./plugins/docsify":        "plugins/boceto-docsify.js",
+  "./plugins/ai-tools":       "plugins/boceto-ai-tools.js"
 }
 ```

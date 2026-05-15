@@ -16,7 +16,8 @@
     "./plugins/vue":           "./plugins/boceto-vue.js",
     "./plugins/remark":        "./plugins/boceto-remark.js",
     "./plugins/prism":         "./plugins/boceto-prism.js",
-    "./plugins/docsify":       "./plugins/boceto-docsify.js"
+    "./plugins/docsify":       "./plugins/boceto-docsify.js",
+    "./plugins/ai-tools":      "./plugins/boceto-ai-tools.js"
   },
   "files": [
     "dist/lib",
@@ -71,6 +72,9 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"
+  },
+  "optionalDependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.0",
