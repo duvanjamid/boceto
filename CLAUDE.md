@@ -76,8 +76,9 @@ CodeMirror 6 wrapper. Custom Boceto DSL `StreamLanguage` in `src/boceto-lang.ts`
 - `boceto-vscode/` — full VSCode extension
 - `boceto-obsidian/` — Obsidian community plugin
 - `boceto-intellij/` — IntelliJ/WebStorm/PyCharm bundle
-- `boceto-ai-tools.js` — Schemas para Anthropic/OpenAI/Google + `handleToolCall(name, input)` + `DSL_REFERENCE` + `SYSTEM_PROMPT`. Requiere `dist/lib/parser.js`.
-- `boceto-mcp.js` — Servidor MCP ejecutable. Expone `parse_boceto` y `get_dsl_reference` sobre stdio. Terceros lo usan vía `npx -y --package=@duvanjamid/boceto boceto-mcp` (bin `boceto-mcp` definido en package.json).
+- `boceto-ai-tools.js` — Schemas para Anthropic/OpenAI/Google + `handleToolCall(name, input)` + `DSL_REFERENCE` + `SYSTEM_PROMPT`. Herramientas: `parse_boceto`, `get_dsl_reference`, `open_in_editor`. Requiere `dist/lib/parser.js`.
+- `boceto-mcp.js` — Servidor MCP stdio. Terceros lo usan vía `npx -y --package=@duvanjamid/boceto boceto-mcp` sin instalar nada.
+- `boceto-mcp-http.js` — Servidor MCP remoto HTTP (`StreamableHTTPServerTransport`). Escucha en `PORT` (default 3100) en `/mcp`. Deploy con `npm run mcp:serve`. Clientes conectan con `{ "url": "https://boceto.online/mcp" }`.
 
 ## Boceto DSL Reference
 

@@ -20,7 +20,8 @@
     "./plugins/ai-tools": "./plugins/boceto-ai-tools.js"
   },
   "bin": {
-    "boceto-mcp": "./plugins/boceto-mcp.js"
+    "boceto-mcp":      "./plugins/boceto-mcp.js",
+    "boceto-mcp-http": "./plugins/boceto-mcp-http.js"
   },
   "files": [
     "dist/lib",
@@ -55,7 +56,8 @@
     "build": "ng build",
     "preview": "ng serve --configuration production",
     "build:lib": "tsc -p tsconfig.lib.json",
-    "prepublishOnly": "npm run build:lib"
+    "prepublishOnly": "npm run build:lib",
+    "mcp:serve": "node plugins/boceto-mcp-http.js"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",

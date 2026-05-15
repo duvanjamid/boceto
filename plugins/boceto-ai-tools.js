@@ -13,11 +13,13 @@ import { parseDSL } from '../dist/lib/parser.js';
 
 // ── Tool names ────────────────────────────────────────────────────────────────
 
-const TOOL_PARSE = 'parse_boceto';
-const TOOL_REF   = 'get_dsl_reference';
+const TOOL_PARSE  = 'parse_boceto';
+const TOOL_REF    = 'get_dsl_reference';
+const TOOL_EDITOR = 'open_in_editor';
 
-const PARSE_DESC = 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, and frame type. Use this to check that generated DSL is syntactically correct before presenting it to the user.';
-const REF_DESC   = 'Return the full Boceto DSL syntax reference. Call this before generating wireframe code if you are unsure of the available keywords or their syntax.';
+const PARSE_DESC  = 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, and frame type. Use this to check that generated DSL is syntactically correct before presenting it to the user.';
+const REF_DESC    = 'Return the full Boceto DSL syntax reference. Call this before generating wireframe code if you are unsure of the available keywords or their syntax.';
+const EDITOR_DESC = 'Encode a Boceto DSL string and return a shareable URL that opens it directly in the Boceto online editor (boceto.online). Use this as the final step after generating and validating a wireframe so the user can interact with it immediately.';
 
 // ── Anthropic (Claude) tool schemas ──────────────────────────────────────────
 
@@ -42,6 +44,20 @@ export const anthropicTools = [
     input_schema: {
       type: 'object',
       properties: {}
+    }
+  },
+  {
+    name: TOOL_EDITOR,
+    description: EDITOR_DESC,
+    input_schema: {
+      type: 'object',
+      properties: {
+        dsl: {
+          type: 'string',
+          description: 'The Boceto DSL source code to open in the editor.'
+        }
+      },
+      required: ['dsl']
     }
   }
 ];
@@ -81,6 +97,25 @@ export const openaiTools = [
       },
       strict: true
     }
+  },
+  {
+    type: 'function',
+    function: {
+      name: TOOL_EDITOR,
+      description: EDITOR_DESC,
+      parameters: {
+        type: 'object',
+        properties: {
+          dsl: {
+            type: 'string',
+            description: 'The Boceto DSL source code to open in the editor.'
+          }
+        },
+        required: ['dsl'],
+        additionalProperties: false
+      },
+      strict: true
+    }
   }
 ];
 
@@ -110,6 +145,20 @@ export const googleTools = [
         parameters: {
           type: 'OBJECT',
           properties: {}
+        }
+      },
+      {
+        name: TOOL_EDITOR,
+        description: EDITOR_DESC,
+        parameters: {
+          type: 'OBJECT',
+          properties: {
+            dsl: {
+              type: 'STRING',
+              description: 'The Boceto DSL source code to open in the editor.'
+            }
+          },
+          required: ['dsl']
         }
       }
     ]
@@ -148,6 +197,16 @@ export async function handleToolCall(name, input = {}) {
       }
       case TOOL_REF:
         return { reference: DSL_REFERENCE };
+      case TOOL_EDITOR: {
+        const dsl = typeof input.dsl === 'string' ? input.dsl : '';
+        const b64 = Buffer.from(dsl, 'utf8').toString('base64');
+        const encoded = encodeURIComponent(b64);
+        return {
+          success: true,
+          url: `https://boceto.online/#/editor?w=${encoded}`,
+          dsl
+        };
+      }
       default:
         return { success: false, error: `Unknown tool: ${name}` };
     }
@@ -264,10 +323,10 @@ card+ Recent Activity
 
 export const SYSTEM_PROMPT = `You are a UI wireframe designer using the Boceto DSL. When a user asks you to design a screen, flow, or interface:
 
-1. Write valid Boceto DSL inside a fenced code block (\`\`\`boceto).
-2. Call the parse_boceto tool to validate your DSL before presenting it to the user.
-   - If the result has pageCount=0 or nodeCount=0, your DSL is empty or invalid — revise it.
-3. Call get_dsl_reference if you are unsure about keyword syntax.
+1. Call get_dsl_reference if you are unsure about keyword syntax.
+2. Write valid Boceto DSL inside a fenced code block (\`\`\`boceto).
+3. Call parse_boceto to validate your DSL. If pageCount=0 or nodeCount=0, revise and retry.
+4. Call open_in_editor with the final DSL — return the URL so the user can open the wireframe instantly.
 
 Key DSL rules:
 - Each screen starts with @PageName (no spaces in the name).
