@@ -77,7 +77,7 @@ CodeMirror 6 wrapper. Custom Boceto DSL `StreamLanguage` in `src/boceto-lang.ts`
 - `boceto-obsidian/` — Obsidian community plugin
 - `boceto-intellij/` — IntelliJ/WebStorm/PyCharm bundle
 - `boceto-ai-tools.js` — Schemas para Anthropic/OpenAI/Google + `handleToolCall(name, input)` + `DSL_REFERENCE` + `SYSTEM_PROMPT`. Requiere `dist/lib/parser.js`.
-- `boceto-mcp.js` — Servidor MCP ejecutable (`node plugins/boceto-mcp.js`). Expone `parse_boceto` y `get_dsl_reference` sobre stdio. Requiere `@modelcontextprotocol/sdk`.
+- `boceto-mcp.js` — Servidor MCP ejecutable. Expone `parse_boceto` y `get_dsl_reference` sobre stdio. Terceros lo usan vía `npx -y --package=@duvanjamid/boceto boceto-mcp` (bin `boceto-mcp` definido en package.json).
 
 ## Boceto DSL Reference
 

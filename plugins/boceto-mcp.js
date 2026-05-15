@@ -5,47 +5,26 @@
  *
  * Exposes parse_boceto and get_dsl_reference as MCP tools over stdio.
  *
- * Usage:
- *   node plugins/boceto-mcp.js
- *
- * Claude Desktop (~/.claude/claude_desktop_config.json):
+ * — Claude Desktop / Claude Code (~/.claude/claude_desktop_config.json):
  *   {
  *     "mcpServers": {
  *       "boceto": {
- *         "command": "node",
- *         "args": ["/absolute/path/to/boceto/plugins/boceto-mcp.js"]
+ *         "command": "npx",
+ *         "args": ["-y", "--package=@duvanjamid/boceto", "boceto-mcp"]
  *       }
  *     }
  *   }
  *
- * Requires:
- *   npm install @modelcontextprotocol/sdk
- *   npm run build:lib   (to build dist/lib/parser.js)
+ * — If installed globally (npm i -g @duvanjamid/boceto):
+ *   { "mcpServers": { "boceto": { "command": "boceto-mcp" } } }
  */
 
-import { handleToolCall } from './boceto-ai-tools.js';
+import { Server }               from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { handleToolCall }       from './boceto-ai-tools.js';
 
-// ── Load MCP SDK (optional dependency) ───────────────────────────────────────
-
-let Server, StdioServerTransport, ListToolsRequestSchema, CallToolRequestSchema;
-
-try {
-  const serverMod = await import('@modelcontextprotocol/sdk/server/index.js');
-  const stdioMod  = await import('@modelcontextprotocol/sdk/server/stdio.js');
-  const typesMod  = await import('@modelcontextprotocol/sdk/types.js');
-  Server                = serverMod.Server;
-  StdioServerTransport  = stdioMod.StdioServerTransport;
-  ListToolsRequestSchema = typesMod.ListToolsRequestSchema;
-  CallToolRequestSchema  = typesMod.CallToolRequestSchema;
-} catch {
-  console.error(
-    '[boceto-mcp] @modelcontextprotocol/sdk is not installed.\n' +
-    'Run: npm install @modelcontextprotocol/sdk'
-  );
-  process.exit(1);
-}
-
-// ── Server setup ──────────────────────────────────────────────────────────────
+// ── Server ────────────────────────────────────────────────────────────────────
 
 const server = new Server(
   { name: 'boceto', version: '0.2.0' },
