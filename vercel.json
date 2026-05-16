@@ -1,5 +1,8 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build:lib && npm run build",
   "outputDirectory": "dist/wirescript/browser",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/mcp", "destination": "/api/mcp" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
