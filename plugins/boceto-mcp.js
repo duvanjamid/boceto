@@ -3,7 +3,7 @@
  * Boceto MCP Server — Model Context Protocol server for Boceto DSL tools
  * Copyright (c) 2024 Duvan Jamid · AGPL-3.0-or-later
  *
- * Exposes parse_boceto and get_dsl_reference as MCP tools over stdio.
+ * Exposes parse_boceto, get_dsl_reference, and open_in_editor as MCP tools over stdio.
  *
  * — Claude Desktop / Claude Code (~/.claude/claude_desktop_config.json):
  *   {
@@ -58,6 +58,23 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       inputSchema: {
         type: 'object',
         properties: {}
+      }
+    },
+    {
+      name: 'open_in_editor',
+      description:
+        'Encode a Boceto DSL string and return a shareable URL that opens it directly in the ' +
+        'Boceto online editor (boceto.online). Use this as the final step after generating and ' +
+        'validating a wireframe so the user can interact with it immediately.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          dsl: {
+            type: 'string',
+            description: 'The Boceto DSL source code to open in the editor.'
+          }
+        },
+        required: ['dsl']
       }
     }
   ]
