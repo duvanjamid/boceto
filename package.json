@@ -16,7 +16,12 @@
     "./plugins/vue":           "./plugins/boceto-vue.js",
     "./plugins/remark":        "./plugins/boceto-remark.js",
     "./plugins/prism":         "./plugins/boceto-prism.js",
-    "./plugins/docsify":       "./plugins/boceto-docsify.js"
+    "./plugins/docsify":       "./plugins/boceto-docsify.js",
+    "./plugins/ai-tools":      "./plugins/boceto-ai-tools.js"
+  },
+  "bin": {
+    "boceto-mcp":      "./plugins/boceto-mcp.js",
+    "boceto-mcp-http": "./plugins/boceto-mcp-http.js"
   },
   "files": [
     "dist/lib",
@@ -51,7 +56,8 @@
     "build": "ng build",
     "preview": "ng serve --configuration production",
     "build:lib": "tsc -p tsconfig.lib.json",
-    "prepublishOnly": "npm run build:lib"
+    "prepublishOnly": "npm run build:lib",
+    "mcp:serve": "node plugins/boceto-mcp-http.js"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
@@ -68,6 +74,7 @@
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.26.0",
     "@lezer/highlight": "^1.2.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"
