@@ -16,7 +16,7 @@ import { parseDSL } from '../dist/lib/parser.js';
 const TOOLS = [
   {
     name: 'boceto_parse',
-    description: 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, and frame type. Use this to check that generated DSL is syntactically correct before presenting it to the user.',
+    description: 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, frame type, recursive node count per page, and warnings (broken links, empty pages, empty containers). Use this to check that generated DSL is correct before presenting it to the user.',
     schema: {
       type: 'object',
       properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to parse. May contain one or more @PageName screens.' } },
@@ -136,6 +136,45 @@ export const googleTools = [{
   }))
 }];
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function countNodes(nodes = []) {
+  return nodes.reduce((sum, n) => sum + 1 + countNodes(n.children ?? []), 0);
+}
+
+function collectWarnings(pages, dsl) {
+  const warnings = [];
+  const declared = new Set(Object.keys(pages));
+
+  // Broken navigation links
+  for (const ref of [...new Set([...dsl.matchAll(/>\s*@(\w+)/g)].map(m => m[1]))]) {
+    if (!declared.has(ref)) {
+      warnings.push({ type: 'broken_link', message: `Navigation target @${ref} not found in declared pages`, target: `@${ref}` });
+    }
+  }
+
+  // Pages with no elements
+  for (const [name, page] of Object.entries(pages)) {
+    if (!page.children?.length) {
+      warnings.push({ type: 'empty_page', message: `Page @${name} has no elements`, page: name });
+    }
+  }
+
+  // Empty containers
+  const CONTAINERS = new Set(['row', 'col', 'card', 'aside', 'modal', 'tabs', 'list']);
+  function checkEmpty(nodes, pageName) {
+    for (const n of nodes ?? []) {
+      if (CONTAINERS.has(n.type) && !n.children?.length) {
+        warnings.push({ type: 'empty_container', message: `Empty ${n.type} container on page @${pageName}`, page: pageName, element: n.type });
+      }
+      checkEmpty(n.children, pageName);
+    }
+  }
+  for (const [name, page] of Object.entries(pages)) checkEmpty(page.children, name);
+
+  return warnings;
+}
+
 // ── Tool executor ─────────────────────────────────────────────────────────────
 
 export async function handleToolCall(name, input = {}) {
@@ -146,8 +185,10 @@ export async function handleToolCall(name, input = {}) {
         const dsl = typeof input.dsl === 'string' ? input.dsl : '';
         const parsed = parseDSL(dsl);
         const pageNames = Object.keys(parsed.pages);
-        const nodeCount = pageNames.reduce((sum, p) => sum + (parsed.pages[p].children?.length ?? 0), 0);
-        return { success: true, theme: parsed.theme, frame: parsed.frame, pageCount: pageNames.length, pageNames, nodeCount, pages: parsed.pages };
+        const nodesPerPage = Object.fromEntries(pageNames.map(p => [p, countNodes(parsed.pages[p].children)]));
+        const nodeCount = Object.values(nodesPerPage).reduce((a, b) => a + b, 0);
+        const warnings = collectWarnings(parsed.pages, dsl);
+        return { success: true, theme: parsed.theme, frame: parsed.frame, pageCount: pageNames.length, pageNames, nodeCount, nodesPerPage, warnings, pages: parsed.pages };
       }
 
       case 'boceto_get_reference':

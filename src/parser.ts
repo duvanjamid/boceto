@@ -553,11 +553,51 @@ class KpiHandler extends BaseHandler {
  * grid Nombre $"color:red" | Estado | Fecha
  * ```
  */
-class GridHandler extends BaseHandler {
+/**
+ * Handles `::` — a mock data row inside a `grid` container.
+ *
+ * DSL syntax:
+ * ```boceto
+ * grid Nombre | Estado | Fecha
+ *   :: "Juan García" | Activo | 2024-01-15
+ *   :: "María López" | Inactivo | 2024-02-10
+ * ```
+ *
+ * Each `::` line produces a `grid-row` node whose `items` are the cell values.
+ * If a `grid` has no `::` children the renderer falls back to placeholder bars.
+ */
+class GridRowHandler extends BaseHandler {
+  canHandle(t: string): boolean { return t.startsWith('::'); }
+  parse(_t: string, rest: string): WireNode {
+    return { type: 'grid-row', items: rest.trim() ? splitPipe(rest.trim()).map(unquote) : [] };
+  }
+}
+
+/**
+ * Handles `grid` — a data table with column headers and optional mock rows.
+ *
+ * DSL syntax (headers only — renderer generates placeholder bars):
+ * ```boceto
+ * grid Nombre | Estado | Fecha | Acciones
+ * ```
+ *
+ * DSL syntax (with explicit mock rows via `::` children):
+ * ```boceto
+ * grid Nombre | Estado | Fecha
+ *   :: "Juan García" | Activo | 2024-01-15
+ *   :: "María López" | Inactivo | 2024-02-10
+ * ```
+ *
+ * **Per-column styles**: Column headers can carry `$"css"` modifiers:
+ * ```boceto
+ * grid Nombre $"color:red" | Estado | Fecha
+ * ```
+ */
+class GridHandler extends ContainerHandler {
   /** @returns `true` — grid columns support per-item `$"css"` modifiers. */
   override get hasItemStyles(): boolean { return true; }
   canHandle(t: string): boolean { return t.startsWith('grid '); }
-  parse(_t: string, rest: string): WireNode { return { type: 'grid', cols: splitPipe(rest) }; }
+  parse(_t: string, rest: string): WireNode { return { type: 'grid', cols: splitPipe(rest), children: [] }; }
 }
 
 /**
@@ -636,15 +676,21 @@ class RowHandler extends ContainerHandler {
  * DSL syntax:
  * ```boceto
  * row
- *   col
- *     # Izquierda
- *   col
- *     # Derecha
+ *   col              // equal width (flex: 1)
+ *   col narrow       // fixed sidebar width (~220px)
+ *   col wide         // 3× wider than default
+ *   col 2            // 2× wider than default
+ *   col 3            // 3× wider than default
  * ```
+ *
+ * The optional width modifier is stored in {@link WireNode.align} and consumed
+ * by the renderer to apply the corresponding flex/width CSS.
  */
 class ColHandler extends ContainerHandler {
-  canHandle(t: string): boolean { return t === 'col'; }
-  parse(): WireNode { return { type: 'col', children: [] }; }
+  canHandle(t: string): boolean { return t === 'col' || t.startsWith('col '); }
+  parse(t: string): WireNode {
+    return { type: 'col', align: t.length > 3 ? t.slice(4).trim() : '', children: [] };
+  }
 }
 
 /**
@@ -766,6 +812,7 @@ class DSLParser {
     new AvatarHandler(),
     new BadgeHandler(),
     new KpiHandler(),
+    new GridRowHandler(),
     new GridHandler(),
     new ListHandler(),
     new RowHandler(),
