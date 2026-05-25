@@ -7,15 +7,17 @@ import { DocsComponent } from './docs/docs.component';
 import { EmbedComponent } from './embed/embed.component';
 import { EmbedGuideComponent } from './docs/embed-guide/embed-guide.component';
 import { PluginsComponent } from './plugins/plugins.component';
+import { AiToolsComponent } from './ai-tools/ai-tools.component';
 
 export const routes: Routes = [
-  { path: '',       component: LandingComponent },
-  { path: 'editor', component: PlaygroundComponent },
-  { path: 'embed',  component: EmbedComponent },
-  { path: 'view',   component: ViewerComponent },
-  { path: 'docs',   component: DocsComponent },
+  { path: '',         component: LandingComponent },
+  { path: 'editor',   component: PlaygroundComponent },
+  { path: 'embed',    component: EmbedComponent },
+  { path: 'view',     component: ViewerComponent },
+  { path: 'docs',     component: DocsComponent },
   { path: 'docs/embed', component: EmbedGuideComponent },
-  { path: 'plugins', component: PluginsComponent },
-  { path: 'license', component: LicenseComponent },
-  { path: '**',     redirectTo: '' },
+  { path: 'plugins',  component: PluginsComponent },
+  { path: 'ai-tools', component: AiToolsComponent },
+  { path: 'license',  component: LicenseComponent },
+  { path: '**',       redirectTo: '' },
 ];

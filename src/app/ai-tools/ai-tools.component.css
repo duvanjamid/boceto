@@ -1,0 +1,418 @@
+:host {
+  display: block;
+  background: var(--s-bg);
+  color: var(--s-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.mcp__header {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-surface);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  gap: 16px;
+}
+.mcp__logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.mcp__logo-mark {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #7c6ff7, #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 13px;
+}
+.mcp__logo-text {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.3px;
+  color: var(--s-ink);
+}
+.mcp__header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--s-ink2);
+  border-left: 1px solid var(--s-border);
+  padding-left: 16px;
+}
+.mcp__header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mcp__header-link {
+  font-size: 13px;
+  color: var(--s-ink2);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: background .1s, color .1s;
+}
+.mcp__header-link:hover { background: var(--s-hover); color: var(--s-ink); }
+.mcp__theme-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--s-border);
+  background: none;
+  color: var(--s-ink2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s, color .1s;
+}
+.mcp__theme-btn:hover { background: var(--s-hover); color: var(--s-ink); }
+
+/* ── BODY ─────────────────────────────────────────────────── */
+.mcp__body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 54px);
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.mcp__sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--s-border);
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+}
+.mcp__sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--s-ink3);
+  padding: 4px 12px 10px;
+}
+.mcp__sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--s-ink2);
+  cursor: pointer;
+  text-align: left;
+  transition: background .1s, color .1s;
+}
+.mcp__sidebar-item:hover { background: var(--s-hover); color: var(--s-ink); }
+.mcp__sidebar-item--active {
+  background: var(--s-active);
+  color: var(--s-accent);
+  font-weight: 600;
+}
+.mcp__sidebar-icon { font-size: 13px; width: 16px; text-align: center; }
+
+/* ── MAIN ─────────────────────────────────────────────────── */
+.mcp__main {
+  padding: 32px 40px;
+  max-width: 860px;
+}
+
+/* ── INTRO ─────────────────────────────────────────────────── */
+.mcp__intro {
+  margin-bottom: 48px;
+}
+.mcp__intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--s-accentSoft, #ede9fe);
+  color: var(--s-accentText, #6d28d9);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.mcp__intro-title {
+  font-size: 2em;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0 0 12px;
+}
+.mcp__intro-sub {
+  font-size: 1em;
+  color: var(--s-ink2);
+  max-width: 620px;
+  line-height: 1.65;
+  margin: 0 0 20px;
+}
+.mcp__intro-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mcp__tool-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--s-hover);
+  color: var(--s-ink2);
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--s-border);
+}
+
+/* ── SECTION ─────────────────────────────────────────────── */
+.mcp__section {
+  scroll-margin-top: 70px;
+  margin-bottom: 48px;
+}
+.mcp__section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.mcp__section-header i {
+  font-size: 16px;
+  color: var(--s-accent);
+}
+.mcp__section-header h2 {
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.mcp__section-desc {
+  font-size: .92em;
+  color: var(--s-ink2);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+.mcp__section-desc code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--s-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: .9em;
+}
+
+/* ── CLIENT TABS ────────────────────────────────────────────── */
+.mcp__client-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.mcp__client-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--s-border);
+  background: var(--s-surface);
+  color: var(--s-ink2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .1s, color .1s, background .1s;
+}
+.mcp__client-tab:hover { background: var(--s-hover); color: var(--s-ink); }
+.mcp__client-tab--active {
+  border-color: var(--s-accent);
+  color: var(--s-accent);
+  background: var(--s-active);
+  font-weight: 600;
+}
+
+/* ── CODE CARD ──────────────────────────────────────────────── */
+.mcp__code-card {
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.mcp__code-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-bg);
+}
+.mcp__code-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--s-ink2);
+}
+.mcp__copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--s-border);
+  background: none;
+  color: var(--s-ink2);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .1s, color .1s;
+}
+.mcp__copy-btn:hover { background: var(--s-hover); color: var(--s-ink); }
+.mcp__copy-btn--ok { color: #16a34a !important; border-color: #16a34a !important; }
+
+.mcp__code {
+  margin: 0;
+  padding: 18px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  color: var(--s-ink);
+  white-space: pre;
+  background: var(--s-bg);
+}
+
+/* ── TIP ────────────────────────────────────────────────────── */
+.mcp__tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: .83em;
+  color: var(--s-ink2);
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: var(--s-hover);
+  border-radius: 8px;
+  border: 1px solid var(--s-border);
+  margin-top: 12px;
+}
+.mcp__tip i { color: var(--s-accent); margin-top: 1px; flex-shrink: 0; }
+.mcp__tip code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--s-surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: .9em;
+}
+
+/* ── TOOLS GRID ─────────────────────────────────────────────── */
+.mcp__tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mcp__tool-card {
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mcp__tool-card-header {
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid var(--s-border);
+  background: var(--s-bg);
+}
+.mcp__tool-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--s-accent);
+  background: none;
+  padding: 0;
+}
+.mcp__tool-desc {
+  padding: 12px 18px;
+  font-size: .88em;
+  color: var(--s-ink2);
+  line-height: 1.6;
+  margin: 0;
+  border-bottom: 1px solid var(--s-border);
+}
+.mcp__tool-inputs {
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--s-border);
+}
+.mcp__tool-inputs-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--s-ink3);
+  margin-bottom: 8px;
+}
+.mcp__tool-input {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: .82em;
+  margin-bottom: 5px;
+}
+.mcp__tool-input-name {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--s-ink);
+  font-weight: 600;
+  background: var(--s-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.mcp__tool-input-type {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--s-ink2);
+  font-size: .9em;
+}
+.mcp__tool-optional {
+  font-size: .85em;
+  color: var(--s-ink3);
+  background: var(--s-hover);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--s-border);
+}
+.mcp__tool-input-desc {
+  color: var(--s-ink2);
+}
+.mcp__tool-output {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--s-bg);
+}
+.mcp__tool-output-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--s-ink3);
+  white-space: nowrap;
+}
+.mcp__tool-output-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78em;
+  color: var(--s-ink2);
+  background: none;
+  padding: 0;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mcp__body { grid-template-columns: 1fr; }
+  .mcp__sidebar { display: none; }
+  .mcp__main { padding: 20px 16px; }
+}

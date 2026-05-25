@@ -11,27 +11,18 @@ import http from 'node:http';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { handleToolCall } from './boceto-ai-tools.js';
+import { handleToolCall, mcpTools } from './boceto-ai-tools.js';
 
 const PORT = Number(process.env.PORT ?? 3100);
 
 function createMcpServer() {
-  const server = new Server({ name: 'boceto', version: '0.2.0' }, { capabilities: { tools: {} } });
-
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [
-      { name: 'parse_boceto', description: 'Parse and validate a Boceto DSL wireframe string.', inputSchema: { type: 'object', properties: { dsl: { type: 'string' } }, required: ['dsl'] } },
-      { name: 'get_dsl_reference', description: 'Return the full Boceto DSL syntax reference.', inputSchema: { type: 'object', properties: {} } },
-      { name: 'open_in_editor', description: 'Return a boceto.online editor URL for the given DSL.', inputSchema: { type: 'object', properties: { dsl: { type: 'string' } }, required: ['dsl'] } }
-    ]
-  }));
-
+  const server = new Server({ name: 'boceto', version: '0.3.0' }, { capabilities: { tools: {} } });
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: mcpTools }));
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     const result = await handleToolCall(name, args ?? {});
     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }], ...(result.success === false ? { isError: true } : {}) };
   });
-
   return server;
 }
 

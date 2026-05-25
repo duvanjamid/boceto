@@ -1,0 +1,263 @@
+<div class="mcp">
+
+  <!-- ── HEADER ── -->
+  <header class="mcp__header">
+    <a class="mcp__logo" routerLink="/">
+      <div class="mcp__logo-mark">B</div>
+      <span class="mcp__logo-text">Boceto</span>
+    </a>
+    <span class="mcp__header-title">AI &amp; MCP Tools</span>
+    <div class="mcp__header-actions">
+      <a class="mcp__header-link" routerLink="/plugins">Plugins</a>
+      <a class="mcp__header-link" routerLink="/docs">Componentes</a>
+      <a class="mcp__header-link" routerLink="/editor">Editor</a>
+      <button class="mcp__theme-btn" (click)="theme.toggle()" [title]="theme.dark() ? 'Modo claro' : 'Modo oscuro'">
+        <i [class]="theme.dark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="mcp__body">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="mcp__sidebar">
+      <div class="mcp__sidebar-label">Secciones</div>
+      @for (sec of sections; track sec.id) {
+        <button class="mcp__sidebar-item"
+          [class.mcp__sidebar-item--active]="activeSection() === sec.id"
+          (click)="scrollTo(sec.id)">
+          <i [class]="sec.icon + ' mcp__sidebar-icon'"></i>
+          {{ sec.label }}
+        </button>
+      }
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="mcp__main">
+
+      <!-- Intro -->
+      <div class="mcp__intro">
+        <div class="mcp__intro-badge"><i class="fa-solid fa-robot"></i> Model Context Protocol</div>
+        <h1 class="mcp__intro-title">Boceto para agentes de IA</h1>
+        <p class="mcp__intro-sub">
+          Conecta Boceto a Claude, GPT, Gemini o cualquier agente compatible con MCP.
+          Los modelos pueden generar, validar y compartir wireframes directamente en tus conversaciones.
+        </p>
+        <div class="mcp__intro-tools">
+          @for (t of tools; track t.name) {
+            <span class="mcp__tool-chip">{{ t.name }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- ── SETUP ── -->
+      <section class="mcp__section" id="section-setup">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-plug"></i>
+          <h2>Conectar MCP (local / stdio)</h2>
+        </div>
+        <p class="mcp__section-desc">
+          El servidor MCP de Boceto se distribuye como binario npm. No necesitas clonar el repo ni construir nada —
+          el cliente lo descarga y ejecuta automáticamente con <code>npx</code>.
+        </p>
+
+        <!-- Client tabs -->
+        <div class="mcp__client-tabs">
+          @for (c of clients; track c.id) {
+            <button class="mcp__client-tab"
+              [class.mcp__client-tab--active]="activeClientTab() === c.id"
+              (click)="activeClientTab.set(c.id)">
+              <i [class]="c.icon"></i> {{ c.name }}
+            </button>
+          }
+        </div>
+
+        <div class="mcp__code-card">
+          <div class="mcp__code-card-header">
+            <span class="mcp__code-label">{{ currentClient().name }}</span>
+            <button class="mcp__copy-btn"
+              [class.mcp__copy-btn--ok]="copiedId() === currentClient().id"
+              (click)="copyCode(currentClient().id, currentClient().config)">
+              @if (copiedId() === currentClient().id) {
+                <i class="fa-solid fa-check"></i> Copiado
+              } @else {
+                <i class="fa-regular fa-copy"></i> Copiar
+              }
+            </button>
+          </div>
+          <pre class="mcp__code"><code>{{ currentClient().config }}</code></pre>
+        </div>
+
+        <div class="mcp__tip">
+          <i class="fa-solid fa-circle-info"></i>
+          Reinicia el cliente después de guardar la configuración para que los tools aparezcan disponibles.
+        </div>
+      </section>
+
+      <!-- ── REMOTE ── -->
+      <section class="mcp__section" id="section-remote">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-cloud"></i>
+          <h2>MCP remoto — boceto.online/mcp</h2>
+        </div>
+        <p class="mcp__section-desc">
+          Si tu cliente soporta MCP sobre HTTP (Streamable HTTP), puedes conectarte directamente al endpoint
+          público sin instalar nada. Útil para entornos cloud o cuando no tienes acceso al sistema de archivos.
+        </p>
+
+        <div class="mcp__code-card">
+          <div class="mcp__code-card-header">
+            <span class="mcp__code-label">Clientes compatibles con HTTP MCP</span>
+            <button class="mcp__copy-btn"
+              [class.mcp__copy-btn--ok]="copiedId() === 'remote'"
+              (click)="copyCode('remote', remoteConfig)">
+              @if (copiedId() === 'remote') {
+                <i class="fa-solid fa-check"></i> Copiado
+              } @else {
+                <i class="fa-regular fa-copy"></i> Copiar
+              }
+            </button>
+          </div>
+          <pre class="mcp__code"><code>&#123;
+  "mcpServers": &#123;
+    "boceto": &#123;
+      "url": "https://boceto.online/mcp"
+    &#125;
+  &#125;
+&#125;</code></pre>
+        </div>
+
+        <div class="mcp__tip">
+          <i class="fa-solid fa-circle-info"></i>
+          El endpoint remoto es stateless — cada request es independiente. Compatible con Claude.ai Projects, agentes en la nube y pipelines CI/CD.
+        </div>
+      </section>
+
+      <!-- ── TOOLS ── -->
+      <section class="mcp__section" id="section-tools">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-wrench"></i>
+          <h2>Referencia de tools</h2>
+        </div>
+        <p class="mcp__section-desc">
+          Todas las tools están prefijadas con <code>boceto_</code> para identificarlas fácilmente
+          cuando tienes múltiples MCPs configurados.
+        </p>
+
+        <div class="mcp__tools-grid">
+          @for (tool of tools; track tool.name) {
+            <div class="mcp__tool-card">
+              <div class="mcp__tool-card-header">
+                <code class="mcp__tool-name">{{ tool.name }}</code>
+              </div>
+              <p class="mcp__tool-desc">{{ tool.description }}</p>
+              @if (tool.inputs.length > 0) {
+                <div class="mcp__tool-inputs">
+                  <div class="mcp__tool-inputs-label">Parámetros</div>
+                  @for (inp of tool.inputs; track inp.name) {
+                    <div class="mcp__tool-input">
+                      <code class="mcp__tool-input-name">{{ inp.name }}</code>
+                      <span class="mcp__tool-input-type">{{ inp.type }}</span>
+                      @if (!inp.required) { <span class="mcp__tool-optional">opcional</span> }
+                      <span class="mcp__tool-input-desc">— {{ inp.description }}</span>
+                    </div>
+                  }
+                </div>
+              }
+              <div class="mcp__tool-output">
+                <span class="mcp__tool-output-label">Retorna</span>
+                <code class="mcp__tool-output-value">{{ tool.output }}</code>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- ── ANTHROPIC ── -->
+      <section class="mcp__section" id="section-anthropic">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-code"></i>
+          <h2>Anthropic Claude API</h2>
+        </div>
+        <p class="mcp__section-desc">
+          Importa <code>anthropicTools</code> para obtener los schemas en el formato
+          <code>input_schema</code> que espera la Anthropic SDK.
+        </p>
+        <div class="mcp__code-card">
+          <div class="mcp__code-card-header">
+            <span class="mcp__code-label">TypeScript / Node.js</span>
+            <button class="mcp__copy-btn"
+              [class.mcp__copy-btn--ok]="copiedId() === 'anthropic'"
+              (click)="copyCode('anthropic', anthropicCode)">
+              @if (copiedId() === 'anthropic') {
+                <i class="fa-solid fa-check"></i> Copiado
+              } @else {
+                <i class="fa-regular fa-copy"></i> Copiar
+              }
+            </button>
+          </div>
+          <pre class="mcp__code"><code>{{ anthropicCode }}</code></pre>
+        </div>
+      </section>
+
+      <!-- ── OPENAI ── -->
+      <section class="mcp__section" id="section-openai">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-code"></i>
+          <h2>OpenAI GPT API</h2>
+        </div>
+        <p class="mcp__section-desc">
+          Importa <code>openaiTools</code> para obtener los schemas en el formato
+          <code>&#123; type: 'function', function: &#123;...&#125; &#125;</code> con <code>strict: true</code>.
+        </p>
+        <div class="mcp__code-card">
+          <div class="mcp__code-card-header">
+            <span class="mcp__code-label">TypeScript / Node.js</span>
+            <button class="mcp__copy-btn"
+              [class.mcp__copy-btn--ok]="copiedId() === 'openai'"
+              (click)="copyCode('openai', openaiCode)">
+              @if (copiedId() === 'openai') {
+                <i class="fa-solid fa-check"></i> Copiado
+              } @else {
+                <i class="fa-regular fa-copy"></i> Copiar
+              }
+            </button>
+          </div>
+          <pre class="mcp__code"><code>{{ openaiCode }}</code></pre>
+        </div>
+      </section>
+
+      <!-- ── GOOGLE ── -->
+      <section class="mcp__section" id="section-google">
+        <div class="mcp__section-header">
+          <i class="fa-solid fa-code"></i>
+          <h2>Google Gemini API</h2>
+        </div>
+        <p class="mcp__section-desc">
+          Importa <code>googleTools</code> para obtener el formato <code>&#123; functionDeclarations: [...] &#125;</code>
+          con tipos en uppercase (<code>'OBJECT'</code>, <code>'STRING'</code>) que requiere la SDK de Gemini.
+        </p>
+        <div class="mcp__code-card">
+          <div class="mcp__code-card-header">
+            <span class="mcp__code-label">TypeScript / Node.js</span>
+            <button class="mcp__copy-btn"
+              [class.mcp__copy-btn--ok]="copiedId() === 'google'"
+              (click)="copyCode('google', googleCode)">
+              @if (copiedId() === 'google') {
+                <i class="fa-solid fa-check"></i> Copiado
+              } @else {
+                <i class="fa-regular fa-copy"></i> Copiar
+              }
+            </button>
+          </div>
+          <pre class="mcp__code"><code>{{ googleCode }}</code></pre>
+        </div>
+        <div class="mcp__tip">
+          <i class="fa-solid fa-circle-info"></i>
+          Asegúrate de ejecutar <code>npm run build:lib</code> antes de importar desde el paquete local, o instala <code>&#64;duvanjamid/boceto</code> desde npm.
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
