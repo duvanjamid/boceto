@@ -11,8 +11,6 @@
 
 import { parseDSL } from '../dist/lib/parser.js';
 
-// ── Tool names ────────────────────────────────────────────────────────────────
-
 const TOOL_PARSE  = 'parse_boceto';
 const TOOL_REF    = 'get_dsl_reference';
 const TOOL_EDITOR = 'open_in_editor';
@@ -21,160 +19,69 @@ const PARSE_DESC  = 'Parse and validate a Boceto DSL wireframe string. Returns t
 const REF_DESC    = 'Return the full Boceto DSL syntax reference. Call this before generating wireframe code if you are unsure of the available keywords or their syntax.';
 const EDITOR_DESC = 'Encode a Boceto DSL string and return a shareable URL that opens it directly in the Boceto online editor (boceto.online). Use this as the final step after generating and validating a wireframe so the user can interact with it immediately.';
 
-// ── Anthropic (Claude) tool schemas ──────────────────────────────────────────
-
 export const anthropicTools = [
   {
     name: TOOL_PARSE,
     description: PARSE_DESC,
     input_schema: {
       type: 'object',
-      properties: {
-        dsl: {
-          type: 'string',
-          description: 'The Boceto DSL source code to parse. May contain one or more @PageName screens.'
-        }
-      },
+      properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to parse. May contain one or more @PageName screens.' } },
       required: ['dsl']
     }
   },
   {
     name: TOOL_REF,
     description: REF_DESC,
-    input_schema: {
-      type: 'object',
-      properties: {}
-    }
+    input_schema: { type: 'object', properties: {} }
   },
   {
     name: TOOL_EDITOR,
     description: EDITOR_DESC,
     input_schema: {
       type: 'object',
-      properties: {
-        dsl: {
-          type: 'string',
-          description: 'The Boceto DSL source code to open in the editor.'
-        }
-      },
+      properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to open in the editor.' } },
       required: ['dsl']
     }
   }
 ];
 
-// ── OpenAI function calling schemas ──────────────────────────────────────────
-
 export const openaiTools = [
   {
     type: 'function',
     function: {
-      name: TOOL_PARSE,
-      description: PARSE_DESC,
-      parameters: {
-        type: 'object',
-        properties: {
-          dsl: {
-            type: 'string',
-            description: 'The Boceto DSL source code to parse.'
-          }
-        },
-        required: ['dsl'],
-        additionalProperties: false
-      },
+      name: TOOL_PARSE, description: PARSE_DESC,
+      parameters: { type: 'object', properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to parse.' } }, required: ['dsl'], additionalProperties: false },
       strict: true
     }
   },
   {
     type: 'function',
     function: {
-      name: TOOL_REF,
-      description: REF_DESC,
-      parameters: {
-        type: 'object',
-        properties: {},
-        required: [],
-        additionalProperties: false
-      },
+      name: TOOL_REF, description: REF_DESC,
+      parameters: { type: 'object', properties: {}, required: [], additionalProperties: false },
       strict: true
     }
   },
   {
     type: 'function',
     function: {
-      name: TOOL_EDITOR,
-      description: EDITOR_DESC,
-      parameters: {
-        type: 'object',
-        properties: {
-          dsl: {
-            type: 'string',
-            description: 'The Boceto DSL source code to open in the editor.'
-          }
-        },
-        required: ['dsl'],
-        additionalProperties: false
-      },
+      name: TOOL_EDITOR, description: EDITOR_DESC,
+      parameters: { type: 'object', properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to open in the editor.' } }, required: ['dsl'], additionalProperties: false },
       strict: true
     }
   }
 ];
-
-// ── Google Gemini function declarations ──────────────────────────────────────
-// Gemini uses uppercase type strings ('OBJECT', 'STRING') — different from JSON Schema
 
 export const googleTools = [
   {
     functionDeclarations: [
-      {
-        name: TOOL_PARSE,
-        description: PARSE_DESC,
-        parameters: {
-          type: 'OBJECT',
-          properties: {
-            dsl: {
-              type: 'STRING',
-              description: 'The Boceto DSL source code to parse.'
-            }
-          },
-          required: ['dsl']
-        }
-      },
-      {
-        name: TOOL_REF,
-        description: REF_DESC,
-        parameters: {
-          type: 'OBJECT',
-          properties: {}
-        }
-      },
-      {
-        name: TOOL_EDITOR,
-        description: EDITOR_DESC,
-        parameters: {
-          type: 'OBJECT',
-          properties: {
-            dsl: {
-              type: 'STRING',
-              description: 'The Boceto DSL source code to open in the editor.'
-            }
-          },
-          required: ['dsl']
-        }
-      }
+      { name: TOOL_PARSE, description: PARSE_DESC, parameters: { type: 'OBJECT', properties: { dsl: { type: 'STRING', description: 'The Boceto DSL source code to parse.' } }, required: ['dsl'] } },
+      { name: TOOL_REF, description: REF_DESC, parameters: { type: 'OBJECT', properties: {} } },
+      { name: TOOL_EDITOR, description: EDITOR_DESC, parameters: { type: 'OBJECT', properties: { dsl: { type: 'STRING', description: 'The Boceto DSL source code to open in the editor.' } }, required: ['dsl'] } }
     ]
   }
 ];
 
-// ── Tool executor ─────────────────────────────────────────────────────────────
-
-/**
- * Execute a Boceto tool call and return a serializable result.
- * Never throws — errors are returned as { success: false, error }.
- *
- * @param {string} name   Tool name ('parse_boceto' | 'get_dsl_reference')
- * @param {object} input  Tool input arguments
- * @returns {Promise<object>}
- */
 export async function handleToolCall(name, input = {}) {
   try {
     switch (name) {
@@ -182,30 +89,15 @@ export async function handleToolCall(name, input = {}) {
         const dsl = typeof input.dsl === 'string' ? input.dsl : '';
         const parsed = parseDSL(dsl);
         const pageNames = Object.keys(parsed.pages);
-        const nodeCount = pageNames.reduce(
-          (sum, p) => sum + (parsed.pages[p].children?.length ?? 0), 0
-        );
-        return {
-          success: true,
-          theme: parsed.theme,
-          frame: parsed.frame,
-          pageCount: pageNames.length,
-          pageNames,
-          nodeCount,
-          pages: parsed.pages
-        };
+        const nodeCount = pageNames.reduce((sum, p) => sum + (parsed.pages[p].children?.length ?? 0), 0);
+        return { success: true, theme: parsed.theme, frame: parsed.frame, pageCount: pageNames.length, pageNames, nodeCount, pages: parsed.pages };
       }
       case TOOL_REF:
         return { reference: DSL_REFERENCE };
       case TOOL_EDITOR: {
         const dsl = typeof input.dsl === 'string' ? input.dsl : '';
         const b64 = Buffer.from(dsl, 'utf8').toString('base64');
-        const encoded = encodeURIComponent(b64);
-        return {
-          success: true,
-          url: `https://boceto.online/#/editor?w=${encoded}`,
-          dsl
-        };
+        return { success: true, url: `https://boceto.online/#/editor?w=${encodeURIComponent(b64)}`, dsl };
       }
       default:
         return { success: false, error: `Unknown tool: ${name}` };
@@ -214,8 +106,6 @@ export async function handleToolCall(name, input = {}) {
     return { success: false, error: e?.message ?? String(e) };
   }
 }
-
-// ── DSL Reference ─────────────────────────────────────────────────────────────
 
 export const DSL_REFERENCE = `BOCETO DSL REFERENCE
 ====================
@@ -259,7 +149,7 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 
 ## Form Elements
 - field Label          Text input
-- field Label *        Password input (shows ••••••••)
+- field Label *        Password input (shows ········)
 - field Label ?        Optional text input
 - area Label           Multiline textarea
 - area Label ?         Optional textarea
@@ -279,16 +169,13 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 
 ## Content
 - img "Alt text"             Image placeholder box
-- avatar Name                Circular avatar (auto-generates initials, e.g. "Ana López" → "AL")
+- avatar Name                Circular avatar (auto-generates initials)
 - badge Text                 Status chip / tag
-- kpi Value Label            Large metric display (e.g. "kpi 94% Retention")
+- kpi Value Label            Large metric display
 - grid Col1 | Col2 | Col3    Data table with column headers (renders 3 mock rows)
 
 ## Style Modifier
-Append $"css-property:value;..." to any line to inject inline CSS:
-  btn Delete $"background:#dc2626;color:white"
-  badge Active $"background:#dcfce7;color:#166534;border-color:#86efac"
-  card $"border-color:#7c3aed;border-width:2px"
+Append $"css-property:value;..." to any line to inject inline CSS.
 
 ## Navigation Syntax
 Use > @PageName at the end of btn, ghost, link, nav items, img, or avatar lines.
@@ -305,9 +192,7 @@ p Sign in to continue
 ---
 field Email
 field Password *
-check Remember me
 btn Sign In > @Dashboard
-link Forgot password?
 
 @Dashboard
 nav MyApp | Home | Settings
@@ -318,8 +203,6 @@ row
 card+ Recent Activity
   grid Date | Event | Status
 \`\`\``;
-
-// ── System Prompt ─────────────────────────────────────────────────────────────
 
 export const SYSTEM_PROMPT = `You are a UI wireframe designer using the Boceto DSL. When a user asks you to design a screen, flow, or interface:
 

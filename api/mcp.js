@@ -72,7 +72,6 @@ function buildServer() {
 }
 
 export default async function handler(req, res) {
-  // CORS — allow any MCP client origin
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, mcp-session-id');
@@ -83,7 +82,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Parse body (Vercel doesn't auto-parse for all content types)
   let body;
   if (req.method === 'POST') {
     const chunks = [];

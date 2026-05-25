@@ -131,14 +131,14 @@ nav App | Inicio $"background:#1a1630"
 
 ```json
 {
-  ".":                        "dist/lib/parser.js",
-  "./themes":                 "src/themes.js",
-  "./plugins/web-component":  "plugins/boceto-web-component.js",
-  "./plugins/react":          "plugins/boceto-react.jsx",
-  "./plugins/vue":            "plugins/boceto-vue.js",
-  "./plugins/remark":         "plugins/boceto-remark.js",
-  "./plugins/prism":          "plugins/boceto-prism.js",
-  "./plugins/docsify":        "plugins/boceto-docsify.js",
-  "./plugins/ai-tools":       "plugins/boceto-ai-tools.js"
+  ".": "dist/lib/parser.js",
+  "./themes": "src/themes.js",
+  "./plugins/web-component": "plugins/boceto-web-component.js",
+  "./plugins/react": "plugins/boceto-react.jsx",
+  "./plugins/vue": "plugins/boceto-vue.js",
+  "./plugins/remark": "plugins/boceto-remark.js",
+  "./plugins/prism": "plugins/boceto-prism.js",
+  "./plugins/docsify": "plugins/boceto-docsify.js",
+  "./plugins/ai-tools": "plugins/boceto-ai-tools.js"
 }
 ```
