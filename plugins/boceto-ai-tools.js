@@ -609,6 +609,9 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 - row center           Centered flex row
 - row space            Space-between flex row
 - col                  Vertical column (use inside row)
+- col narrow           Narrow column (fixed ~220px wide)
+- col wide             Wide column (flex 3)
+- col 2                Double-width column (flex 2)
 - card Title           Card with optional title
 - card+ Title          Card with × close button
 - aside                Sidebar panel
@@ -642,6 +645,42 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 - badge Text                 Status chip / tag
 - kpi Value Label            Large metric display
 - grid Col1 | Col2 | Col3    Data table with column headers (renders 3 mock rows)
+
+## Reusable Components
+Define shared UI fragments once and include them anywhere with +Name.
+
+\`\`\`boceto
+components:
+  Sidebar
+    aside
+      link Dashboard > @Dashboard
+      link Users > @Users
+  Topbar
+    nav AdminPanel | Dashboard > @Dashboard | Users > @Users
+
+@Dashboard
++Topbar
+row
+  +Sidebar
+  col wide
+    # Dashboard
+    kpi 1284 Users
+
+@Users
++Topbar
+row
+  +Sidebar
+  col wide
+    # Users
+    grid Name | Email | Role
+\`\`\`
+
+Rules:
+- The `components:` block (no indent) must appear before the first @PageName.
+- Component names are at 2-space indent, their body at 4-space indent.
+- Include a component with +ComponentName at the correct indent level.
+- Component body lines are re-indented relative to the +Name call site.
+- Unknown +Names are left as-is (no error, just ignored by the pre-processor).
 
 ## Style Modifier
 Append $"css-property:value;..." to any line to inject inline CSS.
@@ -692,5 +731,6 @@ Key DSL rules:
 - Navigate between pages with > @PageName at the end of btn, ghost, link, or nav items.
 - theme and frame declarations must come before the first @.
 - Inject CSS with $"property:value" at the end of any line.
+- For multi-page flows with shared UI (nav, sidebar), use a components: block at the top and +ComponentName to include them.
 
 Keep wireframes simple and representative. Use placeholder text. Default to the paper theme unless the user requests otherwise.`;

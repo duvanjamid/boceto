@@ -931,6 +931,58 @@ class DSLParser {
  * // result.pages['Login'].children.length === 5
  * ```
  */
+// ── Component pre-processor ─────────────────────────────────────────────────
+// Handles `components:` block and `+ComponentName` expansion before parsing.
+
+function preprocess(src: string): string {
+  const lines = src.split('\n');
+  const components = new Map<string, string[]>();
+  const outputLines: string[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const raw = lines[i];
+    if (raw.trimEnd() === 'components:') {
+      i++;
+      let name: string | null = null;
+      let body: string[] = [];
+      while (i < lines.length) {
+        const ln = lines[i];
+        const trimmed = ln.trim();
+        if (trimmed && getIndent(ln) === 0) break;
+        if (getIndent(ln) === 2 && trimmed) {
+          if (name !== null) components.set(name, body);
+          name = trimmed;
+          body = [];
+        } else if (getIndent(ln) >= 4 && name !== null) {
+          body.push(ln.slice(4));
+        }
+        i++;
+      }
+      if (name !== null) components.set(name, body);
+    } else {
+      outputLines.push(raw);
+      i++;
+    }
+  }
+
+  if (components.size === 0) return src;
+
+  const result: string[] = [];
+  for (const ln of outputLines) {
+    const m = ln.match(/^(\s*)\+(\w+)\s*$/);
+    if (m) {
+      const body = components.get(m[2]);
+      if (body) {
+        for (const bl of body) result.push(bl.trimEnd() ? m[1] + bl : '');
+        continue;
+      }
+    }
+    result.push(ln);
+  }
+  return result.join('\n');
+}
+
 export function parseDSL(src: string): ParsedDSL {
-  return new DSLParser().parse(src);
+  return new DSLParser().parse(preprocess(src));
 }
