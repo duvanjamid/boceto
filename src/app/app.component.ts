@@ -22,6 +22,7 @@ import { BacetoLogoComponent } from './boceto-logo.component';
           <a class="app-footer__link" routerLink="/editor">Editor</a>
           <a class="app-footer__link" routerLink="/docs">Componentes</a>
           <a class="app-footer__link" routerLink="/plugins">Plugins</a>
+          <a class="app-footer__link" routerLink="/ai-tools">AI &amp; MCP</a>
           <a class="app-footer__link" routerLink="/license">Licencia</a>
           <a class="app-footer__link" href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener">GitHub ↗</a>
           <a class="app-footer__link" href="https://www.npmjs.com/package/@duvanjamid/boceto" target="_blank" rel="noopener">npm ↗</a>
