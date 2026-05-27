@@ -195,7 +195,7 @@
         <div class="demo-code-header">
           <span class="demo-code-filename">html</span>
         </div>
-        <pre class="embed-code-pre"><code>{{ webComponentExample }}</code></pre>
+        <pre class="embed-code-pre"><code [innerHTML]="webComponentExample | codeHighlight:'html'"></code></pre>
       </div>
     </div>
     <!-- Embed details -->
@@ -216,7 +216,7 @@
         <div class="demo-code-header">
           <span class="demo-code-filename">html</span>
         </div>
-        <pre class="embed-code-pre"><code>{{ embedCodeExample }}</code></pre>
+        <pre class="embed-code-pre"><code [innerHTML]="embedCodeExample | codeHighlight:'html'"></code></pre>
       </div>
     </div>
   </div>
@@ -297,45 +297,7 @@
             {{ aiCopied() ? '✓ Copiado' : 'Copiar' }}
           </button>
         </div>
-        <pre class="ai-prompt-code">Genera wireframes usando el DSL de Boceto. Reglas:
-
-• Cada pantalla empieza con &#64;NombrePantalla
-• Palabras clave: nav · # ## ### · p · note · ---
-  field [label] [*=password] [?=opcional]
-  pick [label] | opt1 | opt2
-  check · toggle · btn [label] > &#64;Pantalla
-  ghost · link · img · avatar · badge · kpi
-  row · card [titulo] · aside   (indent children 2 sp)
-  grid col1 · col2   list · item1 · item2   tabs
-• Usa · (punto medio) o | para separar items en nav/grid/list/tabs
-• btn/ghost/link usan > &#64;Pantalla para navegar
-• theme paper|blueprint|sketch|noir al inicio (opcional)
-
-Ejemplo completo:
-theme paper
-
-&#64;Login
-nav MiApp
-# Bienvenido
-p Ingresa tus datos para continuar
----
-field Email
-field Contraseña *
-check Mantener sesión
-btn Entrar > &#64;Dashboard
-link ¿Olvidaste tu contraseña? > &#64;Reset
-
-&#64;Dashboard
-nav MiApp · Inicio · Perfil
-# Panel principal
-row
-  kpi 1.284 Usuarios
-  kpi 94% Activo
-card Actividad reciente
-  grid Nombre · Fecha · Estado
-row
-  btn Nuevo > &#64;Crear
-  ghost Ver todos</pre>
+        <pre class="ai-prompt-code" [innerHTML]="aiPromptText | dslHighlight:(theme.dark() ? 'dark' : 'light')"></pre>
       </div>
 
       <!-- How to use -->

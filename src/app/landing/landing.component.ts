@@ -5,6 +5,8 @@ import { PlaygroundComponent } from '../playground/playground.component';
 import { THEMES, ThemeName, WirePage, ParsedDSL } from '../../types';
 import { ShellThemeService } from '../shell-theme.service';
 import { parseDSL } from '../../parser';
+import { CodeHighlightPipe } from '../code-highlight.pipe';
+import { DslHighlightPipe } from '../dsl-highlight.pipe';
 
 // ── Hero DSL sample ───────────────────────────────────────────────────────────
 const HERO_DSL = `theme paper
@@ -52,7 +54,7 @@ card Reciente
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, PageViewComponent, PlaygroundComponent],
+  imports: [RouterLink, PageViewComponent, PlaygroundComponent, CodeHighlightPipe, DslHighlightPipe],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css'],
 })
@@ -116,6 +118,46 @@ field Buscar
 btn Explorar > @Lista
 "></boceto-preview>`;
 
+  readonly aiPromptText = `Genera wireframes usando el DSL de Boceto. Reglas:
+
+• Cada pantalla empieza con @NombrePantalla
+• Palabras clave: nav · # ## ### · p · note · ---
+  field [label] [*=password] [?=opcional]
+  pick [label] | opt1 | opt2
+  check · toggle · btn [label] > @Pantalla
+  ghost · link · img · avatar · badge · kpi
+  row · card [titulo] · aside   (indent children 2 sp)
+  grid col1 · col2   list · item1 · item2   tabs
+• Usa · (punto medio) o | para separar items en nav/grid/list/tabs
+• btn/ghost/link usan > @Pantalla para navegar
+• theme paper|blueprint|sketch|noir al inicio (opcional)
+
+Ejemplo completo:
+theme paper
+
+@Login
+nav MiApp
+# Bienvenido
+p Ingresa tus datos para continuar
+---
+field Email
+field Contraseña *
+check Mantener sesión
+btn Entrar > @Dashboard
+link ¿Olvidaste tu contraseña? > @Reset
+
+@Dashboard
+nav MiApp · Inicio · Perfil
+# Panel principal
+row
+  kpi 1.284 Usuarios
+  kpi 94% Activo
+card Actividad reciente
+  grid Nombre · Fecha · Estado
+row
+  btn Nuevo > @Crear
+  ghost Ver todos`;
+
   ngOnInit(): void {
     // Apply paper theme CSS vars for wireframe previews on landing
     const T = THEMES.paper;
@@ -148,47 +190,7 @@ btn Explorar > @Lista
   }
 
   copyAiPrompt(): void {
-    const prompt = `Genera wireframes usando el DSL de Boceto. Reglas:
-
-• Cada pantalla empieza con @NombrePantalla
-• Palabras clave: nav · # ## ### · p · note · ---
-  field [label] [*=password] [?=opcional]
-  pick [label] | opt1 | opt2
-  check | toggle | btn [label] > @Pantalla
-  ghost | link | img | avatar | badge | kpi
-  row | card [titulo] | aside   (indent children 2 sp)
-  grid col1 | col2   list (indent children)   tabs
-• Usa | para separar items en nav/grid/tabs
-• btn/ghost/link usan > @Pantalla para navegar
-• theme paper|blueprint|sketch|noir al inicio (opcional)
-
-Ejemplo completo:
-theme paper
-
-@Login
-nav MiApp
-# Bienvenido
-p Ingresa tus datos para continuar
----
-field Email
-field Contraseña *
-check Mantener sesión
-btn Entrar > @Dashboard
-link ¿Olvidaste tu contraseña? > @Reset
-
-@Dashboard
-nav MiApp | Inicio | Perfil
-# Panel principal
-row
-  kpi 1.284 Usuarios
-  kpi 94% Activo
-card Actividad reciente
-  grid Nombre | Fecha | Estado
-row
-  btn Nuevo > @Crear
-  ghost Ver todos`;
-
-    navigator.clipboard.writeText(prompt).then(() => {
+    navigator.clipboard.writeText(this.aiPromptText).then(() => {
       this.aiCopied.set(true);
       setTimeout(() => this.aiCopied.set(false), 2500);
     });

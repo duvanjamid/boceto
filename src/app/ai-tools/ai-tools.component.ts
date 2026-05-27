@@ -1,6 +1,7 @@
 import { Component, signal, computed, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterLink }     from '@angular/router';
 import { ShellThemeService } from '../shell-theme.service';
+import { CodeHighlightPipe, CodeLang } from '../code-highlight.pipe';
 
 interface Tool {
   name: string;
@@ -14,7 +15,7 @@ interface McpClient {
   name: string;
   icon: string;
   config: string;
-  lang: string;
+  lang: CodeLang;
 }
 
 interface Section {
@@ -26,7 +27,7 @@ interface Section {
 @Component({
   selector: 'app-ai-tools',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CodeHighlightPipe],
   templateUrl: './ai-tools.component.html',
   styleUrl: './ai-tools.component.css'
 })
