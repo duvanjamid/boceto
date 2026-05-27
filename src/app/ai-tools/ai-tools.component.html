@@ -85,7 +85,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code>{{ currentClient().config }}</code></pre>
+          <pre class="mcp__code"><code [innerHTML]="currentClient().config | codeHighlight:currentClient().lang"></code></pre>
         </div>
 
         <div class="mcp__tip">
@@ -118,13 +118,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code>&#123;
-  "mcpServers": &#123;
-    "boceto": &#123;
-      "url": "https://boceto.online/mcp"
-    &#125;
-  &#125;
-&#125;</code></pre>
+          <pre class="mcp__code"><code [innerHTML]="remoteConfig | codeHighlight:'json'"></code></pre>
         </div>
 
         <div class="mcp__tip">
@@ -196,7 +190,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code>{{ anthropicCode }}</code></pre>
+          <pre class="mcp__code"><code [innerHTML]="anthropicCode | codeHighlight:'ts'"></code></pre>
         </div>
       </section>
 
@@ -223,7 +217,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code>{{ openaiCode }}</code></pre>
+          <pre class="mcp__code"><code [innerHTML]="openaiCode | codeHighlight:'ts'"></code></pre>
         </div>
       </section>
 
@@ -250,7 +244,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code>{{ googleCode }}</code></pre>
+          <pre class="mcp__code"><code [innerHTML]="googleCode | codeHighlight:'ts'"></code></pre>
         </div>
         <div class="mcp__tip">
           <i class="fa-solid fa-circle-info"></i>
