@@ -16,7 +16,7 @@ import { parseDSL } from '../dist/lib/parser.js';
 const TOOLS = [
   {
     name: 'boceto_parse',
-    description: 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, and frame type. Use this to check that generated DSL is syntactically correct before presenting it to the user.',
+    description: 'Parse and validate a Boceto DSL wireframe string. Returns the structured page tree, page names, theme, frame type, recursive node count per page, and warnings (broken links, empty pages, empty containers). Use this to check that generated DSL is correct before presenting it to the user.',
     schema: {
       type: 'object',
       properties: { dsl: { type: 'string', description: 'The Boceto DSL source code to parse. May contain one or more @PageName screens.' } },
@@ -136,6 +136,45 @@ export const googleTools = [{
   }))
 }];
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function countNodes(nodes = []) {
+  return nodes.reduce((sum, n) => sum + 1 + countNodes(n.children ?? []), 0);
+}
+
+function collectWarnings(pages, dsl) {
+  const warnings = [];
+  const declared = new Set(Object.keys(pages));
+
+  // Broken navigation links
+  for (const ref of [...new Set([...dsl.matchAll(/>\s*@(\w+)/g)].map(m => m[1]))]) {
+    if (!declared.has(ref)) {
+      warnings.push({ type: 'broken_link', message: `Navigation target @${ref} not found in declared pages`, target: `@${ref}` });
+    }
+  }
+
+  // Pages with no elements
+  for (const [name, page] of Object.entries(pages)) {
+    if (!page.children?.length) {
+      warnings.push({ type: 'empty_page', message: `Page @${name} has no elements`, page: name });
+    }
+  }
+
+  // Empty containers
+  const CONTAINERS = new Set(['row', 'col', 'card', 'aside', 'modal', 'tabs', 'list']);
+  function checkEmpty(nodes, pageName) {
+    for (const n of nodes ?? []) {
+      if (CONTAINERS.has(n.type) && !n.children?.length) {
+        warnings.push({ type: 'empty_container', message: `Empty ${n.type} container on page @${pageName}`, page: pageName, element: n.type });
+      }
+      checkEmpty(n.children, pageName);
+    }
+  }
+  for (const [name, page] of Object.entries(pages)) checkEmpty(page.children, name);
+
+  return warnings;
+}
+
 // ── Tool executor ─────────────────────────────────────────────────────────────
 
 export async function handleToolCall(name, input = {}) {
@@ -146,8 +185,10 @@ export async function handleToolCall(name, input = {}) {
         const dsl = typeof input.dsl === 'string' ? input.dsl : '';
         const parsed = parseDSL(dsl);
         const pageNames = Object.keys(parsed.pages);
-        const nodeCount = pageNames.reduce((sum, p) => sum + (parsed.pages[p].children?.length ?? 0), 0);
-        return { success: true, theme: parsed.theme, frame: parsed.frame, pageCount: pageNames.length, pageNames, nodeCount, pages: parsed.pages };
+        const nodesPerPage = Object.fromEntries(pageNames.map(p => [p, countNodes(parsed.pages[p].children)]));
+        const nodeCount = Object.values(nodesPerPage).reduce((a, b) => a + b, 0);
+        const warnings = collectWarnings(parsed.pages, dsl);
+        return { success: true, theme: parsed.theme, frame: parsed.frame, pageCount: pageNames.length, pageNames, nodeCount, nodesPerPage, warnings, pages: parsed.pages };
       }
 
       case 'boceto_get_reference':
@@ -568,6 +609,9 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 - row center           Centered flex row
 - row space            Space-between flex row
 - col                  Vertical column (use inside row)
+- col narrow           Narrow column (fixed ~220px wide)
+- col wide             Wide column (flex 3)
+- col 2                Double-width column (flex 2)
 - card Title           Card with optional title
 - card+ Title          Card with × close button
 - aside                Sidebar panel
@@ -601,6 +645,42 @@ Use 2 spaces to nest children inside containers (row, col, card, aside, modal, t
 - badge Text                 Status chip / tag
 - kpi Value Label            Large metric display
 - grid Col1 | Col2 | Col3    Data table with column headers (renders 3 mock rows)
+
+## Reusable Components
+Define shared UI fragments once and include them anywhere with +Name.
+
+\`\`\`boceto
+components:
+  Sidebar
+    aside
+      link Dashboard > @Dashboard
+      link Users > @Users
+  Topbar
+    nav AdminPanel | Dashboard > @Dashboard | Users > @Users
+
+@Dashboard
++Topbar
+row
+  +Sidebar
+  col wide
+    # Dashboard
+    kpi 1284 Users
+
+@Users
++Topbar
+row
+  +Sidebar
+  col wide
+    # Users
+    grid Name | Email | Role
+\`\`\`
+
+Rules:
+- The `components:` block (no indent) must appear before the first @PageName.
+- Component names are at 2-space indent, their body at 4-space indent.
+- Include a component with +ComponentName at the correct indent level.
+- Component body lines are re-indented relative to the +Name call site.
+- Unknown +Names are left as-is (no error, just ignored by the pre-processor).
 
 ## Style Modifier
 Append $"css-property:value;..." to any line to inject inline CSS.
@@ -651,5 +731,6 @@ Key DSL rules:
 - Navigate between pages with > @PageName at the end of btn, ghost, link, or nav items.
 - theme and frame declarations must come before the first @.
 - Inject CSS with $"property:value" at the end of any line.
+- For multi-page flows with shared UI (nav, sidebar), use a components: block at the top and +ComponentName to include them.
 
 Keep wireframes simple and representative. Use placeholder text. Default to the paper theme unless the user requests otherwise.`;

@@ -61,7 +61,11 @@
 
   <!-- ── Col container (vertical stack inside row) ────── -->
   @case ('col') {
-    <div class="wn-col" [attr.style]="node.style || null">
+    <div class="wn-col"
+      [class.wn-col--narrow]="node.align === 'narrow'"
+      [class.wn-col--wide]="node.align === 'wide' || node.align === '3'"
+      [class.wn-col--2]="node.align === '2'"
+      [attr.style]="node.style || null">
       @for (child of node.children; track $index) {
         <boceto-node [node]="child" [depth]="depth + 1" (navigate)="navigate.emit($event)"></boceto-node>
       }
@@ -279,12 +283,22 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of [0, 1, 2]; track $index) {
-            <tr>
-              @for (col of node.cols; track col; let ci = $index) {
-                <td><div class="wn-grid__bar" [style.width]="barWidth(row, ci)"></div></td>
-              }
-            </tr>
+          @if (node.children && node.children.length > 0) {
+            @for (row of node.children; track $index) {
+              <tr>
+                @for (col of node.cols; track col; let ci = $index) {
+                  <td>{{ row.items?.[ci] ?? '' }}</td>
+                }
+              </tr>
+            }
+          } @else {
+            @for (row of [0, 1, 2]; track $index) {
+              <tr>
+                @for (col of node.cols; track col; let ci = $index) {
+                  <td><div class="wn-grid__bar" [style.width]="barWidth(row, ci)"></div></td>
+                }
+              </tr>
+            }
           }
         </tbody>
       </table>
