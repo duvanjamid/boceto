@@ -120,6 +120,8 @@
   transform: translateY(-1px);
 }
 
+.navbar__hamburger { display: none; }
+
 @media (max-width: 768px) {
   .navbar { padding: 0 16px; }
   .navbar__logo-text { display: none; }
@@ -146,8 +148,6 @@
     background: var(--s-accentSoft);
   }
 }
-
-.navbar__hamburger { display: none; }
 
 .navbar__overlay {
   position: fixed;
