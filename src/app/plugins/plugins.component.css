@@ -381,10 +381,13 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .plugins__header { display: none; }
   .plugins__body { grid-template-columns: 1fr; }
   .plugins__sidebar { display: none; }
   .plugins__main { padding: 20px 16px; max-width: 100%; }
+  .plugins__header { padding: 0 14px; gap: 10px; }
+  .plugins__header-title { display: none; }
+  .plugins__header-actions { gap: 6px; }
+  .plugins__header-link { font-size: 12px; }
   .plugins__code { font-size: 11.5px; }
   .plugins__tabs { padding: 8px 10px 0; }
   .plugins__card-header { flex-wrap: wrap; }
