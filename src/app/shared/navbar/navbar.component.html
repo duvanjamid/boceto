@@ -2,12 +2,12 @@
   <div class="navbar__container">
 
     <!-- BRAND -->
-    <a routerLink="/" class="navbar__brand">
+    <a routerLink="/" class="navbar__brand" (click)="close()">
       <boceto-logo [size]="28"></boceto-logo>
       <span class="navbar__logo-text">Boceto</span>
     </a>
 
-    <!-- LINKS -->
+    <!-- DESKTOP LINKS -->
     <div class="navbar__links">
       <a routerLink="/docs"      routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="navbar__link">Componentes</a>
       <a routerLink="/plugins"   routerLinkActive="active" class="navbar__link">Plugins</a>
@@ -27,5 +27,25 @@
       }
     </button>
 
+    <!-- HAMBURGER (mobile only) -->
+    <button class="navbar__hamburger" (click)="menuOpen.set(!menuOpen())" [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'">
+      <i [class]="menuOpen() ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
+    </button>
+
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+@if (menuOpen()) {
+  <div class="navbar__overlay" (click)="close()"></div>
+  <div class="navbar__mobile-menu">
+    <a routerLink="/docs"      class="navbar__mobile-link" (click)="close()"><i class="fa-solid fa-book"></i> Componentes</a>
+    <a routerLink="/plugins"   class="navbar__mobile-link" (click)="close()"><i class="fa-solid fa-puzzle-piece"></i> Plugins</a>
+    <a routerLink="/ai-tools"  class="navbar__mobile-link" (click)="close()"><i class="fa-solid fa-robot"></i> AI &amp; MCP</a>
+    <a routerLink="/editor"    class="navbar__mobile-link" (click)="close()"><i class="fa-solid fa-pen-to-square"></i> Editor</a>
+    <a routerLink="/license"   class="navbar__mobile-link" (click)="close()"><i class="fa-solid fa-scale-balanced"></i> Licencia</a>
+    <div class="navbar__mobile-sep"></div>
+    <a href="https://www.npmjs.com/package/@duvanjamid/boceto" target="_blank" rel="noopener" class="navbar__mobile-link navbar__mobile-link--ext"><i class="fa-brands fa-npm"></i> npm ↗</a>
+    <a href="https://github.com/duvanjamid/boceto" target="_blank" rel="noopener" class="navbar__mobile-link navbar__mobile-link--ext"><i class="fa-brands fa-github"></i> GitHub ↗</a>
+  </div>
+}
