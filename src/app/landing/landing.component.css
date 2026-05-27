@@ -920,9 +920,20 @@
 
 @media (max-width: 600px) {
   .features-grid { grid-template-columns: 1fr; }
-  .themes-grid   { grid-template-columns: 1fr 1fr; }
+  .themes-grid   { grid-template-columns: 1fr; }
   .hero__ctas    { flex-direction: column; }
   .donations__buttons { flex-direction: column; align-items: stretch; }
   .l-footer__inner { flex-direction: column; text-align: center; }
-  .l-footer__links { justify-content: center; }
+  .l-footer__links { justify-content: center; gap: 12px; }
+  .l-section { padding: 48px 0; }
+  .l-section--alt { padding: 48px 0; }
+  .embed-info { padding: 16px; gap: 20px; }
+  .embed-code-pre { font-size: 11px; padding: 12px; }
+  .feature-card { padding: 18px 16px; }
+  .ai-prompt-code { font-size: 11px; padding: 14px; }
+  .ai-example-link { flex-direction: column; }
+  .demo-playground-wrap { height: auto; min-height: 360px; }
+  .share-url-box { padding: 16px; }
+  .share-url-line { font-size: 11px; overflow-x: auto; }
+  .embed-info__list li { font-size: 13px; }
 }

@@ -196,3 +196,11 @@ body { font-family: 'Inter', system-ui, sans-serif; }
 @media (prefers-color-scheme: dark) {
   [data-shell="dark"] .device-browser { background: #2a2a2a; }
 }
+
+@media (max-width: 768px) {
+  .device-wrapper.device-f-browser { max-width: 100%; }
+  .device-ios .viewer__frame,
+  .device-ios .preview-frame { min-height: 500px; }
+  .device-android .viewer__frame,
+  .device-android .preview-frame { min-height: 500px; }
+}
