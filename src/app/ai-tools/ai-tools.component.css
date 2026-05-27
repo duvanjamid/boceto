@@ -412,14 +412,10 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .mcp__header { display: none; }
   .mcp__body { grid-template-columns: 1fr; }
   .mcp__sidebar { display: none; }
   .mcp__main { padding: 20px 16px; max-width: 100%; }
-  .mcp__header { padding: 0 14px; gap: 10px; }
-  .mcp__header-title { display: none; }
-  .mcp__header-actions { gap: 6px; }
-  .mcp__header-link { font-size: 12px; }
-  .mcp__intro { padding: 0 0 8px; }
   .mcp__intro-title { font-size: 22px; }
   .mcp__intro-sub { font-size: 13px; }
   .mcp__section-header h2 { font-size: 16px; }
