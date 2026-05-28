@@ -57,7 +57,10 @@
     "preview": "ng serve --configuration production",
     "build:lib": "tsc -p tsconfig.lib.json",
     "prepublishOnly": "npm run build:lib",
-    "mcp:serve": "node plugins/boceto-mcp-http.js"
+    "mcp:serve": "node plugins/boceto-mcp-http.js",
+    "benchmark": "npm run build:lib && node benchmarks/run-benchmark.mjs",
+    "benchmark:auth": "npm run build:lib && node benchmarks/run-benchmark.mjs --category auth",
+    "benchmark:case": "npm run build:lib && node benchmarks/run-benchmark.mjs --cases"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
