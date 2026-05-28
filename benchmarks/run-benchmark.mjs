@@ -223,15 +223,18 @@ async function runCase(tc) {
 
   const parsedDsl = dsl ? parseDSL(dsl) : { pages: {} };
   const sc = score(tc, dsl, parsedDsl);
-  const mcpOutputTokens = totalOutputTokens || estimateTokens(finalText);
+  // Measure only the DSL content size — the actual wireframe representation,
+  // not the full conversation (which inflates MCP mode with tool call round-trips).
+  const mcpOutputTokens = estimateTokens(dsl ?? finalText);
 
   // ── HTML comparison (only with --compare) ──
   let htmlOutputTokens = null;
   if (compareMode) {
     try {
       const htmlRaw = callClaude({ prompt: userPrompt, system: HTML_SYSTEM, useMcp: false });
-      const { finalText: htmlText, totalOutputTokens: htmlTok } = parseClaudeOutput(htmlRaw);
-      htmlOutputTokens = htmlTok || estimateTokens(htmlText);
+      const { finalText: htmlText } = parseClaudeOutput(htmlRaw);
+      // Measure the HTML content size for the same apples-to-apples comparison
+      htmlOutputTokens = estimateTokens(htmlText.trim());
     } catch { /* non-fatal */ }
   }
 
@@ -275,7 +278,10 @@ for (const tc of cases) {
   ].join(' ');
   let line = `${bar} ${String(pts).padStart(3)}/100  ${tools}`;
   if (compareMode && r.tokens.saved != null) {
-    line += `  MCP:${r.tokens.mcp_output}tok  HTML:${r.tokens.html_output}tok  -${r.tokens.pct}%`;
+    const pctLabel = r.tokens.pct != null
+      ? (r.tokens.pct >= 0 ? `-${r.tokens.pct}%` : `+${Math.abs(r.tokens.pct)}%`)
+      : '';
+    line += `  DSL:${r.tokens.mcp_output}tok  HTML:${r.tokens.html_output}tok  ${pctLabel}`;
   }
   console.log(`${line}  (${r.latency_ms}ms)`);
 }
@@ -318,10 +324,10 @@ if (compareMode) {
     const avgPct  = Math.round(withTok.reduce((s, r) => s + r.tokens.pct, 0) / withTok.length);
     const totalMcp  = withTok.reduce((s, r) => s + r.tokens.mcp_output,  0);
     const totalHtml = withTok.reduce((s, r) => s + r.tokens.html_output, 0);
-    console.log('\n🪙  Token comparison (output tokens, ~4 chars/token):');
-    console.log(`   Avg MCP output  :  ${avgMcp} tokens`);
-    console.log(`   Avg HTML output :  ${avgHtml} tokens`);
-    console.log(`   Ahorro promedio :  -${avgPct}% por request`);
+    console.log('\n🪙  Token comparison — representation size (~4 chars/token):');
+    console.log(`   Avg DSL size    :  ${avgMcp} tokens   (boceto block content)`);
+    console.log(`   Avg HTML size   :  ${avgHtml} tokens  (equivalent HTML snippet)`);
+    console.log(`   Token savings   :  -${avgPct}% per wireframe`);
     console.log(`\n   💡 Costo output a $3/M tokens (Sonnet), ${withTok.length} wireframes:`);
     console.log(`      HTML :  $${(totalHtml / 1_000_000 * 3).toFixed(5)}`);
     console.log(`      MCP  :  $${(totalMcp  / 1_000_000 * 3).toFixed(5)}`);
