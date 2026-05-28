@@ -15,11 +15,10 @@
  *   --compare            correr también el modo HTML para comparar tokens
  */
 
-import { spawnSync, spawn } from 'child_process';
-import { readFileSync, writeFileSync, unlinkSync, existsSync } from 'fs';
+import { spawnSync } from 'child_process';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { tmpdir } from 'os';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const ROOT  = join(__dir, '..');
@@ -50,18 +49,6 @@ try {
   process.exit(1);
 }
 
-// ── MCP config (temp file apuntando al servidor local) ────────────────────────
-const mcpConfigPath = join(tmpdir(), `boceto-bench-mcp-${Date.now()}.json`);
-writeFileSync(mcpConfigPath, JSON.stringify({
-  mcpServers: {
-    boceto: {
-      command: 'node',
-      args: [join(ROOT, 'plugins/boceto-mcp.js')]
-    }
-  }
-}));
-process.on('exit', () => { try { unlinkSync(mcpConfigPath); } catch {} });
-
 // ── Prompts ───────────────────────────────────────────────────────────────────
 
 // MCP mode: Claude NO recibe el DSL — debe usar boceto_get_reference para aprenderlo
@@ -83,15 +70,14 @@ function estimateTokens(text) {
 }
 
 // ── Call claude CLI ───────────────────────────────────────────────────────────
+// useMcp flag kept for API compatibility but no longer adds --mcp-config;
+// Boceto MCP must be configured in the user's Claude Code installation.
 function callClaude({ prompt, system, useMcp = false }) {
   const cliArgs = [
     '-p', `${system}\n\n---\n\n${prompt}`,
     '--model', model,
     '--output-format', 'json'
   ];
-  if (useMcp) {
-    cliArgs.push('--mcp-config', mcpConfigPath);
-  }
 
   const result = spawnSync('claude', cliArgs, {
     timeout: TIMEOUT_MS,
