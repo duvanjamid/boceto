@@ -1,0 +1,389 @@
+{
+  "version": "1.0",
+  "description": "Boceto DSL wireframe generation benchmark dataset. Each case describes a UI in natural language and defines scoring criteria for evaluating AI-generated DSL.",
+  "scoring": {
+    "parse_success":      { "weight": 30, "description": "boceto_parse returns pageCount > 0 and nodeCount > 0" },
+    "page_coverage":      { "weight": 20, "description": "All expected pages are present" },
+    "component_coverage": { "weight": 30, "description": "Required DSL keywords appear at least once" },
+    "no_forbidden":       { "weight": 10, "description": "No forbidden keywords are used" },
+    "min_nodes":          { "weight": 10, "description": "nodeCount >= expected.min_nodes" }
+  },
+  "cases": [
+
+    {
+      "id": "B001",
+      "category": "auth",
+      "difficulty": "easy",
+      "prompt": "Pantalla de inicio de sesión con campo de email, campo de contraseña, botón de entrar y un link para recuperar contraseña.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 4,
+        "required_keywords": ["field", "btn"],
+        "optional_keywords": ["link", "ghost"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Login\n# Iniciar sesión\nfield Email\nfield Contraseña *\nbtn Entrar\nlink ¿Olvidaste tu contraseña?"
+    },
+
+    {
+      "id": "B002",
+      "category": "auth",
+      "difficulty": "easy",
+      "prompt": "Formulario de registro con nombre, email, contraseña, confirmación de contraseña, checkbox de términos y condiciones, y botón de crear cuenta.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 5,
+        "required_keywords": ["field", "btn", "check"],
+        "optional_keywords": ["link"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Registro\n# Crear cuenta\nfield Nombre\nfield Email\nfield Contraseña *\nfield Confirmar contraseña *\ncheck Acepto los términos y condiciones\nbtn Crear cuenta"
+    },
+
+    {
+      "id": "B003",
+      "category": "auth",
+      "difficulty": "medium",
+      "prompt": "Flujo de recuperación de contraseña con dos pantallas: la primera pide el email y tiene un botón de enviar; la segunda confirma que se envió el correo con un botón para volver al login.",
+      "expected": {
+        "pages": 2,
+        "min_nodes": 4,
+        "required_keywords": ["field", "btn"],
+        "optional_keywords": ["link", "p", "note"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@RecuperarPassword\n# Recuperar contraseña\np Ingresa tu email y te enviaremos un enlace de recuperación.\nfield Email\nbtn Enviar enlace\n\n@EmailEnviado\n# ¡Correo enviado!\np Revisá tu bandeja de entrada.\nghost Volver al login > @Login"
+    },
+
+    {
+      "id": "B004",
+      "category": "dashboard",
+      "difficulty": "medium",
+      "prompt": "Dashboard de analytics con 4 KPIs en una fila (usuarios activos, ventas del mes, tasa de conversión, ticket promedio), seguidos de una tabla de últimas transacciones y un gráfico de barras (representado como imagen).",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 6,
+        "required_keywords": ["kpi", "row", "grid"],
+        "optional_keywords": ["img", "col", "card"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Dashboard\n# Analytics\nrow\n  col\n    kpi 1.240 Usuarios activos\n  col\n    kpi $14.320 Ventas del mes\n  col\n    kpi 3,8% Tasa de conversión\n  col\n    kpi $89 Ticket promedio\ncard Últimas transacciones\n  grid Cliente | Monto | Fecha | Estado\nimg \"Gráfico de ventas mensual\""
+    },
+
+    {
+      "id": "B005",
+      "category": "dashboard",
+      "difficulty": "hard",
+      "prompt": "Panel de administración con sidebar de navegación (Inicio, Usuarios, Productos, Pedidos, Configuración), área principal con KPIs de resumen, tabla de pedidos recientes con estado (badge), y un card de actividad reciente con lista de eventos.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 10,
+        "required_keywords": ["aside", "kpi", "grid", "badge", "list"],
+        "optional_keywords": ["row", "col", "card", "nav"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Admin\nrow\n  aside\n    nav Boceto | Inicio | Usuarios | Productos | Pedidos | Configuración\n  col\n    row\n      col\n        kpi 320 Pedidos hoy\n      col\n        kpi 45 Usuarios nuevos\n      col\n        kpi $8.200 Ingresos\n    card Pedidos recientes\n      grid # | Cliente | Total | Estado\n    card Actividad reciente\n      list | Usuario registrado | Pedido #1042 completado | Producto agotado"
+    },
+
+    {
+      "id": "B006",
+      "category": "lists",
+      "difficulty": "easy",
+      "prompt": "Lista de tareas pendientes con título de sección, cada tarea tiene un checkbox y una etiqueta de prioridad (badge), y un botón flotante para agregar nueva tarea.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 4,
+        "required_keywords": ["check", "badge", "btn"],
+        "optional_keywords": ["list", "card", "row"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Tareas\n# Tareas pendientes\ncard\n  row\n    col\n      check Diseñar mockups\n    badge Alta $\"background:#fee2e2;color:#dc2626\"\n  row\n    col\n      check Revisar PRs\n    badge Media $\"background:#fef9c3;color:#ca8a04\"\n  row\n    col\n      check Actualizar docs\n    badge Baja\nbtn + Nueva tarea"
+    },
+
+    {
+      "id": "B007",
+      "category": "lists",
+      "difficulty": "medium",
+      "prompt": "Catálogo de productos con barra de búsqueda, filtros de categoría (tabs: Todos, Ropa, Electrónica, Hogar), grid de productos (imagen, nombre, precio, botón agregar al carrito).",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 6,
+        "required_keywords": ["field", "tabs", "img", "btn"],
+        "optional_keywords": ["grid", "card", "row", "badge"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Catalogo\nnav Tienda | Catálogo | Carrito | Mi cuenta\nfield Buscar productos\ntabs Todos | Ropa | Electrónica | Hogar\n  row\n    col\n      card\n        img \"Producto 1\"\n        p Camiseta básica\n        kpi $29.99 Precio\n        btn Agregar al carrito\n    col\n      card\n        img \"Producto 2\"\n        p Auriculares BT\n        kpi $89.99 Precio\n        btn Agregar al carrito\n  ---\n  p Categoría Ropa\n  ---\n  p Categoría Electrónica\n  ---\n  p Categoría Hogar"
+    },
+
+    {
+      "id": "B008",
+      "category": "lists",
+      "difficulty": "medium",
+      "prompt": "Lista de usuarios con avatar, nombre, email, rol (badge) y acciones (editar, eliminar). Incluye paginación y filtro por rol.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 6,
+        "required_keywords": ["avatar", "badge", "grid"],
+        "optional_keywords": ["pick", "btn", "ghost", "row"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Usuarios\n# Gestión de usuarios\nrow\n  pick Filtrar por rol | Todos | Admin | Editor | Viewer\n  btn + Nuevo usuario\ngrid Usuario | Email | Rol | Acciones"
+    },
+
+    {
+      "id": "B009",
+      "category": "forms",
+      "difficulty": "medium",
+      "prompt": "Formulario de configuración de perfil con sección de información personal (nombre, bio como textarea, avatar), sección de notificaciones (3 toggles) y botón guardar.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 7,
+        "required_keywords": ["field", "area", "toggle", "btn", "avatar"],
+        "optional_keywords": ["card", "---"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Perfil\n# Configuración de perfil\navatar Usuario\nfield Nombre completo\narea Bio ?\n---\n## Notificaciones\ntoggle Notificaciones por email *\ntoggle Notificaciones push\ntoggle Resumen semanal *\nbtn Guardar cambios\nghost Cancelar"
+    },
+
+    {
+      "id": "B010",
+      "category": "forms",
+      "difficulty": "hard",
+      "prompt": "Proceso de checkout en 3 pasos usando tabs: (1) Datos de envío con nombre, dirección, ciudad, país dropdown; (2) Pago con número de tarjeta, vencimiento, CVV y toggle de guardar tarjeta; (3) Confirmación con resumen del pedido y botón confirmar compra.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 10,
+        "required_keywords": ["tabs", "field", "pick", "toggle", "btn"],
+        "optional_keywords": ["card", "kpi", "---", "grid"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Checkout\n# Finalizar compra\ntabs Envío | Pago | Confirmación\n  field Nombre completo\n  field Dirección\n  field Ciudad\n  pick País | Argentina | Chile | Colombia | México\n  btn Continuar\n  ---\n  field Número de tarjeta\n  field Vencimiento\n  field CVV *\n  toggle Guardar tarjeta para próximas compras\n  btn Continuar\n  ---\n  card Resumen del pedido\n    grid Producto | Qty | Precio\n  kpi $124.99 Total\n  btn Confirmar compra"
+    },
+
+    {
+      "id": "B011",
+      "category": "forms",
+      "difficulty": "easy",
+      "prompt": "Formulario de contacto simple con nombre, email, asunto (dropdown con opciones: Soporte, Ventas, Otro), mensaje como textarea y botón enviar.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 5,
+        "required_keywords": ["field", "pick", "area", "btn"],
+        "optional_keywords": ["note"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Contacto\n# Contactanos\nfield Nombre\nfield Email\npick Asunto | Soporte | Ventas | Otro\narea Mensaje\nbtn Enviar mensaje"
+    },
+
+    {
+      "id": "B012",
+      "category": "detail",
+      "difficulty": "medium",
+      "prompt": "Página de detalle de producto con imagen grande, nombre, precio, rating con badge, descripción, selector de talla (dropdown), cantidad (field), botón agregar al carrito y sección de reviews con lista.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 8,
+        "required_keywords": ["img", "kpi", "badge", "pick", "field", "btn"],
+        "optional_keywords": ["list", "card", "row", "col", "area"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Producto\nnav Tienda | Catálogo | Carrito\nrow\n  col\n    img \"Zapatillas Runner Pro\"\n  col\n    # Zapatillas Runner Pro\n    kpi $129.99 Precio\n    badge ★ 4.5 $\"background:#fef9c3;color:#ca8a04\"\n    p Zapatilla de running de alto rendimiento con amortiguación reactiva.\n    pick Talla | 36 | 37 | 38 | 39 | 40 | 41 | 42\n    field Cantidad\n    btn Agregar al carrito\n    ghost Agregar a favoritos\ncard Reviews\n  list | ★★★★★ Excelente producto — Juan M. | ★★★★☆ Muy cómodas — Ana R."
+    },
+
+    {
+      "id": "B013",
+      "category": "detail",
+      "difficulty": "medium",
+      "prompt": "Perfil de usuario público con avatar grande, nombre, bio, estadísticas en fila (publicaciones, seguidores, seguidos), tabs de contenido (Posts, Fotos, Likes) y botón seguir.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 7,
+        "required_keywords": ["avatar", "kpi", "tabs", "btn", "row"],
+        "optional_keywords": ["col", "img", "badge"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@PerfilUsuario\navatar María García\n## María García\nnote @mariag · Diseñadora UX · Buenos Aires\nrow\n  col\n    kpi 142 Posts\n  col\n    kpi 3.2k Seguidores\n  col\n    kpi 89 Siguiendo\nbtn Seguir\ntabs Posts | Fotos | Likes\n  grid Imagen | Descripción\n  ---\n  grid Foto | Fecha\n  ---\n  grid Post | Autor"
+    },
+
+    {
+      "id": "B014",
+      "category": "navigation",
+      "difficulty": "medium",
+      "prompt": "App móvil de finanzas con navegación inferior (Inicio, Movimientos, Tarjetas, Perfil). Pantalla de inicio con saldo disponible grande, accesos rápidos en fila (Enviar, Recibir, Pagar, Recargar) y últimos movimientos.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 7,
+        "required_keywords": ["nav", "kpi", "row", "btn"],
+        "optional_keywords": ["list", "card", "badge", "ghost"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Inicio\nnav App | Inicio | Movimientos | Tarjetas | Perfil\nkpi $4.250,00 Saldo disponible\nrow\n  col\n    btn Enviar\n  col\n    btn Recibir\n  col\n    btn Pagar\n  col\n    ghost Recargar\ncard Últimos movimientos\n  list | ↑ Netflix -$15,99 | ↓ Salario +$3.200 | ↑ Supermercado -$84,50"
+    },
+
+    {
+      "id": "B015",
+      "category": "navigation",
+      "difficulty": "hard",
+      "prompt": "Aplicación de gestión de proyectos con 3 pantallas: (1) Lista de proyectos con badge de estado y botón nuevo; (2) Detalle de proyecto con tabs Tareas/Miembros/Archivos; (3) Modal de nueva tarea con campos título, descripción, asignado (dropdown), prioridad (dropdown) y fecha.",
+      "expected": {
+        "pages": 3,
+        "min_nodes": 12,
+        "required_keywords": ["badge", "btn", "tabs", "modal", "field", "pick"],
+        "optional_keywords": ["card", "list", "grid", "avatar", "area"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Proyectos\n# Mis proyectos\nbtn + Nuevo proyecto\ncard Rediseño App\n  badge En curso $\"background:#dbeafe;color:#1d4ed8\"\ncard API v2\n  badge Completado $\"background:#dcfce7;color:#16a34a\"\ncard Migración DB\n  badge Bloqueado $\"background:#fee2e2;color:#dc2626\"\n\n@DetalleProyecto\n# Rediseño App\ntabs Tareas | Miembros | Archivos\n  list | Diseñar mockups | Revisar con cliente | Implementar cambios\n  ---\n  list | Ana García (Lead) | Juan Pérez | María López\n  ---\n  grid Archivo | Tamaño | Fecha\n\n@NuevaTarea\nmodal Nueva tarea\n  field Título\n  area Descripción ?\n  pick Asignado | Ana García | Juan Pérez | María López\n  pick Prioridad | Alta | Media | Baja\n  field Fecha límite\n  btn Crear tarea\n  ghost Cancelar"
+    },
+
+    {
+      "id": "B016",
+      "category": "ecommerce",
+      "difficulty": "medium",
+      "prompt": "Carrito de compras con lista de productos (imagen, nombre, cantidad editable, precio, botón eliminar), resumen con subtotal, descuento, total, y botones de continuar comprando y proceder al pago.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 8,
+        "required_keywords": ["img", "field", "kpi", "btn", "ghost"],
+        "optional_keywords": ["card", "row", "col", "grid", "badge"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Carrito\n# Tu carrito (3 items)\ncard\n  row\n    col\n      img \"Zapatillas Runner\"\n    col\n      p Zapatillas Runner Pro\n      field Cantidad\n      kpi $129.99 Precio\n      ghost Eliminar\ncard Resumen\n  grid Concepto | Monto\n  kpi $89.97 Subtotal\n  note Descuento 10%: -$9.00\n  kpi $80.97 Total\nbtn Proceder al pago\nghost Continuar comprando"
+    },
+
+    {
+      "id": "B017",
+      "category": "ecommerce",
+      "difficulty": "easy",
+      "prompt": "Página de confirmación de compra exitosa con ícono de check, número de orden, resumen breve, y dos botones: ver mis pedidos y seguir comprando.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 4,
+        "required_keywords": ["btn", "kpi"],
+        "optional_keywords": ["ghost", "p", "note", "badge", "img"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Confirmacion\n## ¡Compra exitosa!\nnote Orden #ORD-20481\np Tu pedido fue confirmado. Recibirás un email con el seguimiento.\nkpi $80.97 Total pagado\nbtn Ver mis pedidos\nghost Seguir comprando"
+    },
+
+    {
+      "id": "B018",
+      "category": "onboarding",
+      "difficulty": "hard",
+      "prompt": "Flujo de onboarding de 4 pasos para una app de fitness: (1) Bienvenida con CTA; (2) Datos personales (nombre, edad, sexo dropdown); (3) Objetivos (checkboxes: perder peso, ganar músculo, mejorar resistencia); (4) Nivel de actividad (dropdown) y botón finalizar.",
+      "expected": {
+        "pages": 4,
+        "min_nodes": 10,
+        "required_keywords": ["btn", "field", "pick", "check"],
+        "optional_keywords": ["ghost", "p", "note", "badge", "kpi"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Bienvenida\n# Bienvenido a FitApp\np Tu entrenador personal inteligente. Alcanzá tus metas con planes personalizados.\nbtn Comenzar > @DatosPersonales\n\n@DatosPersonales\n## Cuéntanos sobre vos\nnote Paso 2 de 4\nfield Nombre\nfield Edad\npick Sexo | Masculino | Femenino | Prefiero no decir\nbtn Siguiente > @Objetivos\nghost Volver\n\n@Objetivos\n## ¿Cuáles son tus objetivos?\nnote Paso 3 de 4\ncheck Perder peso\ncheck Ganar músculo\ncheck Mejorar resistencia\ncheck Mayor flexibilidad\nbtn Siguiente > @NivelActividad\nghost Volver\n\n@NivelActividad\n## Tu nivel de actividad\nnote Paso 4 de 4\npick Nivel | Sedentario | Poco activo | Moderado | Muy activo\nbtn Finalizar y crear mi plan\nghost Volver"
+    },
+
+    {
+      "id": "B019",
+      "category": "settings",
+      "difficulty": "medium",
+      "prompt": "Pantalla de configuración de aplicación con secciones separadas: Cuenta (email, cambiar contraseña), Apariencia (toggle modo oscuro, pick idioma), Privacidad (3 toggles), y botón peligroso de eliminar cuenta.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 8,
+        "required_keywords": ["field", "toggle", "pick", "btn"],
+        "optional_keywords": ["card", "---", "ghost", "note"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Configuracion\n# Configuración\ncard Cuenta\n  field Email\n  ghost Cambiar contraseña\n---\ncard Apariencia\n  toggle Modo oscuro\n  pick Idioma | Español | English | Português\n---\ncard Privacidad\n  toggle Compartir datos de uso\n  toggle Notificaciones de marketing\n  toggle Mostrar perfil público\n---\nbtn Eliminar cuenta $\"background:#dc2626;color:#fff\""
+    },
+
+    {
+      "id": "B020",
+      "category": "content",
+      "difficulty": "easy",
+      "prompt": "Artículo de blog con imagen de cabecera, título, autor con avatar y fecha, cuerpo del artículo con subtítulos, y sección de comentarios con lista.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 6,
+        "required_keywords": ["img", "avatar", "btn"],
+        "optional_keywords": ["card", "list", "field", "area", "note"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Articulo\nimg \"Imagen destacada del artículo\"\n# Cómo diseñar mejores interfaces de usuario\nrow\n  avatar Ana García\n  col\n    note Ana García · 28 May 2026\n## Introducción\np El diseño de interfaces es un proceso que combina creatividad y metodología...\n## Principios fundamentales\np La simplicidad, consistencia y retroalimentación son los pilares...\n---\n## Comentarios (4)\nlist | Juan: Excelente artículo | María: Muy útil, gracias | Carlos: ¿Podés ampliar sobre accesibilidad?\narea Dejá tu comentario\nbtn Publicar comentario"
+    },
+
+    {
+      "id": "B021",
+      "category": "dashboard",
+      "difficulty": "hard",
+      "prompt": "Dashboard de SaaS con métricas de uso: header con nav y badge de plan actual, fila de KPIs (requests hoy, latencia promedio, tasa de error, uptime), tabla de endpoints más usados, sección de logs con lista de últimas llamadas y su status badge.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 10,
+        "required_keywords": ["nav", "badge", "kpi", "row", "grid", "list"],
+        "optional_keywords": ["col", "card", "btn"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@ApiDashboard\nnav API Console | Dashboard | Endpoints | Logs | Docs\nbadge Pro Plan $\"background:#ede9fe;color:#6d28d9\"\nrow\n  col\n    kpi 14.820 Requests hoy\n  col\n    kpi 142ms Latencia promedio\n  col\n    kpi 0.3% Tasa de error\n  col\n    kpi 99.9% Uptime\ncard Endpoints más usados\n  grid Endpoint | Calls | Latencia p95 | Errores\ncard Últimos logs\n  list | GET /users 200 OK | POST /auth 401 Unauthorized | GET /products 200 OK"
+    },
+
+    {
+      "id": "B022",
+      "category": "auth",
+      "difficulty": "medium",
+      "prompt": "Pantalla de verificación en dos pasos (2FA) con campo de 6 dígitos, opción de reenviar código (link), indicador de tiempo restante y botón verificar.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 4,
+        "required_keywords": ["field", "btn", "link"],
+        "optional_keywords": ["note", "p", "ghost"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Verificacion2FA\n# Verificación en dos pasos\np Ingresá el código de 6 dígitos enviado a tu email.\nfield Código de verificación\nnote El código expira en 4:32\nbtn Verificar\nlink Reenviar código"
+    },
+
+    {
+      "id": "B023",
+      "category": "lists",
+      "difficulty": "hard",
+      "prompt": "Pantalla de notificaciones con tabs (Todas, No leídas, Menciones), lista de notificaciones con avatar del remitente, mensaje, tiempo, badge de tipo (Comentario/Mención/Sistema) y acciones (marcar como leída, eliminar). Header con botón de marcar todas como leídas.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 8,
+        "required_keywords": ["tabs", "avatar", "badge", "btn", "ghost"],
+        "optional_keywords": ["row", "col", "list", "card", "note"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Notificaciones\n# Notificaciones\nghost Marcar todas como leídas\ntabs Todas | No leídas | Menciones\n  card\n    row\n      avatar Juan Pérez\n      col\n        p Juan Pérez comentó en tu publicación\n        note Hace 5 minutos\n        badge Comentario\n      col\n        ghost Leída\n  card\n    row\n      avatar Sistema\n      col\n        p Tu suscripción vence en 3 días\n        note Hace 1 hora\n        badge Sistema $\"background:#fef9c3;color:#ca8a04\"\n  ---\n  list | Notificaciones no leídas\n  ---\n  list | Menciones recibidas"
+    },
+
+    {
+      "id": "B024",
+      "category": "detail",
+      "difficulty": "easy",
+      "prompt": "Página de error 404 con ilustración, título, mensaje descriptivo y dos botones: volver al inicio y contactar soporte.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 4,
+        "required_keywords": ["img", "btn"],
+        "optional_keywords": ["ghost", "p", "link"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@Error404\nimg \"Ilustración 404\"\n# Página no encontrada\np La página que buscás no existe o fue movida.\nbtn Volver al inicio\nghost Contactar soporte"
+    },
+
+    {
+      "id": "B025",
+      "category": "forms",
+      "difficulty": "hard",
+      "prompt": "Formulario de creación de campaña de email marketing con tabs por sección: (1) Información básica (nombre, asunto, remitente, fecha de envío); (2) Audiencia (dropdown de lista, pick segmento, campo de filtros); (3) Diseño (pick de plantilla con preview de imagen); (4) Revisión con resumen y botón enviar campaña.",
+      "expected": {
+        "pages": 1,
+        "min_nodes": 12,
+        "required_keywords": ["tabs", "field", "pick", "btn", "img"],
+        "optional_keywords": ["ghost", "card", "kpi", "---", "grid"],
+        "forbidden_keywords": []
+      },
+      "reference_dsl": "@NuevaCampana\n# Nueva campaña de email\ntabs Información | Audiencia | Diseño | Revisión\n  field Nombre de la campaña\n  field Asunto del email\n  field Remitente\n  field Fecha de envío\n  btn Siguiente\n  ---\n  pick Lista de contactos | Lista principal | Clientes VIP | Leads\n  pick Segmento | Todos | Activos | Inactivos\n  field Filtro adicional ?\n  btn Siguiente\n  ---\n  ## Elegí una plantilla\n  row\n    col\n      img \"Plantilla Promocional\"\n      check Promocional\n    col\n      img \"Plantilla Newsletter\"\n      check Newsletter\n    col\n      img \"Plantilla Anuncio\"\n      check Anuncio\n  btn Siguiente\n  ---\n  card Resumen de la campaña\n    grid Parámetro | Valor\n  kpi 1.240 Destinatarios\n  btn Enviar campaña\n  ghost Guardar como borrador"
+    }
+
+  ]
+}
