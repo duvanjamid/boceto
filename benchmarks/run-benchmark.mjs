@@ -5,6 +5,7 @@
  *
  * Uso:
  *   node benchmarks/run-benchmark.mjs
+ *   node benchmarks/run-benchmark.mjs --compare        ← Boceto vs HTML token comparison
  *   node benchmarks/run-benchmark.mjs --cases B001,B005,B010
  *   node benchmarks/run-benchmark.mjs --category auth
  *   node benchmarks/run-benchmark.mjs --model claude-opus-4-5
@@ -24,11 +25,17 @@ const args        = process.argv.slice(2);
 const filterIds   = getArg('--cases')?.split(',');
 const filterCat   = getArg('--category');
 const model       = getArg('--model') ?? 'claude-sonnet-4-6';
+const compareMode = args.includes('--compare');
 const TIMEOUT_MS  = 60_000;
 
 function getArg(flag) {
   const i = args.indexOf(flag);
   return i !== -1 ? args[i + 1] : null;
+}
+
+// ── Token estimator (GPT/Claude: ~4 chars per token) ─────────────────────────
+function estimateTokens(text) {
+  return Math.round((text ?? '').length / 4);
 }
 
 // ── Load dataset ──────────────────────────────────────────────────────────────
@@ -96,6 +103,23 @@ list | Item1       — bulleted list
 
 btn Label > @Page  — navigate on click
 badge X $"css"     — inline CSS modifier`;
+
+const HTML_SYSTEM = `You are a wireframe designer. When asked to create a wireframe, respond ONLY with a plain HTML snippet (no CSS, no JavaScript, no DOCTYPE, no <html>/<head>/<body> tags). Use only semantic HTML elements to represent the UI structure: <form>, <input>, <button>, <select>, <textarea>, <nav>, <header>, <section>, <ul>, <li>, <table>, <img>, etc. Add placeholder text where needed. No inline styles.`;
+
+// ── Claude CLI call ───────────────────────────────────────────────────────────
+
+function callClaude(systemPrompt, userPrompt) {
+  const fullPrompt = `${systemPrompt}\n\n---\n\n${userPrompt}`;
+  const result = spawnSync(
+    'claude',
+    ['-p', fullPrompt, '--model', model, '--output-format', 'text'],
+    { timeout: TIMEOUT_MS, encoding: 'utf8' }
+  );
+  if (result.status !== 0 || result.error) {
+    throw new Error(result.error?.message ?? result.stderr ?? 'claude exited with status ' + result.status);
+  }
+  return result.stdout ?? '';
+}
 
 // ── Scoring ───────────────────────────────────────────────────────────────────
 
@@ -171,26 +195,22 @@ function extractDsl(output) {
 // ── Run one case ──────────────────────────────────────────────────────────────
 
 async function runCase(tc) {
-  const fullPrompt = `${SYSTEM}\n\n---\n\nCreate a Boceto DSL wireframe for the following UI:\n\n${tc.prompt}`;
+  const userPrompt = `Create a wireframe for the following UI:\n\n${tc.prompt}`;
   const start = Date.now();
 
-  const result = spawnSync(
-    'claude',
-    ['-p', fullPrompt, '--model', model, '--output-format', 'text'],
-    { timeout: TIMEOUT_MS, encoding: 'utf8' }
-  );
-
+  // ── Boceto DSL ──
   let rawOutput;
-  if (result.status !== 0 || result.error) {
+  try {
+    rawOutput = callClaude(SYSTEM, userPrompt);
+  } catch (err) {
     return {
       id: tc.id, category: tc.category, difficulty: tc.difficulty,
-      error: result.error?.message ?? (result.stderr || 'claude exited with status ' + result.status),
-      dsl: null, parsed: null,
+      error: err.message, dsl: null, parsed: null,
       score: { total: 0, max: 100, dimensions: {} },
-      latency_ms: Date.now() - start
+      latency_ms: Date.now() - start,
+      tokens: null
     };
   }
-  rawOutput = result.stdout;
 
   const latency = Date.now() - start;
   const dsl     = extractDsl(rawOutput);
@@ -205,20 +225,33 @@ async function runCase(tc) {
     };
   }
 
-  const parsed = parseDSL(dsl);
-  const sc     = score(tc, dsl, parsed);
+  const parsed    = parseDSL(dsl);
+  const sc        = score(tc, dsl, parsed);
+  const dslTokens = estimateTokens(dsl);
+
+  // ── HTML comparison (only when --compare) ──
+  let html = null, htmlTokens = null;
+  if (compareMode) {
+    try {
+      html = callClaude(HTML_SYSTEM, userPrompt);
+      htmlTokens = estimateTokens(html);
+    } catch { /* non-fatal */ }
+  }
 
   return {
     id: tc.id, category: tc.category, difficulty: tc.difficulty,
     dsl, parsed,
     score: sc,
-    latency_ms: latency
+    latency_ms: latency,
+    tokens: { dsl: dslTokens, html: htmlTokens,
+              saved: htmlTokens != null ? htmlTokens - dslTokens : null,
+              pct:   htmlTokens != null ? Math.round((1 - dslTokens / htmlTokens) * 100) : null }
   };
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-console.log(`\n🔷 Boceto Benchmark — ${cases.length} cases — model: ${model}\n`);
+console.log(`\n🔷 Boceto Benchmark — ${cases.length} cases — model: ${model}${compareMode ? ' — COMPARE MODE' : ''}\n`);
 console.log('─'.repeat(60));
 
 const results = [];
@@ -230,7 +263,10 @@ for (const tc of cases) {
 
   const pts = result.score.total;
   const bar = '█'.repeat(Math.round(pts / 10)) + '░'.repeat(10 - Math.round(pts / 10));
-  const status = result.error ? '❌ ERROR' : `${bar} ${pts}/100`;
+  let status = result.error ? '❌ ERROR' : `${bar} ${pts}/100`;
+  if (!result.error && compareMode && result.tokens?.saved != null) {
+    status += `  DSL:${result.tokens.dsl}tok  HTML:${result.tokens.html}tok  -${result.tokens.pct}%`;
+  }
   console.log(`${status}  (${result.latency_ms}ms)`);
   if (result.error) console.log(`   → ${result.error}`);
 }
@@ -268,6 +304,28 @@ for (const dim of dims) {
     ? (successful.reduce((s, r) => s + (r.score.dimensions[dim]?.pts ?? 0), 0) / successful.length).toFixed(1)
     : 0;
   console.log(`   ${dim.padEnd(22)} ${dimAvg}/${maxPts[dim]}`);
+}
+
+// Token comparison (only in --compare mode)
+if (compareMode) {
+  const withTokens = successful.filter(r => r.tokens?.saved != null);
+  if (withTokens.length > 0) {
+    const avgDsl  = Math.round(withTokens.reduce((s, r) => s + r.tokens.dsl,  0) / withTokens.length);
+    const avgHtml = Math.round(withTokens.reduce((s, r) => s + r.tokens.html, 0) / withTokens.length);
+    const avgSaved = Math.round(withTokens.reduce((s, r) => s + r.tokens.saved, 0) / withTokens.length);
+    const avgPct   = Math.round(withTokens.reduce((s, r) => s + r.tokens.pct,   0) / withTokens.length);
+    const totalDsl  = withTokens.reduce((s, r) => s + r.tokens.dsl,  0);
+    const totalHtml = withTokens.reduce((s, r) => s + r.tokens.html, 0);
+
+    console.log('\n🪙  Token comparison (Boceto DSL vs HTML, estimated ~4 chars/token):');
+    console.log(`   Avg DSL output   :  ${avgDsl} tokens`);
+    console.log(`   Avg HTML output  :  ${avgHtml} tokens`);
+    console.log(`   Avg saved        :  ${avgSaved} tokens  (-${avgPct}% per request)`);
+    console.log(`   Total saved      :  ${totalHtml - totalDsl} tokens across ${withTokens.length} cases`);
+    console.log(`\n   💡 At $3/M output tokens (Sonnet), ${withTokens.length} wireframes cost:`);
+    console.log(`      HTML:  $${(totalHtml / 1_000_000 * 3).toFixed(4)}`);
+    console.log(`      DSL:   $${(totalDsl  / 1_000_000 * 3).toFixed(4)}`);
+  }
 }
 
 // ── Save JSON report ──────────────────────────────────────────────────────────
