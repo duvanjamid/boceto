@@ -10,7 +10,7 @@
  *   node benchmarks/run-benchmark.mjs --model claude-opus-4-5
  */
 
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -171,23 +171,27 @@ function extractDsl(output) {
 // ── Run one case ──────────────────────────────────────────────────────────────
 
 async function runCase(tc) {
-  const prompt = `Create a Boceto DSL wireframe for the following UI:\n\n${tc.prompt}`;
-  const start  = Date.now();
+  // Embed system instructions directly in the prompt (--system flag not supported by claude CLI)
+  const fullPrompt = `${SYSTEM}\n\n---\n\nCreate a Boceto DSL wireframe for the following UI:\n\n${tc.prompt}`;
+  const start = Date.now();
+
+  const result = spawnSync(
+    'claude',
+    ['-p', fullPrompt, '--model', model, '--output-format', 'text'],
+    { timeout: TIMEOUT_MS, encoding: 'utf8' }
+  );
 
   let rawOutput;
-  try {
-    rawOutput = execSync(
-      `claude -p ${JSON.stringify(prompt)} --system ${JSON.stringify(SYSTEM)} --model ${model} --output-format text`,
-      { timeout: TIMEOUT_MS, encoding: 'utf8' }
-    );
-  } catch (err) {
+  if (result.status !== 0 || result.error) {
     return {
       id: tc.id, category: tc.category, difficulty: tc.difficulty,
-      error: err.message, dsl: null, parsed: null,
+      error: result.error?.message ?? (result.stderr || 'claude exited with status ' + result.status),
+      dsl: null, parsed: null,
       score: { total: 0, max: 100, dimensions: {} },
       latency_ms: Date.now() - start
     };
   }
+  rawOutput = result.stdout;
 
   const latency = Date.now() - start;
   const dsl     = extractDsl(rawOutput);
