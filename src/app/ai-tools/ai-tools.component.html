@@ -1,22 +1,5 @@
 <div class="mcp">
 
-  <!-- ── HEADER ── -->
-  <header class="mcp__header">
-    <a class="mcp__logo" routerLink="/">
-      <div class="mcp__logo-mark">B</div>
-      <span class="mcp__logo-text">Boceto</span>
-    </a>
-    <span class="mcp__header-title">AI &amp; MCP Tools</span>
-    <div class="mcp__header-actions">
-      <a class="mcp__header-link" routerLink="/plugins">Plugins</a>
-      <a class="mcp__header-link" routerLink="/docs">Componentes</a>
-      <a class="mcp__header-link" routerLink="/editor">Editor</a>
-      <button class="mcp__theme-btn" (click)="theme.toggle()" [title]="theme.dark() ? 'Modo claro' : 'Modo oscuro'">
-        <i [class]="theme.dark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
-      </button>
-    </div>
-  </header>
-
   <div class="mcp__body">
 
     <!-- ── SIDEBAR ── -->
@@ -85,7 +68,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code [innerHTML]="currentClient().config | codeHighlight:currentClient().lang"></code></pre>
+          <pre class="mcp__code"><code [innerHTML]="currentClient().config | codeHighlight:currentClient().lang:(theme.dark() ? 'dark' : 'light')"></code></pre>
         </div>
 
         <div class="mcp__tip">
@@ -118,7 +101,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code [innerHTML]="remoteConfig | codeHighlight:'json'"></code></pre>
+          <pre class="mcp__code"><code [innerHTML]="remoteConfig | codeHighlight:'json':(theme.dark() ? 'dark' : 'light')"></code></pre>
         </div>
 
         <div class="mcp__tip">
@@ -190,7 +173,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code [innerHTML]="anthropicCode | codeHighlight:'ts'"></code></pre>
+          <pre class="mcp__code"><code [innerHTML]="anthropicCode | codeHighlight:'ts':(theme.dark() ? 'dark' : 'light')"></code></pre>
         </div>
       </section>
 
@@ -217,7 +200,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code [innerHTML]="openaiCode | codeHighlight:'ts'"></code></pre>
+          <pre class="mcp__code"><code [innerHTML]="openaiCode | codeHighlight:'ts':(theme.dark() ? 'dark' : 'light')"></code></pre>
         </div>
       </section>
 
@@ -244,7 +227,7 @@
               }
             </button>
           </div>
-          <pre class="mcp__code"><code [innerHTML]="googleCode | codeHighlight:'ts'"></code></pre>
+          <pre class="mcp__code"><code [innerHTML]="googleCode | codeHighlight:'ts':(theme.dark() ? 'dark' : 'light')"></code></pre>
         </div>
         <div class="mcp__tip">
           <i class="fa-solid fa-circle-info"></i>

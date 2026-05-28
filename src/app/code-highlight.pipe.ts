@@ -1,20 +1,37 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-// Dark palette — consistent with dsl-highlight.pipe.ts
-const C = {
+export type CodeLang = 'ts' | 'json' | 'bash' | 'html';
+export type CodeTheme = 'dark' | 'light';
+
+interface Palette {
+  comment: string; keyword: string; string: string; number: string;
+  type: string; key: string; tag: string; attr: string; plain: string;
+}
+
+const DARK: Palette = {
   comment: '#4a4760',
   keyword: '#c084fc',
   string:  '#4ade80',
   number:  '#fbbf24',
   type:    '#a78bfa',
-  key:     '#5eead4',   // JSON object keys
-  tag:     '#f87171',   // HTML tags
-  attr:    '#60a5fa',   // HTML attributes
+  key:     '#5eead4',
+  tag:     '#f87171',
+  attr:    '#60a5fa',
   plain:   '#c4c0e0',
 };
 
-export type CodeLang = 'ts' | 'json' | 'bash' | 'html';
+const LIGHT: Palette = {
+  comment: '#6b7280',
+  keyword: '#7c3aed',
+  string:  '#16a34a',
+  number:  '#d97706',
+  type:    '#6d28d9',
+  key:     '#0e7490',
+  tag:     '#dc2626',
+  attr:    '#2563eb',
+  plain:   '#1a1630',
+};
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -23,6 +40,8 @@ function esc(s: string): string {
 function span(color: string, text: string): string {
   return `<span style="color:${color}">${esc(text)}</span>`;
 }
+
+let C: Palette = DARK;
 
 // Split a line into string-literal segments and plain segments.
 function splitStrings(line: string): { text: string; isStr: boolean }[] {
@@ -141,7 +160,8 @@ function highlightHtml(line: string): string {
 export class CodeHighlightPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
-  transform(value: string, lang: CodeLang = 'ts'): SafeHtml {
+  transform(value: string, lang: CodeLang = 'ts', themeName: CodeTheme = 'dark'): SafeHtml {
+    C = themeName === 'light' ? LIGHT : DARK;
     const fn = lang === 'json' ? highlightJson
              : lang === 'bash' ? highlightBash
              : lang === 'html' ? highlightHtml

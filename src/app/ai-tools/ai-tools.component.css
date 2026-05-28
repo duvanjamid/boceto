@@ -6,80 +6,13 @@
   min-height: 100vh;
 }
 
-/* ── HEADER ─────────────────────────────────────────────── */
-.mcp__header {
-  display: flex;
-  align-items: center;
-  height: 54px;
-  padding: 0 24px;
-  border-bottom: 1px solid var(--s-border);
-  background: var(--s-surface);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  gap: 16px;
-}
-.mcp__logo {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-.mcp__logo-mark {
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #7c6ff7, #a78bfa);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 800; font-size: 13px;
-}
-.mcp__logo-text {
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: -0.3px;
-  color: var(--s-ink);
-}
-.mcp__header-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--s-ink2);
-  border-left: 1px solid var(--s-border);
-  padding-left: 16px;
-}
-.mcp__header-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.mcp__header-link {
-  font-size: 13px;
-  color: var(--s-ink2);
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 6px;
-  transition: background .1s, color .1s;
-}
-.mcp__header-link:hover { background: var(--s-hover); color: var(--s-ink); }
-.mcp__theme-btn {
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  border: 1px solid var(--s-border);
-  background: none;
-  color: var(--s-ink2);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .1s, color .1s;
-}
-.mcp__theme-btn:hover { background: var(--s-hover); color: var(--s-ink); }
-
 /* ── BODY ─────────────────────────────────────────────────── */
 .mcp__body {
   display: grid;
   grid-template-columns: 220px 1fr;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: calc(100vh - 54px);
+  min-height: calc(100vh - 58px);
 }
 
 /* ── SIDEBAR ─────────────────────────────────────────────── */
@@ -87,8 +20,8 @@
   padding: 24px 12px;
   border-right: 1px solid var(--s-border);
   position: sticky;
-  top: 54px;
-  height: calc(100vh - 54px);
+  top: 58px;
+  height: calc(100vh - 58px);
   overflow-y: auto;
 }
 .mcp__sidebar-label {
@@ -412,7 +345,6 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .mcp__header { display: none; }
   .mcp__body { grid-template-columns: 1fr; }
   .mcp__sidebar { display: none; }
   .mcp__main { padding: 20px 16px; max-width: 100%; }
