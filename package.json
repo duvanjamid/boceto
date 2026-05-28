@@ -59,6 +59,7 @@
     "prepublishOnly": "npm run build:lib",
     "mcp:serve": "node plugins/boceto-mcp-http.js",
     "benchmark": "npm run build:lib && node benchmarks/run-benchmark.mjs",
+    "benchmark:compare": "npm run build:lib && node benchmarks/run-benchmark.mjs --compare",
     "benchmark:auth": "npm run build:lib && node benchmarks/run-benchmark.mjs --category auth",
     "benchmark:case": "npm run build:lib && node benchmarks/run-benchmark.mjs --cases"
   },
